@@ -73,3 +73,6 @@ if { [ llength $argv ] == 1 } {
 } else {
   testmain
 }
+
+puts ""
+puts "success"
