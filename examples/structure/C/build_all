@@ -1,0 +1,11 @@
+#!/bin/bash
+
+./build_globals
+./build_simple
+./build_indexed
+./build_indexed2
+./build_peerarrow
+./build_ownarrow
+./build_peerpaw
+./build_ownpaw
+./build_m2m

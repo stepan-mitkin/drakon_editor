@@ -1,0 +1,341 @@
+<html>
+<header>
+        <title>DRAKON Editor v.1.23 Readme</title>
+        <style>
+            body { width: 800px; }
+        </style>
+</header>
+<body>
+<h1><img src="images/drakon_editor.gif" alt="Logo"/>DRAKON Editor 1.23</h1>
+<p><b>DRAKON helps people understand programs.</b></p>
+
+
+<p>Some tutorials can be found in the <b>examples</b> folder. Open the .drn files with the DRAKON Editor.</p>
+
+
+<h2>FAQ</h2>
+
+<p><b>Q: Where is the "Save" button?</b></p>
+<p>A: DRAKON Editor does not have one. It saves your changes as you do them.</p>
+
+<p><b>Q: How can I scroll the main window?</b></p>
+<p>A: There are several ways to do it: 1. Drag with the mouse wheel pressed. 2. Scroll your mouse wheel (with and without the Shift key pressed). 3. Drag with both mouse keys pressed.</p>
+
+<p><b>Q: Does DRAKON Editor use a proprietary binary file format?</b></p>
+<p>A: No. DRAKON Editor keeps your data in an Sqlite database file. There are free viewers that can browse and edit such files. See <b>docs/drn_file_format.html</b> for details.</p>
+
+<p><b>Q: Can I write real programs with DRAKON Editor?</b></p>
+<p>A: Yes! Currently, Java, Processing.org, C#, Plain C, C++, Python, Tcl, Javascript, Lua and Erlang are supported. Tutorials can be found in the <b>examples/language</b> folders.</p>
+
+<p><b>Q: Export to PNG does not work and hangs. I hate you!</b></p>
+<p>A: Export to PNG works, but on Windows it is ungodly slow. We apologize. Please do not minimize or place any other windows on top of the DRAKON Editor in the process.</p>
+
+<p><b>Q: How to change the fonts?</b></p>
+<p>A: To change the screen font, go to <b>File/File properties...</b> and choose the <b>Canvas font</b>.</p>
+<p>To change the font in the exported PDF:</p>
+<ol>
+	<li>Put a .ttf file to the <b>fonts</b> folder.</li>
+	<li>Go to <b>File/File properties...</b> and choose the <b>PDF font</b>.</li>
+</ol>
+
+
+<h2>Installation</h2>
+
+<p>DRAKON Editor does not require any installation besides unzipping. It requires, however, <i>tcl</i> to be present on your computer:</p>
+<ul>
+<li><b>Windows</b> and <b>Mac OS</b>: download and install ActiveTcl: <a href="http://www.activestate.com/activetcl/downloads">http://www.activestate.com/activetcl/downloads</a></li>
+<li><b>Linux</b>: install the following packages: tcl8.5, tk8.5, tcllib, libsqlite3-tcl, libtk-img.
+</ul>
+
+<h2>Running DRAKON Editor</h2>
+<p><b>Windows</b>: double click on the <i>drakon_editor.tcl</i> file.</p>
+
+
+<p><b>Linux</b> and <b>Mac OS</b>: run the following command from the terminal:</p>
+<pre>    ./drakon_editor.tcl</pre>
+<p>or, to open a specific file:</p>
+<pre>    ./drakon_editor.tcl [file name]</pre>
+
+<h2>Shortcuts</h2>
+<p>Mac users use <b>Command</b> instead of <b>Control</b> for the following shortcuts.</p>
+<table cellpadding="3" border="1">
+<tr>
+  <td><b>Action<b></td><td><b>Shortcut</b></td>
+</tr><tr>
+  <td colspan="2"><center>Canvas</center></td>  
+</tr><tr>
+  <td>Scroll/pan</td><td>Move mouse with the wheel or middle button pressed.</td>
+</tr><tr>
+  <td>Scroll/pan up and down</td><td>Mouse wheel.</td>
+</tr><tr>
+  <td>Scroll/pan left and right</td><td>Shift + Mouse wheel.</td>
+</tr><tr>
+  <td>Zoom in and out</td><td>Control + Mouse wheel.</td>
+</tr><tr>
+  <td colspan="2"><center>Editing</center></td>
+</tr><tr>
+  <td><em>Smart</em> mode</td><td>Drag items with the mouse when the Shift key is pressed.</td>  
+</tr><tr>
+  <td>Edit text</td><td>Double click on text.</td>
+</tr><tr>
+  <td>Select all</td><td>Control + A</td>
+</tr><tr>
+  <td>Delete selected objects</td><td>Del or Backspace</td>
+</tr><tr>
+  <td>Copy</td><td>Control + C</td>
+</tr><tr>
+  <td>Cut</td><td>Control + X</td>
+</tr><tr>
+  <td>Paste</td><td>Control + V</td>
+</tr><tr>
+  <td>Undo</td><td>Control + Z</td>
+</tr><tr>
+  <td>Redo</td><td>Control + Y</td>
+ </tr><tr>
+  <td>Edit diagram description</td><td>Control + D</td>
+ </tr><tr>
+  <td colspan="2"><center>Search</center></td>
+</tr><tr>
+  <td>Show/hide search panel</td><td>Control + F</td>
+</tr><tr>
+  <td>Jump to diagram</td><td>Control + G</td>
+</tr><tr>
+  <td>Jump to item</td><td>Control + I</td>
+</tr><tr>
+  <td colspan="2"><center>Diagram</center></td>
+</tr><tr>
+  <td>Verify diagram</td><td>Control + R</td>
+</tr><tr>
+  <td>Generate code</td><td>Control + B</td>
+</tr><tr>
+  <td colspan="2"><center>Adding items</center></td> 
+</tr><tr>
+  <td>Action item</td><td>A</td>
+</tr><tr>
+  <td>If item</td><td>I</td>
+</tr><tr>
+  <td>Horizontal line</td><td>H</td>
+</tr><tr>
+  <td>Vertical line</td><td>V</td>
+</tr><tr>
+  <td>Loop start item</td><td>L</td>
+</tr><tr>
+  <td>Loop end item</td><td>E</td>
+</tr><tr>
+  <td>Select item</td><td>S</td>
+</tr><tr>
+  <td>Case item</td><td>C</td>
+</tr><tr>
+  <td>Branch item</td><td>B</td>
+</tr><tr>
+  <td>Address item</td><td>D</td>
+</tr><tr>
+  <td>Insertion item</td><td>N</td>
+</tr><tr>
+  <td>Tidy up</td><td>Control + T</td>
+ </tr><tr>
+  <td>Edit text in the selected icon</td><td>F2</td> 
+ </tr><tr>
+  <td>Edit secondary text</td><td>F3</td> 
+ </tr><tr>
+  <td>Call hierarchy</td><td>Control + E</td> 
+  
+</tr>
+</table>
+
+<h2>drakon_gen.tcl</h2>
+<p>drakon_gen.tcl is a command-line utility that generates code from a .drn file.</p>
+<p>Usage example:</p>
+<pre>./drakon_gen.tcl -in examples/Python/python_demo.drn</pre>
+<p>This one will generate a file called python_demo.py in examples/Python.</p>
+<pre>./drakon_gen.tcl -in examples/Python/python_demo.drn -out .</pre>
+<p>This one will generate a file called python_demo.py and put it in the current folder.</p>
+<p>In order for code generation to work, the .drn files must have a programming language selected in its properties.</p>
+<p>To choose the language for the .drn file, open it in DRAKON Editor, go to File / File properties...</p>
+
+
+<h2>Wish a feature? Report a bug?</h2>
+<p>Your feedback is greatly appreciated. Please write to<br/>
+<b>drakon.editor@gmail.com</b></p>
+
+<h2>What's new in version 1.23</h2>
+<ul>
+<li>AutoHotkey support.</li>
+<li>Verilog support.</li>
+<li>State machines and ERIL in the C language code generator.</li>
+</ul>
+
+
+<h2>What's new in version 1.22</h2>
+<ul>
+<li>A bug fix related to inline comment icons in Erlang diagrams.</li>
+<li>The content of the "if" icon in Erlang is not limited to the guard syntax any more.</li>
+<li>State-machine support for Erlang: gen_fsm-based and standalone state-machines.</li>
+<li>D language support.</li>
+</ul>
+
+
+<h2>What's new in version 1.21</h2>
+<ul>
+<li>State-machine (finite automata) support for C# code generation.</li>
+<li>ERIL language support for C# and Tcl code generation. (Entity-relationship and inheritance diagrams.)</li>
+<li>Hyperlinks in text. (Available through context meny, "Links".)</li>
+<li>Minor bug fixes.</li>
+</ul>
+
+<h2>What's new in version 1.20</h2>
+<ul>
+<li>Bug fixes.</li>
+<li>Call hierarchy.</li>
+<li>Added support for Processing.org programming language.</li>
+<li>Go to branch within a silhouette diagram.</li>
+<li>The color of icons can be changed.</li>
+</ul>
+
+<h2>What's new in version 1.19</h2>
+<ul>
+<li>Automatic width for "If" icons has been reduced. Icons take less diagram space.</li>
+<li>Modal dialogs improved on Linux.</li>
+</ul>
+
+<h2>What's new in version 1.18</h2>
+<ul>
+<li>DRAKON Editor now supports the full set of DRAKON icons.</li>
+<li>Uniform spacing rules in the <b>advanced</b> editing mode (with Shift pressed).</li>
+<li>Entity-Relationship diagram type added.</li>
+<li>Canvas can be scrolled with mouse drag when both mouse buttons are pressed.</li>
+<li>Added more shortcuts: F2 edits primary text, F3 edits secondary text. </li>
+</ul>
+
+<h2>What's new in version 1.17</h2>
+<ul>
+<li>Code generation: warnings removed for C# and Lua compilers.</li>
+<li>User can now define custome text instead of "YES", "NO" and "End".</li>
+<li>Color themes can be changed from Global settings.</li>
+<li>Icon widths get adjusted automatically for the whole skewer after the text is changed for a single icon.</li>
+<li>Note comments got a better visual style.</li>
+<li>Loop end icons can have text.</li>
+</ul>
+
+<h2>What's new in version 1.15</h2>
+<ul>
+	<li>Fixed a bug in the code generator.</li>
+	<li>Some metaprogramming features for the C language.</li>
+</ul>
+
+<h2>What's new in version 1.14</h2>
+<ul>
+	<li>Fixed Lua source code generator.</li>
+	<li>Double mouse wheel click invokes View / See All.</li>
+</ul>
+
+<h2>What's new in version 1.13</h2>
+<ul>
+	<li>Code generation for Lua language.</li>
+</ul>
+
+<h2>What's new in version 1.12</h2>
+<ul>
+	<li>Open/Save file dialogs for .drn files and for export remember the last directory.</li>
+	<li>Inserting "if", "branch", "select" and "loop" items made easier.</li>
+	<li>Ctrl-X, Ctrl-C, Ctrl-V, Ctrl-A shortcuts fixed for non-English keyboard layouts.</li>
+	<li>Added menu items: Edit/Tidy up, Edit/Tidy up all diagrams. The shortcut for Tidy up is Ctrl-T.</li>
+	<li>Colors config in scripts/colors.tcl.</li>
+</ul>
+
+<h2>What's new in version 1.11</h2>
+<ul>
+  <li>Text in <b>Action</b> and <b>Insertion</b> icons is now left-aligned.</li>
+  <li>Diagrams now look neat and tidy. The <b>Edit/Adjust icon sizes</b> menu command sets equal width to the icons on the same vertical.</li>
+  <li>Fixed the bug about extracting class names in C++.</li>
+  <li>Qt support: now you can explicitly mark the diagram as a signal or a slot (see QtC++ folder).</li>
+</ul>
+
+<h2>What's new in version 1.10</h2>
+<ul>
+  <li>A few minor usability improvements.</li>
+  <li>Javascript language support.</li>
+  <li>Erlang language support.</li>
+</ul>
+
+
+<h2>What's new in version 1.9</h2>
+<ul>
+  <li>Fast insertion of items using keyboard shortcuts.</li>
+  <li>The list of previously opened files.</li>
+  <li>Custom fonts.</li>
+  <li>Java language support.</li>
+  <li>C# language support.</li>
+  <li>Code generation for Python and Tcl without <b>goto</b> simulation.</li>
+</ul>
+
+<h2>What's new in version 1.8</h2>
+<ul>
+  <li>The performance of the Smart mode has been significantly improved.</li>
+</ul>
+
+<h2>What's new in version 1.7</h2>
+<ul>
+  <li>"Smart" editing mode.<br />To activate the Smart mode, hold SHIFT while dragging
+  items around on the canvas.<br />
+  When you drag an item in the Smart mode, all connected lines and items also move consistently.
+  The diagram structure is preserved.</li>
+</ul>
+
+<h2>What's new in version 1.6</h2>
+<ul>
+  <li>Fixed a code generation bug (occuring with Insertion icons).</li>
+  <li>Resolved Ubuntu 11.x incompatibility issues.</li>
+</ul>
+
+<h2>What's new in version 1.5</h2>
+<ul>
+  <li>More improvements in the interface:</li>
+  <ul>
+  	<li>If you grab a line by its end and drag, all the connected items will also move.</li>
+	<li>The flat list of diagrams has been replaced with a tree.</li>
+	<li>"Find all references", "Go to definition", "Jump to diagram", "Jump to item" etc.</li>
+  </ul>
+  <li>Code generation for:</li>
+  <ul>
+  	<li>Plain C</li>
+  	<li>C++</li>
+  	<li>Python 2.x and 3.x</li>
+  	<li>Tcl</li>
+  </ul>
+</ul>
+
+<h2>What's new in version 1.4</h2>
+<ul>
+  <li>Verification according to the rules of the DRAKON language (DRAKON-1).</li>
+  <li>Creation of silhouette diagrams made easier.</li>
+  <li>Address icons can be directed towards a branch using the context menu.</li> 
+  <li>Address icons update their text when the target branch gets renamed.</li>   
+</ul>
+
+<h2>What's new in version 1.3</h2>
+<ul>
+  <li>A massive amount of usability improvements.</li>
+  <li>Export to PNG.</li>
+  <li>Export to PDF with colors.</li>
+</ul>
+
+
+<h2>What's new in version 1.2</h2>
+<ul>
+  <li>Zoom.</li>
+  <li>Search.</li>
+  <li>Colored icons.</li>
+  <li>Many user interface improvements.</li>
+</ul>
+
+<h2>License</h2>
+<p>DRAKON Editor is <a href="http://en.wikipedia.org/wiki/Public_domain">PUBLIC DOMAIN</a> except some third-party components (pdf4tcl, Liberation fonts).</p>
+
+<h2>Authors</h2>
+<p>Stepan Mitkin, Alexander Ilyin, Maas-Maarten Zeeman, Vasil Dyadov, Vasili Bachiashvili.</p>
+<p><a href="http://drakon-editor.sourceforge.net/">http://drakon-editor.sourceforge.net/</a></p>
+<p><b>drakon.editor@gmail.com</b></p>
+<p>7 February 2014.</p>
+</body>
+</html>

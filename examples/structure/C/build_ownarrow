@@ -1,0 +1,4 @@
+#!/bin/bash
+rm ownarrow.c
+../../../drakon_gen.tcl -in ownarrow.drn
+gcc -Wall  lib.c ownarrow.c -o ownarrow

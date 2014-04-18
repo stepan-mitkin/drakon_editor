@@ -1,0 +1,4 @@
+#!/bin/bash
+rm peerarrow.c
+../../../drakon_gen.tcl -in peerarrow.drn
+gcc -Wall  lib.c peerarrow.c -o peerarrow

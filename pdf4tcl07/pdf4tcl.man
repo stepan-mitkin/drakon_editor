@@ -1,0 +1,561 @@
+[comment {-*- tcl -*- doctools manpage}]
+[manpage_begin pdf4tcl n 0.7]
+[copyright {2007 Peter Spjuth}]
+[copyright {2009 Yaroslav Schekin}]
+[moddesc   {Pdf document generation}]
+[titledesc {Pdf document generation}]
+[require Tcl 8.4]
+[require dict]
+[require snit]
+[require pdf4tcl [opt 0.7]]
+[description]
+
+This package provides a container class for generating [term {pdf}] documents.
+
+[section COORDINATES]
+
+All coordinates and distances can be expressed with or without a unit. See
+[sectref UNITS] for valid units.
+When the page is configured with [option -orient] set to false, origo is in
+the bottom left corner. With [option -orient] true, origo is in the top left
+corner.
+Origo is displaced to account for margins, i.e. if margins are 100,
+the user coordinate (0,0) corresponds to (100,100) on the paper.
+Page option [option -orient] can also affect the anchor point for things like
+images.
+
+[section UNITS]
+Any coordinates and distances can be expressed with or without an explicit
+unit.  If no unit is given, the default unit for the document is used.
+A unit may be one of
+[option "mm"] (millimeter),
+[option "m"] (millimeter),
+[option "cm"] (centimeter),
+[option "c"] (centimeter),
+[option "p"] (points) or
+[option "i"] (inches).
+
+Commands returning coordinates or distances always return a double value
+in the document's default unit.
+
+[section {PUBLIC API}]
+
+[subsection {PACKAGE COMMANDS}]
+
+[list_begin definitions]
+
+[call [cmd ::pdf4tcl::new] [arg objectName] [opt [arg "option value"]...]]
+
+This command creates a new pdf4tcl object with an associated Tcl
+command whose name is [arg objectName]. This [term object] command is
+explained in full detail in the sections [sectref {OBJECT COMMAND}]
+and [sectref {OBJECT METHODS}]. The object command will be created
+under the current namespace if the [arg objectName] is not fully
+qualified, and in the specified namespace otherwise.
+If [arg objectName] is %AUTO% a name will generated.
+The return value is the newly created object's name.
+
+[nl]
+
+The options and their values coming after the name of the object are
+used to set the initial configuration of the object.
+See [sectref {OBJECT CONFIGURATION}].
+
+
+[call [cmd ::pdf4tcl::getPaperSize] [arg "paper"]]
+
+This call returns the size of a named paper type, e.g. "a4".
+Paper names are case insensitive.
+The argument [arg "paper"] may also be a two element list
+with values as accepted by [cmd ::pdf4tcl::getPoints].
+The return value is a list with width and height in points.
+
+
+[call [cmd ::pdf4tcl::getPaperSizeList]]
+
+This call returns the list of known paper types.
+
+
+[call [cmd ::pdf4tcl::getPoints] [arg "val"]]
+
+This call translates a measurement to points (1/72 inch).
+The format of [arg "val"] is '[arg "num"] [opt [arg "unit"]]' where
+[arg "num"] is a valid integer or double. See [sectref UNIT] for valid
+[arg "unit"]s.  If no [arg "unit"] is given, the value is interpreted
+as points.
+
+
+[call [cmd ::pdf4tcl::loadBaseTrueTypeFont] [arg "basefontname"] [arg "ttf_file_name"]]
+
+This call loads a TTF font from file to be used by any pdf4tcl objects.
+The [arg "basefontname"] is used to reference this font.
+To use this base font in documents, a font with some encoding must be
+created from it using createFont.
+
+
+[call [cmd ::pdf4tcl::createBaseTrueTypeFont] [arg "basefontname"] [arg "ttf_data"]]
+
+This call creates a base font from TTF binary data.
+
+
+[call [cmd ::pdf4tcl::loadBaseType1Font] [arg "basefontname"] [arg "AFM_file_name"] [arg "PFB_file_name"]]
+
+This call loads a Type1 font from two files (.afm and .pfb) to be used by
+any pdf4tcl objects. The [arg "basefontname"] is used to reference this font.
+To use this base font in documents, a font with some encoding must be
+created from it using createFont.
+
+
+[call [cmd ::pdf4tcl::createBaseType1Font] [arg "basefontname"] [arg "AFM_data"] [arg "PFB_data"]]
+ 
+This call creates a base font from AFM text and PFB binary data.
+
+
+[call [cmd ::pdf4tcl::createFont] [arg "basefontname"] [arg "fontname"] [arg "encoding_name"]]
+
+This call creates a font that can be used in documents from a base font.
+
+[example {
+pdf4tcl::loadBaseTrueTypeFont BaseArial "arial.ttf"
+pdf4tcl::createFont BaseArial MyArial cp1251 
+pdf4tcl::loadBaseType1Font BaseType1 "a010013l.afm" "a010013l.pfb"
+pdf4tcl::createFont BaseType1 MyType1 cp1251 
+pdf4tcl::new mypdf -paper a4 -compress 1
+mypdf startPage
+mypdf setFont 10 MyArial
+set txt "\u042D\u0442\u043E \u0442\u0435\u043A\u0441\u0442 \u043D\u0430 \u0440\u0443\u0441\u0441\u043A\u043E\u043C \u044F\u0437\u044B\u043A\u0435. This is text in Russian."
+mypdf text $txt -bg #CACACA -x 50 -y 100
+mypdf setFont 10 MyType1
+mypdf text $txt -x 50 -y 200
+mypdf write -file fonts.pdf
+mypdf destroy
+}]
+
+[call [cmd ::pdf4tcl::createFontSpecEnc] [arg "basefontname"] [arg "fontname"] [arg "subset"]]
+
+This call creates a font that can be used in documents from a base font.
+The [arg "subset"] must be a list of unicode values.
+
+[list_end]
+
+[subsection {OBJECT COMMAND}]
+
+All commands created by [cmd ::pdf4tcl::new] have the following
+general form and may be used to invoke various operations on their
+pdf object.
+
+[list_begin definitions]
+
+[call [cmd objectName] [method method] [opt [arg "arg arg ..."]]]
+
+The method [method method] and its [arg arg]'uments determine the exact
+behavior of the command. See section [sectref {OBJECT METHODS}] for
+the detailed specifications.
+
+[list_end]
+
+
+[subsection {OBJECT METHODS}]
+
+[list_begin definitions]
+
+[call [arg objectName] [method configure]]
+
+The method returns a list of all known options and their current
+values when called without any arguments.
+
+
+[call [arg objectName] [method configure] [arg option]]
+
+The method behaves like the method [method cget] when called with a
+single argument and returns the value of the option specified by said
+argument.
+
+
+[call [arg objectName] [method configure] [option -option] [arg value]...]
+
+The method reconfigures the specified [option option]s of the object,
+setting them to the associated [arg value]s, when called with an even
+number of arguments, at least two.
+
+[nl]
+
+The legal options are described in the section
+[sectref {OBJECT CONFIGURATION}].
+
+
+[call [arg objectName] [method cget] [option -option]]
+
+This method expects a legal configuration option as argument and will
+return the current value of that option for the object the method was
+invoked for.
+
+[nl]
+
+The legal configuration options are described in section
+[sectref {OBJECT CONFIGURATION}].
+
+
+[call [arg objectName] [method destroy]]
+
+This method destroys the object it is invoked for.
+If the [option -file] option was given at object creation,
+the output file will be finished and closed.
+
+
+[call [arg objectName] [method startPage] [opt [arg "option value"]...]]
+
+This method starts a new page in the document. The page will have the
+default page settings for the document unless overridden by [arg "option"].
+See [sectref {PAGE CONFIGURATION}] for page settings.
+This will end any ongoing page.
+
+[call [arg objectName] [method endPage]]
+
+This method ends a page in the document.  It is normally not needed since
+it is implied by e.g. [method startPage] and [method finish].  However,
+if the document is built page by page in e.g. an event driven environment
+it can be good to call [method endPage] explicitly to have all the page's
+work finished before reentering the event loop.
+
+[call [arg objectName] [method finish]]
+
+This method ends the document.
+This will do [method endPage] if needed.
+If the [option -file] option was given at object creation,
+the output file will be finished and closed.
+
+[call [arg objectName] [method get]]
+
+This method returns the generated pdf.
+This will do [method endPage] and [method finish] if needed.
+If the [option -file] option was given at object creation, nothing is returned.
+
+[call [arg objectName] [method write] [opt [arg "-file filename"]]]
+
+This method writes the generated pdf to the given [arg "filename"].
+If no [arg "filename"] is given, it is written to stdout.
+This will do [method endPage] and [method finish] if needed.
+If the [option -file] option was given at object creation, an empty file
+is created.
+
+[list_end]
+
+[subsection {OBJECT METHODS}]
+
+[list_begin definitions]
+
+[call [arg objectName] [method getDrawableArea]]
+
+This method returns the size of the available area on the page,
+after removing margins.  The return value is a list of width and height,
+in the document's default unit.
+
+[call [arg objectName] [method canvas] [arg "path"] [opt [arg "option value"]...]]
+
+Draws the contents of the canvas widget [arg "path"] on the current page.
+Option [arg "-bbox"] gives the area of the canvas to be drawn. Default is
+the entire contents, i.e. the result of $path bbox all.
+Options [arg "-x"], [arg "-y"], [arg "-width"] and [arg "-height"] defines
+an area on the page where to place the contents. Default area starts at origo,
+stretching over the drawable area of the page.
+Option [arg "-sticky"] defines how to place the contents within the area.
+The area is always filled in one direction, preserving aspect ratio, unless
+[arg "-sticky"] defines that the other direction should be filled too.  Default
+[arg "-sticky"] is [arg "nw"].
+If option [arg "-bg"] is true, a background is drawn in the canvas' background
+color.  Otherwise only objects are drawn.  Default is false.
+[nl]
+Limitations:
+[nl]
+Fonts for text items are currently limited to PDF's builtins, i.e. Helvetica,
+Times and Courier. A guess is made to chose which one to use to get a reasonable
+display on the page.
+[nl]
+Option -splinesteps for lines/polygons is ignored.
+[nl]
+Stipple offset is limited. The form x,y should work.
+[nl]
+Window items requires Img to be present and must be visible on-screen when
+the canvas is drawn.
+
+[call [arg objectName] [method metadata] [opt [arg "option value"]...]]
+
+This method sets metadata fields for this document.  Supported fields are...
+
+[call [arg objectName] [method bookmarkAdd] [opt [arg "option value"]...]]
+
+Add a bookmark on the current page.
+
+[list_begin opt]
+
+[opt_def -title [arg text]]
+Set the text of the bookmark.
+
+[opt_def -level [arg level]]
+Set the level of the bookmark. Default is 0.
+
+[opt_def -closed [arg boolean]]
+Select if the bookmark is closed by default. Default is false, i.e. not closed.
+
+[list_end]
+
+
+[list_end]
+[subsection {OBJECT METHODS, TEXT}]
+[list_begin definitions]
+
+[call [arg objectName] [method setFont] [arg "size"] [opt [arg "fontname"]]]
+
+This method sets the font used by text drawing routines. If [arg "fontname"]
+is not provided, the previously set [arg "fontname"] is kept.
+
+[call [arg objectName] [method getStringWidth] [arg "str"]]
+
+This method returns the width of a string under the current font.
+
+[call [arg objectName] [method getCharWidth] [arg "char"]]
+
+This method returns the width of a character under the current font.
+
+[call [arg objectName] [method setTextPosition] [arg "x"] [arg "y"]]
+
+Set coordinate for next text command.
+
+[call [arg objectName] [method moveTextPosition] [arg "x"] [arg "y"]]
+
+Move coordinate for next text command.
+
+[call [arg objectName] [method getTextPosition]]
+
+This method returns the current text coordinate.
+
+[call [arg objectName] [method newLine] [opt [arg spacing]]]
+
+Moves text coordinate down and resets x to where the latest
+[method setTextPosition] was. The number of lines to move down can
+be set by [arg spacing]. This may be any real number, including negative,
+and defaults to the value set by [method setLineSpacing].
+
+[call [arg objectName] [method setLineSpacing] [arg spacing]]
+
+Set the default line spacing used be e.g. [method newLine].  Initially
+the spacing is 1.
+
+[call [arg objectName] [method getLineSpacing]]
+
+Get the current default line spacing.
+
+[call [arg objectName] [method text] [arg "str"] [opt [arg "option value"]...]]
+
+Draw text.
+
+[call [arg objectName] [method drawTextBox] [arg "x"] [arg "y"] [arg "width"] [arg "height"] [arg "str"] [opt [arg "option value"]...]]
+
+Draw text.
+
+[call [arg objectName] [method getFontMetric] [arg "metric"]]
+
+Get information about current font. The available [arg "metric"]s are
+[option ascend], [option descend], [option fixed], [option bboxb],
+[option bboxt] and [option height].
+
+[list_end]
+[subsection {OBJECT METHODS, IMAGES}]
+
+A limited set of image formats are directly understood by pdf4tcl, currently
+JPEG and some PNG formats.  To use unsupported formats, use Tk and the Img
+package to load and dump images to raw format which can be fed to
+[method putRawImage] and [method addRawImage].
+
+[list_begin definitions]
+
+[call [arg objectName] [method putImage] [arg "id"] [arg "x"] [arg "y"]  [opt [arg "option value"]...]]
+
+Put an image on the current page. The image must have been added previously by
+[method addImage] or [method addRawImage]. The [arg "id"] is the one returned
+from the add command.
+
+[list_begin opt]
+
+[opt_def -width [arg width]]
+Set the width of the image.  Default width is one point per pixel.
+If [arg height] is set but not [arg width], the width is selected to
+preserve the aspect ratio of the image.
+
+[opt_def -height [arg height]]
+Set the height of the image.  Default height is one point per pixel.  If [arg width] is set but not [arg height],
+the height is selected to preserve the aspect ratio of the image.
+
+[list_end]
+
+[call [arg objectName] [method putRawImage] [arg "data"] [arg "x"] [arg "y"]  [opt [arg "option value"]...]]
+Put an image on the current page. Works like [method putImage] except that the raw image data is given directly.
+
+[example {
+  image create photo img1 -file image.gif
+  set imgdata [img1 data]
+  mypdf putRawImage $imgdata 60 20 -height 40
+}]
+
+[call [arg objectName] [method addImage] [arg "filename"] [opt [arg "option value"]...]]
+
+Add an image to the document. Returns an id that can be used in subsequent
+calls to [method putImage]. Supported formats are PNG and JPEG.
+[list_begin opt]
+
+[opt_def -id [arg id]]
+Explicitly select an id for the image. The [arg "id"] must be unique within the document.
+
+[opt_def -type [arg name]]
+Set the image type.  This can usually be deduced from the file name, this
+option helps when that is not possible.  This can be either "png" or "jpeg".
+[list_end]
+
+[call [arg objectName] [method addRawImage] [arg "data"] [opt [arg "option value"]...]]
+[example {
+  image create photo img1 -file image.gif
+  set imgdata [img1 data]
+  set id [mypdf addRawImage $imgdata]
+  mypdf putImage $id 20 60 -width 100
+}]
+
+[call [arg objectName] [method getImageHeight] [arg "id"]]
+
+This method returns the height of the image identified by [arg "id"].
+
+[call [arg objectName] [method getImageSize] [arg "id"]]
+
+This method returns the size of the image identified by [arg "id"].  The
+return value is a list of width and height.
+
+[call [arg objectName] [method getImageWidth] [arg "id"]]
+
+This method returns the width of the image identified by [arg "id"].
+
+[list_end]
+[subsection {OBJECT METHODS, COLORS}]
+
+Colors can be expressed in various formats. First, as a three element list
+of values in the range 0.0 to 1.0. Second, in the format #XXXXXX where
+the Xes are two hexadecimal digits per color value.  Third, if Tk is available,
+any color accepted by winfo rgb is accepted.
+
+[list_begin definitions]
+
+[call [arg objectName] [method setBgColor] [arg "red"] [arg "green"] [arg "blue"]]
+Sets the background color for text operations where -bg is true.
+
+[call [arg objectName] [method setFillColor] [arg "red"] [arg "green"] [arg "blue"]]
+Sets the fill color for graphics operations, and the foreground color for
+text operations.
+
+[call [arg objectName] [method setStrokeColor] [arg "red"] [arg "green"] [arg "blue"]]
+Sets the stroke color for graphics operations.
+
+[list_end]
+[subsection {OBJECT METHODS, GRAPHICS}]
+[list_begin definitions]
+
+[call [arg objectName] [method setLineStyle] [arg "width"] [arg "args"]]
+[call [arg objectName] [method line] [arg "x1"] [arg "y1"] [arg "x2"] [arg "y2"]]
+[call [arg objectName] [method qCurve] [arg "x1"] [arg "y1"] [arg "xc"] [arg "yc"] [arg "x2"] [arg "y2"]]
+[call [arg objectName] [method polygon] [opt [arg "x y"]...] [opt [arg "option value"]...]]
+[call [arg objectName] [method circle] [arg "x"] [arg "y"] [arg "radius"] [opt [arg "option value"]...]]
+[call [arg objectName] [method oval] [arg "x"] [arg "y"] [arg "radiusx"] [arg "radiusy"] [opt [arg "option value"]...]]
+[call [arg objectName] [method arc] [arg "x"] [arg "y"] [arg "radiusx"] [arg "radiusy"] [arg "phi"] [arg "extend"] [opt [arg "option value"]...]]
+[call [arg objectName] [method arrow] [arg "x1"] [arg "y1"] [arg "x2"] [arg "y2"] [arg "size"] [opt [arg "angle"]]]
+
+[call [arg objectName] [method rectangle] [arg "x"] [arg "y"] [arg "width"] [arg "height"] [opt [arg "option value"]...]]
+
+[list_end]
+
+
+[subsection {OBJECT CONFIGURATION}]
+
+All pdf4tcl objects understand the options from [sectref {PAGE CONFIGURATION}],
+which defines default page settings when used with a pdf4tcl object.
+The objects also understand the following configuration options:
+
+[list_begin opt]
+
+[opt_def -compress [arg boolean]]
+
+Pages will be zlib compressed if this option is set to true.
+This requires the presence of the zlib package.
+This option can only be set at object creation.
+
+[opt_def -file [arg filename]]
+
+Continuously write pdf to [arg filename] instead of storing it
+in memory.
+This option can only be set at object creation.
+
+[opt_def -unit [arg defaultunit]]
+
+Defines default unit for coordinates and distances.  Any value given without
+a unit is interpreted using this unit.  
+See [sectref UNIT] for valid units.
+Default value is "p" as in points.
+This option can only be set at object creation.
+
+[list_end]
+
+[subsection {PAGE CONFIGURATION}]
+
+[list_begin opt]
+
+[opt_def -paper [arg name]]
+
+The argument of this option defines the paper size.
+The paper size may be a string like "a4", where valid values
+are available through [cmd ::pdf4tcl::getPaperSizeList].
+Paper size may also be a two element list specifying width and height.
+[nl]
+The default value of this option is "a4".
+
+[opt_def -landscape [arg boolean]]
+
+If true, paper width and height are switched.
+[nl]
+The default value of this option is false.
+
+[opt_def -orient [arg boolean]]
+
+This sets the orientation of the y axis of the coordinate system.
+With [option -orient] false, origo is in the bottom left corner.
+With [option -orient] true, origo is in the top left corner.
+[nl]
+The default value of this option is true.
+
+[opt_def -margin [arg values]]
+
+The margin is a one, two or four element list of margins.
+For one element, it specifies all margins.
+Two elements specify left/right and top/bottom.
+Four elements specify left, right, top and bottom.
+[nl]
+The default value of this option is zero.
+
+[opt_def -rotate [arg angle]]
+
+This value defines a rotation angle for the display of the page.
+Allowed values are multiples of 90.
+[nl]
+The default value of this option is zero.
+
+[list_end]
+
+[section EXAMPLES]
+[example_begin]
+  pdf4tcl::new mypdf -paper a3
+  mypdf startPage
+  mypdf setFont 12 Courier
+  mypdf text "Hejsan" -x 50 -y 50
+  mypdf write -file mypdf.pdf
+  mypdf destroy
+[example_end]
+
+[see_also doctools]
+[keywords pdf document]
+[manpage_end]

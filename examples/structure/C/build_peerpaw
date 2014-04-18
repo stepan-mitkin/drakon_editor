@@ -1,0 +1,4 @@
+#!/bin/bash
+rm peerpaw.c
+../../../drakon_gen.tcl -in peerpaw.drn
+gcc -Wall  lib.c peerpaw.c -o peerpaw

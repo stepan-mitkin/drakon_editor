@@ -1,0 +1,4 @@
+#!/bin/bash
+rm simple.c
+../../../drakon_gen.tcl -in simple.drn
+gcc -Wall  lib.c simple.c -o simple

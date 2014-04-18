@@ -1,0 +1,17 @@
+|hello|bye|
+|one|two|
+
+|left	|right	|	1|
+|top	|bottom	|	2|
+|front	|back	|	3|
+
+
+|again|
+|one | two | three |
+|    |     |       |
+|1   | 2   | 3     |
+not a table
+again something
+| last one |
+||
+| begin | end|

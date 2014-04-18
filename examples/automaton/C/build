@@ -1,0 +1,3 @@
+rm automaton-c.c
+tclsh ../../../drakon_gen.tcl -in automaton-c.drn
+gcc -Wall lib.c automaton-c.c

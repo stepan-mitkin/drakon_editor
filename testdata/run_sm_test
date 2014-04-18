@@ -1,0 +1,6 @@
+#/usr/bin/env bash
+rm sm_test.cs
+rm sm_test.exe
+../drakon_gen.tcl -in sm_test.drn
+mcs sm_test.cs -out:sm_test.exe
+mono sm_test.exe

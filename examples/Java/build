@@ -1,0 +1,6 @@
+#!/bin/bash
+
+../../drakon_gen.tcl -in Sorter.drn
+../../drakon_gen.tcl -in ReverseStringComparer.drn
+../../drakon_gen.tcl -in Demo.drn
+javac Sorter.java Comparer.java ReverseStringComparer.java Demo.java

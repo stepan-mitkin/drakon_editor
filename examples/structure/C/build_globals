@@ -1,0 +1,4 @@
+#!/bin/bash
+rm globals.c
+../../../drakon_gen.tcl -in globals.drn
+gcc -Wall  lib.c globals.c -o globals

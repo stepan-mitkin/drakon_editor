@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+rm automaton-cs.cs
+rm automaton-cs.exe
+../../../drakon_gen.tcl -in automaton-cs.drn
+mcs automaton-cs.cs -out:automaton-cs.exe
+mono automaton-cs.exe

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+./globals
+./simple
+./indexed
+./indexed2
+./peerarrow
+./ownarrow
+./peerpaw
+./ownpaw
+./m2m

@@ -1,0 +1,598 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>DRAKON Editor drn file format</title>​
+<link rel="stylesheet" href="pygments_style.css" />
+<style>
+	
+	body { 
+		margin-top:0;
+		background-color:#ccccdd;
+		margin: 0;
+ 	 	padding: 0;
+ 	 	font-family: Verdana, "Bitstream Vera Sans", sans-serif;
+ 	}
+ 	pre {
+ 		margin:5px;
+ 	}
+ 	
+	.top_menu { margin:0; padding:3px; }
+	h2 { border-style:solid; 
+		border-top-width:7px;
+		border-bottom-width:0;
+		border-left-width:0;
+		border-right-width:0;
+		border-color:#ccccdd; 
+		background:#efefff;
+		padding:5px;
+	}
+	p { 
+		padding:5px; 
+		font-size:100%;	
+	}
+	h1 { 
+		padding:5px; 
+		background:#efefff;
+		margin:0;
+	}
+	
+	.container {
+		background-color:#ffffff;
+		width:850px;
+		position:center;
+		border-style:solid;
+		border-color:#000030;
+		border-width:0px; 
+		padding:0;
+		margin:0 auto;
+	}
+	
+	table.reference
+	{
+	background-color:#ffffff;
+	border:1px solid #c3c3c3;
+	border-collapse:collapse;
+	width:97%;
+	margin-left:10px;
+	}
+	
+	table.reference th
+	{
+	background-color:#e5eecc;
+	border:1px solid #c3c3c3;
+	padding:3px;
+	vertical-align:top;
+	}
+	
+	table.reference td 
+	{
+	border:1px solid #c3c3c3;
+	padding:3px;
+	vertical-align:top;
+	}
+	pre {
+		border-style:dashed;
+		border-width:1px;
+		border-color:#000000;
+		padding:5px;
+	}
+</style>
+</head>
+<body>
+<div id="header" class="container">
+
+
+<h1>DRAKON Editor 1.5 .drn file format</h1>
+
+<p class="top_menu"><a href="http://drakon-editor.sourceforge.net/">Home </a>|
+<a href="https://sourceforge.net/projects/drakon-editor/files/">Download</a></p>
+
+<h2>Contents</h2>
+
+<ul>
+<li><a href="#general">General notes</a></li>
+<li>Tables
+<ul>
+<li><a href="#info">info table</a></li>
+<li><a href="#diagrams">diagrams table</a></li>
+<li><a href="#state">state table</a></li>
+<li><a href="#diagram_info">diagram_info table</a></li>
+<li><a href="#items">items table</a></li>
+<li><a href="#tree_nodes">tree_nodes table</a></li>
+</ul></li>
+<li>Items
+<ul>
+<li><a href="#rectangular">Rectangular items</a></li>
+<li><a href="#horizontal">horizontal item</a></li>
+<li><a href="#vertical">vertical item</a></li>
+<li><a href="#arrow">arrow item</a></li>
+<li><a href="#if">if item</a></li>
+<li><a href="#commentout">commentout item</a></li>
+<li><a href="#branch">branch item</a></li>
+<li><a href="#address">address item</a>  </li>
+</ul></li>
+</ul>
+
+<p><a name="general" /></p>
+
+<h2>General notes</h2>
+
+<p>DRAKON Editor relies on <a href="http://sqlite.org/">SQLite</a> to work with files.
+A .drn file is an SQLite 3.6 database.</p>
+
+<p>DRAKON files are guaranteed to be backward and forward compatible within
+the major version. For example, DRAKON Editor 1.4 can use files created
+with DRAKON Editor 1.5 and vice-versa.</p>
+
+<p>No conversion is needed when a new version of DRAKON Editor comes out.</p>
+
+<p>There are free tools that can be used to read and edit SQLite database files, 
+for example <a href="http://sqlitebrowser.sourceforge.net">SQLite Database Browser</a>.</p>
+
+<p>The SQL script that creates the database is located in scripts/schema.sql. 
+This script does not create the <strong>info</strong> table (which serves like a file signature).</p>
+
+<p><a name="info" /></p>
+
+<h2>info table</h2>
+
+<p>General information related to the whole file. A record in this table 
+is a property consisting of a key-value pair.</p>
+
+<table class="reference">
+    <tr>
+        <td><b>Field</b></td> <td><b>Data type<b></td> <td><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>key</td> <td>text, unique</td> <td>The name of the property.</td>
+    </tr>
+    <tr>
+        <td>value</td> <td>text</td> <td>The value of the property.</td>
+    </tr>
+</table>
+
+<p>Typical content of the <strong>info</strong> table:</p>
+
+<table class="reference">
+    <tr>
+        <td><b>key</b> field</td> <td><b>value</b> field</td> <td><b>Comment</b></td>
+    </tr>
+    <tr>
+        <td>type</td> <td>drakon</td> <td>This is a DRAKON Editor diagram file.</td>
+    </tr>
+    <tr>
+        <td>version</td> <td>5</td> <td>The minor version number: 1.<b>5</b></td>
+    </tr>
+    <tr>
+        <td>start_version</td> <td>1</td> <td>The major version number: <b>1</b>.5</td>
+    </tr>
+    <tr>
+        <td>language</td> <td>c++</td> <td>The diagrams in this file can be used to generate C++ code.</td>
+    </tr>
+
+</table>
+
+<p><a name="diagrams" /></p>
+
+<h2>diagrams table</h2>
+
+<p>The list of diagrams.</p>
+
+<p>The diagram coordinate space:</p>
+
+<ul>
+<li>X-axis is directed to the right.</li>
+<li>Y-axis is direct down.</li>
+</ul>
+
+<table class="reference">
+    <tr>
+        <td><b>Field</b></td> <td><b>Data type<b></td> <td><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>diagram_id</td> <td>integer, unique</td> <td>The primary key.</td>
+    </tr>
+    <tr>
+        <td>name</td> <td>text, unique</td> <td>The name of the diagram.</td>
+    </tr>
+    <tr>
+        <td>origin</td> <td>text</td> <td>The position of the left top corner of the diagram viewport in the diagram coordinate space. Used for scrolling.<br />The origin is stored as a tcl list with two elements. The first element is X, the second element is Y. </td>
+    </tr>
+    <tr>
+        <td>description</td> <td>text</td> <td>An optional text description of the diagram.</td>
+    </tr>
+    <tr>
+        <td>zoom</td> <td>double</td> <td>The visible scale of the diagram in percents.<br />100 means a one-to-one mapping between the screen space and the diagram space.<br />200 means the coordinate (10, 20) in the diagram transforms to (20, 40) on the screen. </td>
+    </tr>
+</table>
+
+<p><a name="state" /></p>
+
+<h2>state table</h2>
+
+<p>Miscellaneous global information.</p>
+
+<p>This table always contains only one row with the field "row" equal to 1.</p>
+
+<table class="reference">
+    <tr>
+        <td><b>Field</b></td> <td><b>Data type<b></td> <td><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>row</td> <td>integer, unique</td> <td>Must be equal 1.</td>
+    </tr>
+    <tr>
+        <td>current_dia</td> <td>integer</td> <td>The currently visible diagram.<br />A reference to the <b>diagrams</b> table.</td>
+    </tr>
+    <tr>
+        <td>description</td> <td>text</td> <td>An optional text description of the whole file.</td>
+    </tr>
+</table>
+
+<p><a name="diagram_info" /></p>
+
+<h2>diagram_info table</h2>
+
+<p>Each diagram owns a list of properties in the form of key-value pairs.</p>
+
+<p>Export parameters are stored as diagram properties.</p>
+
+<table class="reference">
+    <tr>
+        <td><b>Field</b></td> <td><b>Data type<b></td> <td><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>diagram_id</td> <td>integer</td> <td>References the diagram that owns the property.</td>
+    </tr>
+    <tr>
+        <td>name</td> <td>text</td> <td>The name of the property.</td>
+    </tr>
+    <tr>
+        <td>value</td> <td>text</td> <td>The value of the property.</td>
+    </tr>
+</table>
+
+<p><strong>diagram_info</strong> table has a composite primary key: <strong>diagram_id</strong>, <strong>name</strong>.</p>
+
+<p><a name="items" /></p>
+
+<h2>items table</h2>
+
+<p>Each diagram owns a list of items. An item is an object on the diagram, like an icon or a connector.</p>
+
+<table class="reference">
+    <tr>
+        <td><b>Field</b></td> <td><b>Data type<b></td> <td><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>item_id</td> <td>integer, unique</td> <td>The primary key of the item.</td>
+    </tr>
+    <tr>
+        <td>diagram_id</td> <td>integer</td> <td>References the diagram that owns the item.</td>
+    </tr>
+    <tr>
+        <td>type</td> <td>text</td> <td>The type of the item. For example, <i>action</i> or <i>beginend</i>.</td>
+    </tr>
+    <tr>
+        <td>text</td> <td>text</td> <td>The text on the icon. <br /> Lines and arrows do not have text. Not all items can have text.</td>
+    </tr>
+    <tr>
+        <td>selected</td> <td>integer</td> <td><i>1</i> if the item is selectd, <i>0</i> otherwise.</td>
+    </tr>
+    <tr>
+        <td>x</td> <td>integer</td> <td>The meaning depends on the item <b>type</b>. <br /> Usually, it is the X coordinate of the geometric center of the item.</td>
+    </tr>
+    <tr>
+        <td>y</td> <td>integer</td> <td>The meaning depends on the item <b>type</b>. <br /> Usually, it is the Y coordinate of the geometric center of the item.</td>
+    </tr>
+    <tr>
+        <td>w</td> <td>integer</td> <td>The meaning depends on the item <b>type</b>. <br /> Usually, it is a half of the width of the item.</td>
+    </tr>
+    <tr>
+        <td>h</td> <td>integer</td> <td>The meaning depends on the item <b>type</b>. <br /> Usually, it is a half of the height of the item.</td>
+    </tr>
+    <tr>
+        <td>a</td> <td>integer</td> <td>The meaning depends on the item <b>type</b>.</td>
+    </tr>
+    <tr>
+        <td>b</td> <td>integer</td> <td>The meaning depends on the item <b>type</b>.</td>
+    </tr>
+
+</table>
+
+<p><a name="tree_nodes" /></p>
+
+<h2>tree_nodes table</h2>
+
+<p>Each node in the main tree view control of DRAKON Editor is stored as a record in the <strong>tree_nodes</strong> table.</p>
+
+<p>There are two kinds of nodes: folder nodes and diagram nodes.</p>
+
+<p>There is a one-to-one link between diagram nodes and diagrams.</p>
+
+<table class="reference">
+    <tr>
+        <td><b>Field</b></td> <td><b>Data type<b></td> <td><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>node_id</td> <td>integer, unique</td> <td>The primary key of the node.</td>
+    </tr>
+    <tr>
+        <td>parent</td> <td>integer</td> <td>References the node_id of the parent of this node.</td>
+    </tr>
+    <tr>
+        <td>type</td> <td>text</td> <td>The type of the node. Can be either <i>folder</i> or <i>item<i/>.</td>
+    </tr>
+    <tr>
+        <td>name</td> <td>text</td> <td>For folder nodes, this field contains the text of the tree node. <br />For diagram nodes, the text of the node is taken from diagram name.</td>
+    </tr>
+    <tr>
+        <td>diagram_id</td> <td>integer</td> <td>For diagram nodes, references the related diagram.</td>
+    </tr>
+</table>
+
+<p><a name="rectangular" /></p>
+
+<h2>Rectangular items</h2>
+
+<p>Items of these types have a similar form based on rectangle:</p>
+
+<ul>
+<li>action</li>
+<li>beginend</li>
+<li>case</li>
+<li>commentin</li>
+<li>insertion</li>
+<li>loopend</li>
+<li>loopstart</li>
+<li>select</li>
+</ul>
+
+<table class="reference">
+    <tr>
+        <td><b>Field</b></td> <td><b>Data type<b></td> <td><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>x</td> <td>integer</td> <td>The X coordinate of the geometric center of the item.</td>
+    </tr>
+    <tr>
+        <td>y</td> <td>integer</td> <td>The Y coordinate of the geometric center of the item.</td>
+    </tr>
+    <tr>
+        <td>w</td> <td>integer</td> <td>A half of the width of the item.</td>
+    </tr>
+    <tr>
+        <td>h</td> <td>integer</td> <td>A half of the height of the item.</td>
+    </tr>
+    <tr>
+        <td>a</td> <td>integer</td> <td>Ignored.</td>
+    </tr>
+    <tr>
+        <td>b</td> <td>integer</td> <td>Ignored.</td>
+    </tr>
+
+</table>
+
+<p><a name="horizontal" /></p>
+
+<h2>horizontal item</h2>
+
+<p>The horizontal line.</p>
+
+<table class="reference">
+    <tr>
+        <td><b>Field</b></td> <td><b>Data type<b></td> <td><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>x</td> <td>integer</td> <td>The X coordinate of the left end.</td>
+    </tr>
+    <tr>
+        <td>y</td> <td>integer</td> <td>The Y coordinate of the left end.</td>
+    </tr>
+    <tr>
+        <td>w</td> <td>integer</td> <td>The distance between the left and right ends.</td>
+    </tr>
+    <tr>
+        <td>h</td> <td>integer</td> <td>Ignored.</td>
+    </tr>
+    <tr>
+        <td>a</td> <td>integer</td> <td>Ignored.</td>
+    </tr>
+    <tr>
+        <td>b</td> <td>integer</td> <td>Ignored.</td>
+    </tr>
+</table>
+
+<p><a name="vertical" /></p>
+
+<h2>vertical item</h2>
+
+<p>The vertical line.</p>
+
+<table class="reference">
+    <tr>
+        <td><b>Field</b></td> <td><b>Data type<b></td> <td><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>x</td> <td>integer</td> <td>The X coordinate of the top end.</td>
+    </tr>
+    <tr>
+        <td>y</td> <td>integer</td> <td>The Y coordinate of the top end.</td>
+    </tr>
+    <tr>
+        <td>w</td> <td>integer</td> <td>Ignored.</td>
+    </tr>
+    <tr>
+        <td>h</td> <td>integer</td> <td>The distance between the top and bottom ends.</td>
+    </tr>
+    <tr>
+        <td>a</td> <td>integer</td> <td>Ignored.</td>
+    </tr>
+    <tr>
+        <td>b</td> <td>integer</td> <td>Ignored.</td>
+    </tr>
+</table>
+
+<p><a name="arrow" /></p>
+
+<h2>arrow item</h2>
+
+<p>The arrow with two angles.</p>
+
+<table class="reference">
+    <tr>
+        <td><b>Field</b></td> <td><b>Data type<b></td> <td><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>x</td> <td>integer</td> <td>The X coordinate of the top end of the vertical segment.</td>
+    </tr>
+    <tr>
+        <td>y</td> <td>integer</td> <td>The Y coordinate of the top end of the vertical segment.</td>
+    </tr>
+    <tr>
+        <td>w</td> <td>integer</td> <td>The length of the upper horizontal segment.</td>
+    </tr>
+    <tr>
+        <td>h</td> <td>integer</td> <td>The height of the vertical segment.</td>
+    </tr>
+    <tr>
+        <td>a</td> <td>integer</td> <td>The length of the lower horizontal segment.</td>
+    </tr>
+    <tr>
+        <td>b</td> <td>integer</td> <td><i>0</i> if the arrow points to the left, <i>1</i> if to the right.</td>
+    </tr>
+</table>
+
+<p><a name="if" /></p>
+
+<h2>if item</h2>
+
+<p>The <strong>if</strong> icon.</p>
+
+<table class="reference">
+    <tr>
+        <td><b>Field</b></td> <td><b>Data type<b></td> <td><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>x</td> <td>integer</td> <td>The X coordinate of the geometric center of the item.</td>
+    </tr>
+    <tr>
+        <td>y</td> <td>integer</td> <td>The Y coordinate of the geometric center of the item.</td>
+    </tr>
+    <tr>
+        <td>w</td> <td>integer</td> <td>A half of the width of the item.</td>
+    </tr>
+    <tr>
+        <td>h</td> <td>integer</td> <td>A half of the height of the item.</td>
+    </tr>
+    <tr>
+        <td>a</td> <td>integer</td> <td>The length of the horizontal line at the right side.</td>
+    </tr>
+    <tr>
+        <td>b</td> <td>integer</td> <td>0 means the right exit is YES.<br />
+        1 means the right exit is NO.</td>
+    </tr>
+
+</table>
+
+<p><a name="commentout" /></p>
+
+<h2>commentout item</h2>
+
+<p>A standalone comment icon.</p>
+
+<table class="reference">
+    <tr>
+        <td><b>Field</b></td> <td><b>Data type<b></td> <td><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>x</td> <td>integer</td> <td>The X coordinate of the geometric center of the item.</td>
+    </tr>
+    <tr>
+        <td>y</td> <td>integer</td> <td>The Y coordinate of the geometric center of the item.</td>
+    </tr>
+    <tr>
+        <td>w</td> <td>integer</td> <td>A half of the width of the item.</td>
+    </tr>
+    <tr>
+        <td>h</td> <td>integer</td> <td>A half of the height of the item.</td>
+    </tr>
+    <tr>
+        <td>a</td> <td>integer</td> <td>The length of the horizontal line at the side.</td>
+    </tr>
+    <tr>
+        <td>b</td> <td>integer</td> <td><i>0</i> if the horizontal line goes out of the left side, <br /> <i>1</i> if out of the right side.</td>
+    </tr>
+
+</table>
+
+<p><a name="branch" /></p>
+
+<h2>branch item</h2>
+
+<p>The header of a branch.</p>
+
+<table class="reference">
+    <tr>
+        <td><b>Field</b></td> <td><b>Data type<b></td> <td><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>x</td> <td>integer</td> <td>The X coordinate of the geometric center of the item.</td>
+    </tr>
+    <tr>
+        <td>y</td> <td>integer</td> <td>The Y coordinate of the geometric center of the item.</td>
+    </tr>
+    <tr>
+        <td>w</td> <td>integer</td> <td>A half of the width of the item.</td>
+    </tr>
+    <tr>
+        <td>h</td> <td>integer</td> <td>A half of the height of the item.</td>
+    </tr>
+    <tr>
+        <td>a</td> <td>integer</td> <td>Ignored</td>
+    </tr>
+    <tr>
+        <td>b</td> <td>integer</td> <td><i>1</i> if the icon has a cycle mark,
+        <br /> <i>0</i> if the icon does not have a cycle mark.</td>
+    </tr>
+
+</table>
+
+<p><a name="address" /></p>
+
+<h2>address item</h2>
+
+<p>The footer of a branch.</p>
+
+<table class="reference">
+    <tr>
+        <td><b>Field</b></td> <td><b>Data type<b></td> <td><b>Description</b></td>
+    </tr>
+    <tr>
+        <td>x</td> <td>integer</td> <td>The X coordinate of the geometric center of the item.</td>
+    </tr>
+    <tr>
+        <td>y</td> <td>integer</td> <td>The Y coordinate of the geometric center of the item.</td>
+    </tr>
+    <tr>
+        <td>w</td> <td>integer</td> <td>A half of the width of the item.</td>
+    </tr>
+    <tr>
+        <td>h</td> <td>integer</td> <td>A half of the height of the item.</td>
+    </tr>
+    <tr>
+        <td>a</td> <td>integer</td> <td>Ignored</td>
+    </tr>
+    <tr>
+        <td>b</td> <td>integer</td> <td><i>1</i> if the icon has a cycle mark,
+        <br /> <i>0</i> if the icon does not have a cycle mark.</td>
+    </tr>
+
+</table>
+
+<p></p>
+</div>
+</body>
+</html>
+

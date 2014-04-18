@@ -1,0 +1,6 @@
+#!/bin/bash
+
+../../drakon_gen.tcl -in Sorter.drn
+../../drakon_gen.tcl -in ReverseStringComparer.drn
+../../drakon_gen.tcl -in Demo.drn
+gmcs Sorter.cs ReverseStringComparer.cs Demo.cs -out:Demo.exe

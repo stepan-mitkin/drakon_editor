@@ -1,0 +1,4 @@
+#!/bin/bash
+rm indexed.c
+../../../drakon_gen.tcl -in indexed.drn
+gcc -Wall  lib.c indexed.c -o indexed
