@@ -670,6 +670,7 @@ proc p.replace_select_ifs { gdb select ordinals callbacks } {
 	set bad_case [ get_callback $callbacks bad_case ]
 	
 	set select_item [ p.vertex_item $gdb $select ]
+	set select_icon_number $select_item
 	set select_text [ p.vertex_text $gdb $select ]	
 	set diagram_id [ p.vertex_diagram $gdb $select ]
 	
@@ -725,10 +726,40 @@ proc p.replace_select_ifs { gdb select ordinals callbacks } {
 			
 			if { $i == $last } {
 				
-				if {$select_mode_var == 1} {
-					set fail_text [ $bad_case $var_name ]
-				} elseif {$select_mode_var == 2} {
-					set fail_text [ $bad_case $select_text ]
+				# In if statment language that is generating is checked. If the language is in condition of
+				# if statement, then bad_case is called with one parameter, othewise it is called with
+				# two parameters. Second parameter is select_icon_number variable, which holds number
+				# of current Select icon.
+				set language $current_file_generation_info::language
+				
+				if { $language == "C" ||
+				$language == "C#" ||
+				$language == "C++" ||
+				$language == "D" ||
+				$language == "Erlang" ||
+				$language == "Java" ||
+				$language == "Javascript" ||
+				$language == "Lua" ||
+				$language == "Processing.org" ||
+				$language == "Python 2.x" ||
+				$language == "Python 3.x" ||
+				$language == "Tcl" ||
+				$language == "Verilog" } {
+				
+					if {$select_mode_var == 1} {
+						set fail_text [ $bad_case $var_name ]
+					} elseif {$select_mode_var == 2} {
+						set fail_text [ $bad_case $select_text ]
+					}
+				
+				} else {
+					
+					if {$select_mode_var == 1} {
+						set fail_text [ $bad_case $var_name $select_icon_number ]
+					} elseif {$select_mode_var == 2} {
+						set fail_text [ $bad_case $select_text $select_icon_number ]
+					}
+					
 				}
 				
 				incr select_item
