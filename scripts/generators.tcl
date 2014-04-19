@@ -63,11 +63,7 @@ proc generate { } {
 	
 	
 	# That namespace is used by some procedures (p.separate_line) to store some variebles for current file generation.
-	namespace eval current_file_generation_info {
-		variable language
-		variable generator
-	}
-	
+	namespace eval current_file_generation_info {}
 	set current_file_generation_info::language $language
 	set current_file_generation_info::generator $generator
 	
@@ -116,11 +112,7 @@ proc generate_no_gui { dst_filename } {
 	
 	
 	# That namespace is used by some procedures (p.separate_line) to store some variebles for current file generation.
-	namespace eval current_file_generation_info {
-		variable language
-		variable generator
-	}
-	
+	namespace eval current_file_generation_info {}
 	set current_file_generation_info::language $language
 	set current_file_generation_info::generator $generator
 	
