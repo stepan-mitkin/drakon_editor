@@ -60,6 +60,18 @@ proc generate { } {
 	}
 
 	lassign $generators($language) generator extension
+	
+	
+	# That namespace is used by some procedures (p.separate_line) to store some variebles for current file generation.
+	namespace eval current_file_generation_info {
+		variable language
+		variable generator
+	}
+	
+	set current_file_generation_info::language $language
+	set current_file_generation_info::generator $generator
+	
+	
 	set db [ mwc::get_db ]
 
 	mw::show_errors
@@ -101,7 +113,18 @@ proc generate_no_gui { dst_filename } {
 	}
 
 	lassign $generators($language) generator extension
-
+	
+	
+	# That namespace is used by some procedures (p.separate_line) to store some variebles for current file generation.
+	namespace eval current_file_generation_info {
+		variable language
+		variable generator
+	}
+	
+	set current_file_generation_info::language $language
+	set current_file_generation_info::generator $generator
+	
+	
 	graph::verify_all $db
 
 	if { ![ graph::errors_occured ] } {
@@ -983,13 +1006,71 @@ proc extract_sections { text } {
 
 
 proc p.separate_line { text } {
-	set first [ string first "//" $text ]
+	
+	set language $current_file_generation_info::language
+	set generator $current_file_generation_info::generator
+
+	# These 2 lines is to get current generator namepsce. 
+	set find [string first :: $generator]
+	set generator_namespace [ string range $generator 0 $find-1 ]
+
+	# These 3 lines is to check is current generator have commentator procedure.
+	# If not procedure_status_var is set to "" .
+	set commentator_for_namespace_text "::commentator"
+	set commentator_call_text "$generator_namespace$commentator_for_namespace_text"
+	set procedure_status_var [ namespace which $commentator_call_text ]
+	
+	if { $procedure_status_var == "" } {
+
+		
+	} else {
+		# Get current generator line comment simbol and calculate its length without space sign.
+		set current_lang_line_comment [ $commentator_call_text "" ]
+	
+		set trimmed_current_lang_line_comment [string trim $current_lang_line_comment " " ]
+		
+		set current_lang_line_comment_length [ string length $trimmed_current_lang_line_comment ]
+
+	}
+
+	# Languages in this if conditions will use // sign for function parameter commenting.
+	# It is done so for compability with diagrams whiach are made with previous versions of DRAKON Editor.
+	# If you are adding new language generator to DRAKON Editor and want to use line comment sign as
+	# commenting sign for function parameters, just make commentator procedure in your language generator
+	# as it is for example in AutoHotkey code generator.
+	if { $language == "C" ||
+	$language == "C#" ||
+	$language == "C++" ||
+	$language == "D" ||
+	$language == "Erlang" ||
+	$language == "Java" ||
+	$language == "Javascript" ||
+	$language == "Lua" ||
+	$language == "Processing.org" ||
+	$language == "Python 2.x" ||
+	$language == "Python 3.x" ||
+	$language == "Tcl" ||
+	$language == "Verilog" } {
+		
+		set first [ string first "//" $text ]
+	
+	} else {
+		set first [ string first $trimmed_current_lang_line_comment $text ]
+	}
+	
 	if { $first == -1 } {
 		set part0 $text
 		set part1 ""
 	} else {
 		set part0end [ expr { $first - 1 } ]
-		set part1start [ expr { $first + 2 } ]
+		
+		set length_var_exists [ info exists current_lang_line_comment_length ]
+		if { $length_var_exists == 1 } {
+		set part1start [ expr { $first + $current_lang_line_comment_length } ]
+		} else {
+			set part1start [ expr { $first + 2 } ]
+		}
+		
 		set part0 [ string range $text 0 $part0end ]
 		set part1 [ string range $text $part1start end ]
 	}
