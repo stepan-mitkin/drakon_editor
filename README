@@ -3,7 +3,7 @@ How to work on DRAKON Editor source code.
 
 1. Add unit tests. See unittest/unittest.tcl.
 
-2. Run unit tests.
+2. Run unit tests:
 	cd unittest
 	tclsh unittest.tcl
 	
