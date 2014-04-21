@@ -726,40 +726,10 @@ proc p.replace_select_ifs { gdb select ordinals callbacks } {
 			
 			if { $i == $last } {
 				
-				# In if statment language that is generating is checked. If the language is in condition of
-				# if statement, then bad_case is called with one parameter, othewise it is called with
-				# two parameters. Second parameter is select_icon_number variable, which holds number
-				# of current Select icon.
-				set language $current_file_generation_info::language
-				
-				if { $language == "C" ||
-				$language == "C#" ||
-				$language == "C++" ||
-				$language == "D" ||
-				$language == "Erlang" ||
-				$language == "Java" ||
-				$language == "Javascript" ||
-				$language == "Lua" ||
-				$language == "Processing.org" ||
-				$language == "Python 2.x" ||
-				$language == "Python 3.x" ||
-				$language == "Tcl" ||
-				$language == "Verilog" } {
-				
-					if {$select_mode_var == 1} {
-						set fail_text [ $bad_case $var_name ]
-					} elseif {$select_mode_var == 2} {
-						set fail_text [ $bad_case $select_text ]
-					}
-				
-				} else {
-					
-					if {$select_mode_var == 1} {
-						set fail_text [ $bad_case $var_name $select_icon_number ]
-					} elseif {$select_mode_var == 2} {
-						set fail_text [ $bad_case $select_text $select_icon_number ]
-					}
-					
+				if {$select_mode_var == 1} {
+					set fail_text [ $bad_case $var_name $select_icon_number ]
+				} elseif {$select_mode_var == 2} {
+					set fail_text [ $bad_case $select_text $select_icon_number ]
 				}
 				
 				incr select_item

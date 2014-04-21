@@ -202,7 +202,7 @@ proc p.comment { line } {
 	return "#$line"
 }
 
-proc p.bad_case { switch_var } {
+proc p.bad_case { switch_var select_icon_number } {
     if {[ string compare -nocase $switch_var "select" ] == 0} {
     	return "error \"Unhandled condition.\""
 	} else {

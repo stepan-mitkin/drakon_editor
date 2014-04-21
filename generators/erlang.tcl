@@ -165,7 +165,7 @@ proc p.comment { line } {
 	return "% $line"
 }
 
-proc p.bad_case { switch_var } {
+proc p.bad_case { switch_var select_icon_number } {
 	return "throw\(\"Unexpected switch value\"\)"
 }
 

@@ -179,7 +179,7 @@ proc comment { line } {
 }
 
 # Raises an error when the control reaches an unexpected "case" branch.
-proc bad_case { switch_var } {
+proc bad_case { switch_var select_icon_number } {
     if {[ string compare -nocase $switch_var "select" ] == 0} {
     	return "throw new Exception\(\"Not expected condition.\"\);"
     } else {	

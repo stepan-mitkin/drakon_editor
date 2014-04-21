@@ -94,7 +94,7 @@ proc p.block_close { output depth } {
 	lappend result $line
 }
 
-proc p.bad_case { switch_var } {
+proc p.bad_case { switch_var select_icon_number } {
     if {[ string compare -nocase $switch_var "select" ] == 0} {
     	return "throw \"Not expected condition.\";"
     } else {	

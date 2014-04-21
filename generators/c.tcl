@@ -9,7 +9,7 @@ proc assign { variable value } {
     return "$variable = $value;"
 }
 
-proc bad_case { switch_var } {
+proc bad_case { switch_var select_icon_number } {
     #item 670
     if {[ string compare -nocase $switch_var "select" ] == 0} {
         #item 674
