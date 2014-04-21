@@ -1019,30 +1019,18 @@ proc p.separate_line { text } {
 	set generator_namespace [ string range $generator 0 $find-1 ]
 
 	# These 3 lines is to check is current generator have commentator procedure.
-	# If not procedure_status_var is set to "" .
+	# If not commentator_status_var is set to "" .
 	set commentator_for_namespace_text "::commentator"
 	set commentator_call_text "$generator_namespace$commentator_for_namespace_text"
-	set procedure_status_var [ namespace which $commentator_call_text ]
+	set commentator_status_var [ namespace which $commentator_call_text ]
 	
-	if { $procedure_status_var == "" } {
-
-		
-	} else {
-		# Get current generator line comment simbol and calculate its length without space sign.
-		set current_lang_line_comment [ $commentator_call_text "" ]
-	
-		set trimmed_current_lang_line_comment [string trim $current_lang_line_comment " " ]
-		
-		set current_lang_line_comment_length [ string length $trimmed_current_lang_line_comment ]
-
-	}
-
-	# Languages in this if conditions will use // sign for function parameter commenting.
-	# It is done so for compability with diagrams whiach are made with previous versions of DRAKON Editor.
+	# If current language does not have commentator procedure or current languages is in if conditions, then // sign for function parameter commenting will be used.
+	# It is done so for compability with diagrams which are made with previous versions of DRAKON Editor.
 	# If you are adding new language generator to DRAKON Editor and want to use line comment sign as
 	# commenting sign for function parameters, just make commentator procedure in your language generator
 	# as it is for example in AutoHotkey code generator.
-	if { $language == "C" ||
+	if { $commentator_status_var == "" ||
+	$language == "C" ||
 	$language == "C#" ||
 	$language == "C++" ||
 	$language == "D" ||
@@ -1059,6 +1047,12 @@ proc p.separate_line { text } {
 		set first [ string first "//" $text ]
 	
 	} else {
+		
+		# Get current generator line comment simbol and calculate its length without space sign.
+		set current_lang_line_comment [ $commentator_call_text "" ]
+		set trimmed_current_lang_line_comment [string trim $current_lang_line_comment " " ]
+		set current_lang_line_comment_length [ string length $trimmed_current_lang_line_comment ]
+		
 		set first [ string first $trimmed_current_lang_line_comment $text ]
 	}
 	
