@@ -123,18 +123,10 @@ proc generate_body { gdb diagram_id start_item node_list items incoming callback
                 result $links $text $b $base \
                 $next_item_id $items $i
             } else {
-                #item 320002
-                if {$type == "select"} {
-                    #item 38
-                    p.generate_select \
-                    result $item_id $links $text $base \
-                    $next_item_id $items $i
-                } else {
-                    #item 66
-                    p.generate_action \
-                    result $links $text $base \
-                    $next_item_id $items $i
-                }
+                #item 66
+                p.generate_action \
+                result $links $text $base \
+                $next_item_id $items $i
             }
             #item 68
             lappend result ""
@@ -258,72 +250,6 @@ proc p.generate_if { output links text b base next_item_id items i } {
     p.add_block result $else_code $base $else_item $next_item_id $items $i
     #item 218
     $block_close result $base
-}
-
-proc p.generate_select { output item_id links text base next_item_id items j } {
-    #item 216
-    variable if_start
-    variable elseif_start
-    variable if_end
-    variable else_start
-    variable block_close
-    variable bad_case
-    variable assign
-    #item 161
-    upvar 1 $output result
-    #item 162
-    set has_text [ llength $text ]
-    #item 143
-    set switch_var "_sw_$item_id"
-    set value [ join $text "\n" ]
-    gen::add_line result [ $assign $switch_var $value ] $base 0
-    #item 145
-    set has_default 0
-    set count [ llength $links ]
-    #item 1470001
-    set i 0
-    while { 1 } {
-        #item 1470002
-        if {$i < $count} {
-            
-        } else {
-            break
-        }
-        #item 148
-        set link [ lindex $links $i ]
-        unpack $link dst_item branch_value branch_code
-        #item 149
-        if {$i == 0} {
-            #item 144
-            p.if result $switch_var $branch_value $base
-        } else {
-            #item 150
-            if {$branch_value == ""} {
-                #item 151
-                set has_default 1
-                gen::add_line result [ $else_start ] $base 0
-            } else {
-                #item 152
-                p.elif result $switch_var $branch_value $base
-            }
-        }
-        #item 163
-        p.add_block result $branch_code $base $dst_item $next_item_id $items $j
-        #item 1470003
-        incr i
-    }
-    #item 156
-    if {$has_default} {
-        
-    } else {
-        #item 157
-        gen::add_line result [ $else_start ] $base 0
-        gen::add_line result [ $bad_case $switch_var ] $base 1
-    }
-    #item 228
-    $block_close result $base
-    #item 160
-    return $result
 }
 
 proc p.if { output variable constant depth } {
