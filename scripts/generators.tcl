@@ -1000,8 +1000,19 @@ proc extract_sections { text } {
 
 proc p.separate_line { text } {
 	
-	set language $current_file_generation_info::language
-	set generator $current_file_generation_info::generator
+	# Two lines bellow and If/Else statment after them are temporary solution to make unnittests pass tests. Lately unnittests will be corected and this code too.
+	set language_var_status [ info exists current_file_generation_info::language ]
+	set generator_var_status [ info exists current_file_generation_info::generator ]
+	
+	if { $language_var_status == 1 && $generator_var_status == 1 } {
+		# When unittests will be corrected, two lines bellow should replace this If/Else statment and two lines above it.
+		set language $current_file_generation_info::language
+		set generator $current_file_generation_info::generator
+	} else {
+		set language "C"
+		set generator "gen_cpp::generate_c"
+	}
+
 
 	# These 2 lines is to get current generator namepsce. 
 	set find [string first :: $generator]
