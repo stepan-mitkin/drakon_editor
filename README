@@ -21,8 +21,10 @@ The bottom line must be "success".
 - If there is no .drn file, modify existing source code file.
 
 
+
 DRAKON
 ======
+
 DRAKON is is an algorithmic visual programming language developed within the Buran space project.
 Beside programming, DRAKON is also used in medicine, law, business processes and in other non-programming related fields.
 The rules of DRAKON are optimized to ensure easy understanding by human beings. In DRAKON clarity is above all. DRAKON is made as much ergonomic as possible, as much human readable as possible. DRAKON makes possible to create diagrams that are cognitively optimized for easy comprehension, making it a tool for intelligence augmentation.
@@ -41,6 +43,7 @@ http://drakon-editor.sourceforge.net/language.html
 http://en.wikipedia.org/wiki/DRAKON
 
 
+
 DRAKON Editor
 =============
 
@@ -53,8 +56,10 @@ Homepage: http://drakon-editor.sourceforge.net/
 Documentation: http://drakon-editor.sourceforge.net/editor.html
 
 
+
 How to use release version of DRAKON Editor
 ===========================================
+
 Installing Tcl and required packages:
 DRAKON Editor needs Tcl 8.5 or higher to run:
 Tcl 8.6 is recommended on Mac OS.
@@ -73,6 +78,8 @@ Installing and running DRAKON Editor:
 1. Download release version of DRAKON Editor from here: http://drakon-editor.sourceforge.net/editor.html#downloads
 2. Unzip archive.
 3. Run drakon_editor.tcl 
+
+
 
 How to use development version of DRAKON Editor
 ===============================================
