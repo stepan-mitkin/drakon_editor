@@ -43,15 +43,41 @@ http://en.wikipedia.org/wiki/DRAKON
 
 DRAKON Editor
 =============
+
+DRAKON Editor is a free tool for authoring DRAKON diagrams. It also supports state machine diagrams, entity-relationship and class diagrams.
+DRAKON Editor runs on Windows, Mac and Linux.
+The user interface of DRAKON Editor is extremely simple and straightforward.
+Software developers can build real programs with DRAKON Editor. Source code can be generated in several programming languages, including Java, Processing.org, D, C#, C/C++ (with Qt support), Python, Tcl, Javascript, Lua and Erlang.
+
 Homepage: http://drakon-editor.sourceforge.net/
-Download release version: http://drakon-editor.sourceforge.net/editor.html#downloads
 Documentation: http://drakon-editor.sourceforge.net/editor.html
 
+
+How to use release version of DRAKON Editor
+===========================================
+Installing Tcl and required packages:
+DRAKON Editor needs Tcl 8.5 or higher to run:
+Tcl 8.6 is recommended on Mac OS.
+- Windows and Mac users can download Active Tcl here: http://www.activestate.com/activetcl/downloads
+- Linux users need to install the following packages:
+	tcl8.5
+	tk8.5
+	tcllib
+	libsqlite3-tcl
+	libtk-img
+	
+On Ubuntu:
+sudo apt-get install tcl8.5 tk8.5 tcllib libsqlite3-tcl libtk-img
+
+Installing and running DRAKON Editor:
+1. Download release version of DRAKON Editor from here: http://drakon-editor.sourceforge.net/editor.html#downloads
+2. Unzip archive.
+3. Run drakon_editor.tcl 
 
 How to use development version of DRAKON Editor
 ===============================================
 Warning! Development version of DRAKON Editor is not as stable as release version and is only for testing purposes. 
-
+See notes about tcl instalation in "How to use release version of DRAKON Editor" section.
 1. Click "Download ZIP" at current page.
 2. Unzip archive.
 3. Run drakon_editor.tcl 
