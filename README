@@ -21,12 +21,12 @@ The bottom line must be "success".
 - If there is no .drn file, modify existing source code file.
 
 
-
 About DRAKON
 ============
 DRAKON is a visual language for specifications from the Russian space program. DRAKON is used for capturing requirements and building software that controls spacecraft.
 The rules of DRAKON are optimized to ensure easy understanding by human beings.
 DRAKON is gaining popularity in other areas beyond software, such as medical textbooks and law. Its purpose is to represent any knowledge that explains how to accomplish a goal.
+
 
 DRAKON Editor
 =============
