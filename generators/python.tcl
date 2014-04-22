@@ -23,11 +23,6 @@ proc bad_case { switch_var select_icon_number } {
     }
 }
 
-proc bad_case2 { switch_var } {
-    #item 573
-    return "raise Exception\(\"Not expected:  \" + str\($switch_var\)\)"
-}
-
 proc block_close { output depth } {
     
 }
