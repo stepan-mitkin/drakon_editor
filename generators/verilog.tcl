@@ -3486,8 +3486,7 @@ namespace eval graph {
 
     # спец обработка графа для верилога
     proc verify_all { db } {
-	array set properties [ mwc::get_file_properties ]
-	set language $properties(language)
+	set language "Verilog"
 	
 
 	if { $language == "Verilog" } {
