@@ -38,17 +38,151 @@ tproc extract_return_type_test { } {
 }
 
 tproc extract_tcl_signature_test { } {
-	good_signature_tcl { " " " #comment " "" "what?" } comment "" {} ""
+	# Gets the path of all language generators.
+	proc load_generators {} {
+		set script_path [ file dirname [ file normalize [ info script ] ] ]
+		set drakon_editor_path [string trimright $script_path "unittest" ]
+		set scripts [ glob -- "$drakon_editor_path/generators/*.tcl" ]
+		foreach script $scripts {
+		  source $script
+		}		
+	}
 
-	good_signature_tcl { "" 
-		"" 
-		" argc // number "
-		" argv // arguments "
-		" "
-		} procedure public { "argc" "argv" } ""
+	namespace eval gen {
+	    
+	array set generators {}
+	
+	# Makes array of all language generators. This procedure is called by language generator files. In the beginning of every language generator there is calling code.
+	proc add_generator { language generator } {
+		variable generators
+		if { [ info exists generator($language) ] } {
+			error "Generator for language $language already registered."
+		}
+		set gen::generators($language) $generator
+	}
+	
+	}
+	load_generators
+	
+	
+	# Tests correct working of function parameter comments for all suporrted languages.
+	foreach { language generator } [ array get gen::generators ] {
+		puts "----------------------------------"
+		puts $language
+		
+		namespace eval current_file_generation_info {}
+		set current_file_generation_info::language $language
+		set current_file_generation_info::generator $generator
+		
+		# Sets language generator namespace.
+		set find [string first :: $generator]
+		set generator_namespace [ string range $generator 0 $find-1 ]
+	    
+		# These 3 lines is to check if current generator have commentator procedure.
+		# If not commentator_status_var is set to "" .
+		set commentator_for_namespace_text "::commentator"
+		set commentator_call_text "$generator_namespace$commentator_for_namespace_text"
+		set commentator_status_var [ namespace which $commentator_call_text ]
+		
+		# If language generator has commentator procedure, gets current generator line comment sign, removes space before and after it and sets result as sign for function parameter comment.
+		if { $commentator_status_var != "" } {
+			set function_parameter_comment_sign [ $commentator_call_text "" ]
+			set function_parameter_comment_sign [string trim $function_parameter_comment_sign " " ]
+		}
+		
+		# If current language does not have commentator procedure or current languages is in if conditions, then // sign for function parameter commenting will be used.
+		# It is done so for compability with diagrams which are made with previous versions of DRAKON Editor.
+		# If you are adding new language generator to DRAKON Editor and want to use line comment sign as
+		# commenting sign for function parameters, just make commentator procedure in your language generator
+		# as it is for example in AutoHotkey code generator.
+		if { $commentator_status_var == "" ||
+		$language == "C" ||
+		$language == "C#" ||
+		$language == "C++" ||
+		$language == "D" ||
+		$language == "Erlang" ||
+		$language == "Java" ||
+		$language == "Javascript" ||
+		$language == "Lua" ||
+		$language == "Processing.org" ||
+		$language == "Python 2.x" ||
+		$language == "Python 3.x" ||
+		$language == "Tcl" ||
+		$language == "Verilog" } {
+			
+			if { $commentator_status_var == "" } {
+				puts "commentator procedure in language generator does not exists."
+				puts "Using // sign"
+			} else {
+				puts $commentator_call_text
+				puts "commentator procedure returns $function_parameter_comment_sign . Using // sign."
+			}
+			
+			# Checks function parameter comment correct working for languages in "if" condition above and for languages that does not have commentator function.
+			# If language does not have commentator function, it will use // as function parameter comment sign.
+			good_signature_tcl { " " " #comment " "" "what?" } comment "" {} ""
+		
+			good_signature_tcl { "" 
+				"" 
+				" argc // number "
+				" argv // arguments "
+				" "
+				} procedure public { "argc" "argv" } ""
+		
+			good_signature_tcl { "one"
+				"two" } procedure public { "one" "two" } ""
+				
+			puts OK
+		
+		} else {
+			
+			# Checks function parameter comment correct working for languages that have commentator procedure and whose line comment sign is # .
+			if { $function_parameter_comment_sign == "#" } {
 
-	good_signature_tcl { "one"
-		"two" } procedure public { "one" "two" } ""
+			puts $commentator_call_text
+			puts "commentator procedure returns $function_parameter_comment_sign . Using # sign."
+			
+			good_signature_tcl { "" 
+				"" 
+				" argc # number "
+				" argv # arguments "
+				" "
+				} procedure public { "argc" "argv" } ""
+		
+			good_signature_tcl { "one"
+				"two" } procedure public { "one" "two" } ""
+			
+			puts OK
+			
+			} else {
+			
+			puts $commentator_call_text
+			puts "commentator procedure returns $function_parameter_comment_sign . Using $function_parameter_comment_sign sign."
+			
+			# Checks function parameter comment correct working for languages that have commentator procedure and whose line comment sign is NOT # .
+			
+			good_signature_tcl { " " " #comment " "" "what?" } comment "" {} ""
+			    
+			good_signature_tcl [list "" \
+				"" \
+				[string map [list // $function_parameter_comment_sign] " argc // number "] \
+				[string map [list // $function_parameter_comment_sign] " argv // arguments "] \
+				" " \
+			] procedure public { "argc" "argv" } ""
+		
+			good_signature_tcl { "one"
+				"two" } procedure public { "one" "two" } ""
+			
+			puts OK
+			
+			}
+		}
+	    
+	}
+	
+	puts "----------------------------------------------"
+	puts "extract_tcl_signature_test successfully ended."
+	puts "=============================================="
 
 }
 

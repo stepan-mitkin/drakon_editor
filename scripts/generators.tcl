@@ -1000,26 +1000,16 @@ proc extract_sections { text } {
 
 proc p.separate_line { text } {
 	
-	# Two lines bellow and If/Else statment after them are temporary solution to make unnittests pass tests. Lately unnittests will be corected and this code too.
-	set language_var_status [ info exists current_file_generation_info::language ]
-	set generator_var_status [ info exists current_file_generation_info::generator ]
-	
-	if { $language_var_status == 1 && $generator_var_status == 1 } {
-		# When unittests will be corrected, two lines bellow should replace this If/Else statment and two lines above it.
-		set language $current_file_generation_info::language
-		set generator $current_file_generation_info::generator
-	} else {
-		set language "C"
-		set generator "gen_cpp::generate_c"
-	}
+	set language $current_file_generation_info::language
+	set generator $current_file_generation_info::generator
 
 
-	# These 2 lines is to get current generator namepsce. 
+	# These 2 lines is to get current generator namespace. 
 	set find [string first :: $generator]
 	set generator_namespace [ string range $generator 0 $find-1 ]
 
 	# These 3 lines is to check is current generator have commentator procedure.
-	# If not commentator_status_var is set to "" .
+	# If there is no commentator procedure, commentator_status_var is set to "" .
 	set commentator_for_namespace_text "::commentator"
 	set commentator_call_text "$generator_namespace$commentator_for_namespace_text"
 	set commentator_status_var [ namespace which $commentator_call_text ]
