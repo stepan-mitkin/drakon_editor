@@ -1,3 +1,5 @@
+# verilog generator temporarily disabled
+if 0 {
 gen::add_generator Verilog verilog_gen::generate
 
 # Проблемы с оригинальным DRAKON:
@@ -3528,4 +3530,5 @@ namespace eval graph {
     }
 
 
+}
 }
