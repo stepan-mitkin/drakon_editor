@@ -31,6 +31,19 @@ static type_info_t string8_t = {
 	(destructor_fun)string8_destroy
 };
 
+struct string16 {
+	tobject base;
+	char16* buffer;
+	int allocated;
+	int length;
+};
+
+
+static type_info_t string16_t = { 
+	OBJECT_SIGNATURE,
+	"string16",
+	(destructor_fun)string16_destroy
+};
 
 struct hashtable {
 	tobject base;
@@ -55,9 +68,9 @@ static type_info_t hashtable_t = {
 // Returns ownership
 string8* string8_create(void)
 {
-	string8* self = allocate_memory(sizeof(string8));
-	self->base.type = &string8_t;
-	return self;
+	string8* me = allocate_memory(sizeof(string8));
+	me->base.type = &string8_t;
+	return me;
 }
 
 int cstring_length(const char* str, int limit)
@@ -78,22 +91,22 @@ int cstring_length(const char* str, int limit)
 string8* string8_from_buffer(const char* buffer, int length)
 {
 	int i, allocated;
-	string8* self = 0; // Own
+	string8* me = 0; // Own
 	ENSURE(length >= 0)
-	self = string8_create();
+	me = string8_create();
 	if (length > 0 && buffer != 0)
 	{
 		allocated = length + 1;
-		self->buffer = allocate_memory(allocated);
-		self->allocated = allocated;
-		self->length = length;
+		me->buffer = allocate_memory(allocated);
+		me->allocated = allocated;
+		me->length = length;
 		for (i = 0; i < length; i++)
 		{
-			self->buffer[i] = buffer[i];
+			me->buffer[i] = buffer[i];
 		}
-		self->buffer[length] = 0;
+		me->buffer[length] = 0;
 	}
-	return self;
+	return me;
 }
 
 int 
@@ -118,14 +131,14 @@ string8_equal(const string8* left, const string8* right)
 }
 
 unsigned int
-string8_hash(const string8* self)
+string8_hash(const string8* me)
 {
-	if (!self) return 0;
-	if (self->length == 0) return 0;
+	if (!me) return 0;
+	if (me->length == 0) return 0;
 	
 	return qhashmurmur3_32(
-						   self->buffer,
-						   self->length
+						   me->buffer,
+						   me->length
 						   );
 }
 
@@ -149,13 +162,13 @@ string8* string8_from_cstr(const char* str, int limit)
 }
 
 void string8_destroy(
-					 string8* self // Takes ownership
+					 string8* me // Takes ownership
 					 )
 {
-	if (!self) return;
-	ENSURE(self->base.type == &string8_t)
-	free_memory(self->buffer, self->allocated);
-	free_memory(self, sizeof(string8));
+	if (!me) return;
+	ENSURE(me->base.type == &string8_t)
+	free_memory(me->buffer, me->allocated);
+	free_memory(me, sizeof(string8));
 }
 
 // Returns ownership
@@ -174,64 +187,65 @@ string8* string8_clone(
 }
 
 
-void string8_add(string8* self, char element)
+void string8_add(string8* me, char element)
 {
 	int new_alloc;
-	int old_length = self->length;
-	ENSURE(self->length >= 0)
-	ENSURE(self->length == 0 || self->length < self->allocated)
+	int old_length = me->length;
+	ENSURE(me->length >= 0)
+	ENSURE(me->length == 0 || me->length < me->allocated)
 	
-	if (self->buffer == 0)
+	if (me->buffer == 0)
 	{
 		new_alloc = 16;
-		self->buffer = allocate_memory(new_alloc);
-		ENSURE(self->buffer)
-		self->allocated = new_alloc;		
+		me->buffer = allocate_memory(new_alloc);
+		ENSURE(me->buffer)
+		me->allocated = new_alloc;		
 	}
-	else if (self->length + 1 == self->allocated)
+	else if (me->length + 1 == me->allocated)
 	{
-		new_alloc = self->allocated * 2;
-		self->buffer = reallocate_memory(self->buffer, 1, self->allocated, new_alloc);
-		self->allocated = new_alloc;		
+		new_alloc = me->allocated * 2;
+		me->buffer = reallocate_memory(me->buffer, 1, me->allocated, new_alloc);
+		me->allocated = new_alloc;		
 	}
 
-	self->length++;
-	self->buffer[old_length] = element;
+	me->length++;
+	me->buffer[old_length] = element;
+	me->buffer[me->length] = 0;	
 }
 
-void string8_clear(string8* self)
+void string8_clear(string8* me)
 {
-	if (self->buffer)
+	if (me->buffer)
 	{
-		self->buffer[0] = 0;
-		self->length = 0;
+		me->buffer[0] = 0;
+		me->length = 0;
 	}
 }
 
-char string8_get(const string8* self, int index)
+char string8_get(const string8* me, int index)
 {
-	ENSURE(index >= 0 && index < self->length)
-	return self->buffer[index];
+	ENSURE(index >= 0 && index < me->length)
+	return me->buffer[index];
 }
 
-void string8_set(string8* self, int index, char element)
+void string8_set(string8* me, int index, char element)
 {
-	ENSURE(index >= 0 && index < self->length)
-	self->buffer[index] = element;
+	ENSURE(index >= 0 && index < me->length)
+	me->buffer[index] = element;
 }
 
-int string8_length(const string8* self)
+int string8_length(const string8* me)
 {
-	return self->length;
+	return me->length;
 }
 
 void string8_print(
-				   const string8* self
+				   const string8* me
 				   )
 {
-	if (self->buffer)
+	if (me->buffer)
 	{
-		printf("%s\n", self->buffer);
+		printf("%s\n", me->buffer);
 	}
 	else
 	{
@@ -240,21 +254,60 @@ void string8_print(
 }
 
 
-const char* string8_buffer(const string8* self)
+const char* string8_buffer(const string8* me)
 {
-	return self->buffer;
+	return me->buffer;
 }
 
+void string8_split_lines(
+						 const string8* src,
+						 obj_list* dst // list of own string8
+						 )
+{
+	int begin, end; // inclusive
+	int i;
+	char c;
+	string8* current;
+	int length;
+	
+	begin = 0;
+	end = -1;
+	for (i = 0; i < src->length; i++)
+	{
+		c = src->buffer[i];
+		if (c == 13) continue;
+		if (c == 10)
+		{
+			length = end - begin + 1;
+			current = string8_from_buffer(src->buffer + begin, length);
+			obj_list_add(dst, current);
+			begin = i + 1;
+			end = -1;
+		}
+		else
+		{
+			end = i;
+		}
+	}
+
+	// Last line
+	if (end != -1)
+	{
+		length = end - begin + 1;
+		current = string8_from_buffer(src->buffer + begin, length);
+		obj_list_add(dst, current);
+	}
+}
 
 void object_destroy(
-					void* self // Takes ownership
+					void* me // Takes ownership
 					)
 {
 	tobject* obj;
-	if (!self) return;
-	obj = (tobject*)self;
+	if (!me) return;
+	obj = (tobject*)me;
 	ENSURE(obj->type->signature == OBJECT_SIGNATURE);
-	obj->type->destroy(self);
+	obj->type->destroy(me);
 }
 
 
@@ -275,162 +328,162 @@ static type_info_t obj_list_type = {
 // Returns ownership
 obj_list* obj_list_create(int own)
 {
-	obj_list* self = allocate_memory(sizeof(obj_list));
-	ENSURE(self)
-	memset(self, 0, sizeof(obj_list));	
-	self->base.type = &obj_list_type;
-	self->own = own;
-	return self;
+	obj_list* me = allocate_memory(sizeof(obj_list));
+	ENSURE(me)
+	memset(me, 0, sizeof(obj_list));	
+	me->base.type = &obj_list_type;
+	me->own = own;
+	return me;
 }
 
 void obj_list_destroy(
-					  obj_list* self // Takes ownership
+					  obj_list* me // Takes ownership
 					  )
 {
 	int i;
 	void* item;
-	if (!self) return;
-	ENSURE(self->base.type == &obj_list_type)
-	if (self->own)
+	if (!me) return;
+	ENSURE(me->base.type == &obj_list_type)
+	if (me->own)
 	{
-		for (i = 0; i < self->length; i++)
+		for (i = 0; i < me->length; i++)
 		{
-			item = self->buffer[i];
+			item = me->buffer[i];
 			object_destroy(item);
 		}
 	}
-	free_memory(self->buffer, self->allocated * sizeof(void*));
-	free_memory(self, sizeof(obj_list));
+	free_memory(me->buffer, me->allocated * sizeof(void*));
+	free_memory(me, sizeof(obj_list));
 }
 
-void obj_list_add(obj_list* self, void* item)
+void obj_list_add(obj_list* me, void* item)
 {
 	int new_alloc;
-	ENSURE(self->length <= self->allocated)
+	ENSURE(me->length <= me->allocated)
 	
-	if (self->buffer == 0)
+	if (me->buffer == 0)
 	{
 		new_alloc = 16;
-		self->buffer = allocate_memory(new_alloc * sizeof(void*));
-		ENSURE(self->buffer)
-		self->allocated = new_alloc;		
+		me->buffer = allocate_memory(new_alloc * sizeof(void*));
+		ENSURE(me->buffer)
+		me->allocated = new_alloc;		
 	}
-	else if (self->length == self->allocated)
+	else if (me->length == me->allocated)
 	{
-		new_alloc = self->allocated * 2;
-		self->buffer = reallocate_memory(self->buffer, sizeof(void*), self->allocated, new_alloc);
-		self->allocated = new_alloc;
+		new_alloc = me->allocated * 2;
+		me->buffer = reallocate_memory(me->buffer, sizeof(void*), me->allocated, new_alloc);
+		me->allocated = new_alloc;
 	}
 	
-	self->buffer[self->length] = item;
-	self->length++;
+	me->buffer[me->length] = item;
+	me->length++;
 }
 
 
-void obj_list_remove(obj_list* self, void* item)
+void obj_list_remove(obj_list* me, void* item)
 {
 	int i;
-	for (i = 0; i < self->length; i++)
+	for (i = 0; i < me->length; i++)
 	{
-		if (self->buffer[i] == item)
+		if (me->buffer[i] == item)
 		{
-			obj_list_remove_at(self, i);
+			obj_list_remove_at(me, i);
 			return;
 		}
 	}
 }
 
-void obj_list_clear(obj_list* self)
+void obj_list_clear(obj_list* me)
 {
-	obj_list_resize(self, 0);
+	obj_list_resize(me, 0);
 }
 
 int obj_list_contains(
-					  const obj_list* self,
+					  const obj_list* me,
 					  const void* item // null
 					  )
 {
 	int i;
-	for (i = 0; i < self->length; i++)
+	for (i = 0; i < me->length; i++)
 	{
-		if (self->buffer[i] == item) return 1;
+		if (me->buffer[i] == item) return 1;
 	}
 	return 0;
 }
 
-int obj_list_length(const obj_list* self)
+int obj_list_length(const obj_list* me)
 {
-	return self->length;
+	return me->length;
 }
 
-void* obj_list_get(obj_list* self, int index)
+void* obj_list_get(obj_list* me, int index)
 {
-	ENSURE(index >= 0 && index < self->length)
-	return self->buffer[index];
+	ENSURE(index >= 0 && index < me->length)
+	return me->buffer[index];
 }
 
 void obj_list_set(
-				  obj_list* self, 
+				  obj_list* me, 
 				  int index, 
 				  void* item // own if the container owns items
 				  )
 {
 	void* old;
-	ENSURE(index >= 0 && index < self->length)
-	if (self->own)
+	ENSURE(index >= 0 && index < me->length)
+	if (me->own)
 	{
-		old = self->buffer[index];
+		old = me->buffer[index];
 		if (old != item)
 		{
 			object_destroy(old);
 		}
 	}
-	self->buffer[index] = item;
+	me->buffer[index] = item;
 }
 
-void obj_list_remove_at(obj_list* self, int index)
+void obj_list_remove_at(obj_list* me, int index)
 {
 	int count;
 	void* old;
 	int i;
-	ENSURE(index >= 0 && index < self->length)
-	if (self->own)
+	ENSURE(index >= 0 && index < me->length)
+	if (me->own)
 	{
-		old = self->buffer[index];
+		old = me->buffer[index];
 		object_destroy(old);
 	}
-	count = self->length - 1;
+	count = me->length - 1;
 	for (i = index; i < count; i++)
 	{
-		self->buffer[i] = self->buffer[i + 1];
+		me->buffer[i] = me->buffer[i + 1];
 	}
-	self->buffer[count] = 0;
-	self->length--;
+	me->buffer[count] = 0;
+	me->length--;
 }
 
-void obj_list_resize(obj_list* self, int new_size)
+void obj_list_resize(obj_list* me, int new_size)
 {
 	int i;
 	int wipe_size, wipe_count;
 	void** wipe_start;
 	ENSURE(new_size >= 0)
-	if (new_size == self->length) return;
-	if (new_size > self->allocated)
+	if (new_size == me->length) return;
+	if (new_size > me->allocated)
 	{
-		self->buffer = reallocate_memory(
-										 self->buffer, 
+		me->buffer = reallocate_memory(
+										 me->buffer, 
 										 sizeof(void*), 
-										 self->allocated, 
+										 me->allocated, 
 										 new_size
 										 );
-		self->allocated = new_size;
+		me->allocated = new_size;
 	}
-	else if (new_size < self->length)
+	else if (new_size < me->length)
 	{
-		wipe_start = self->buffer + new_size;
-		wipe_count = self->length - new_size;
+		wipe_start = me->buffer + new_size;
+		wipe_count = me->length - new_size;
 		wipe_size = wipe_count * sizeof(void*);
-		if (self->own)
+		if (me->own)
 		{
 			for (i = 0; i < wipe_count; i++)
 			{
@@ -439,29 +492,29 @@ void obj_list_resize(obj_list* self, int new_size)
 		}
 		memset(wipe_start, 0, wipe_size);
 	}
-	self->length = new_size;
+	me->length = new_size;
 }
 
-int obj_list_find_first(const obj_list* self, equal_fun equal, const void* needle)
+int obj_list_find_first(const obj_list* me, equal_fun equal, const void* needle)
 {
 	int i;
 	const void* current;
-	for (i = 0; i < self->length; i++)
+	for (i = 0; i < me->length; i++)
 	{
-		current = self->buffer[i];
+		current = me->buffer[i];
 		if (equal(current, needle)) return i;
 	}
 	return -1;
 }
 
-int obj_list_foreach(obj_list* self, visitor_fun visitor, void* user)
+int obj_list_foreach(obj_list* me, visitor_fun visitor, void* user)
 {
 	void** current;
 	void** end;
 	ENSURE(visitor)
-	if (self->length == 0) return 0;
-	end = self->buffer + self->length;
-	for (current = self->buffer; current != end; current++)
+	if (me->length == 0) return 0;
+	end = me->buffer + me->length;
+	for (current = me->buffer; current != end; current++)
 	{
 		if (visitor(*current, user)) return 1;
 	}
@@ -777,112 +830,112 @@ hashtable_foreach(
 int_list* // own
 int_list_create()
 {
-	int_list* self = allocate_memory(sizeof(int_list));
-	self->base.type = &int_list_t;
+	int_list* me = allocate_memory(sizeof(int_list));
+	me->base.type = &int_list_t;
 	
-	return self;
+	return me;
 }
 
 void int_list_destroy(
-					  int_list* self // own. can be null
+					  int_list* me // own. can be null
 					  )
 {
-	if (!self) return;
-	ENSURE(self->base.type == &int_list_t)
-	free_memory(self->buffer, self->allocated);
-	free_memory(self, sizeof(int_list));
+	if (!me) return;
+	ENSURE(me->base.type == &int_list_t)
+	free_memory(me->buffer, me->allocated);
+	free_memory(me, sizeof(int_list));
 }
 
-void int_list_add(int_list* self, int element)
+void int_list_add(int_list* me, int element)
 {
 	int new_allocated;
-	if (self->allocated == self->length)
+	if (me->allocated == me->length)
 	{
-		if (self->allocated == 0)
+		if (me->allocated == 0)
 		{
 			new_allocated = 16;
 		}
 		else
 		{
-			new_allocated = self->allocated * 2;
+			new_allocated = me->allocated * 2;
 		}
-		self->buffer = reallocate_memory(
-										 self->buffer,
+		me->buffer = reallocate_memory(
+										 me->buffer,
 										 sizeof(int),
-										 self->allocated,
+										 me->allocated,
 										 new_allocated);
-		self->allocated = new_allocated;
+		me->allocated = new_allocated;
 	}
-	self->buffer[self->length] = element;
-	self->length++;
+	me->buffer[me->length] = element;
+	me->length++;
 }
 
-int int_list_get(const int_list* self, int index)
+int int_list_get(const int_list* me, int index)
 {
-	ENSURE(index >= 0 && index < self->length)
-	return self->buffer[index];
+	ENSURE(index >= 0 && index < me->length)
+	return me->buffer[index];
 }
 
-void int_list_set(int_list* self, int index, int element)
+void int_list_set(int_list* me, int index, int element)
 {
-	ENSURE(index >= 0 && index < self->length)
-	self->buffer[index] = element;
+	ENSURE(index >= 0 && index < me->length)
+	me->buffer[index] = element;
 }
 
-int int_list_length(const int_list* self)
+int int_list_length(const int_list* me)
 {
-	return self->length;
+	return me->length;
 }
 
 
-void int_list_resize(int_list* self, int new_size)
+void int_list_resize(int_list* me, int new_size)
 {
 	ENSURE(new_size >= 0)
-	if (new_size == self->length) return;
-	if (new_size > self->allocated)
+	if (new_size == me->length) return;
+	if (new_size > me->allocated)
 	{
-		self->buffer = reallocate_memory(
-										 self->buffer,
+		me->buffer = reallocate_memory(
+										 me->buffer,
 										 sizeof(int),
-										 self->allocated,
+										 me->allocated,
 										 new_size);
-		self->allocated = new_size;
+		me->allocated = new_size;
 	}
-	self->length = new_size;
+	me->length = new_size;
 }
 
-void int_list_remove_at(int_list* self, int index)
+void int_list_remove_at(int_list* me, int index)
 {
 	int i, last, current;
-	ENSURE(index >= 0 && index < self->length)
+	ENSURE(index >= 0 && index < me->length)
 	
-	last = self->length - 1;
+	last = me->length - 1;
 	for (i = index; i < last; i++)
 	{
-		current = self->buffer[i + 1];
-		self->buffer[i] = current;
+		current = me->buffer[i + 1];
+		me->buffer[i] = current;
 	}
-	self->length--;
+	me->length--;
 }
 
-void array_table_init(array_table* self, const char* name)
+void array_table_init(array_table* me, const char* name)
 {
 	int allocate = 20;
-	self->name = name;
-	self->items = allocate_memory(sizeof(void*) * allocate);
-	self->count = 0;
-	self->allocated = allocate;
-	self->next = 1;
-	self->free_slots = int_list_create();
+	me->name = name;
+	me->items = allocate_memory(sizeof(void*) * allocate);
+	me->count = 0;
+	me->allocated = allocate;
+	me->next = 1;
+	me->free_slots = int_list_create();
 }
 
-void array_table_cleanup(array_table* self)
+void array_table_cleanup(array_table* me)
 {
-	free_memory(self->items, sizeof(void*) * self->allocated);
-	int_list_destroy(self->free_slots);
+	free_memory(me->items, sizeof(void*) * me->allocated);
+	int_list_destroy(me->free_slots);
 }
 
-int array_table_insert(array_table* self, void* item)
+int array_table_insert(array_table* me, void* item)
 {
 	int index;
 	int last, new_allocate;
@@ -890,47 +943,47 @@ int array_table_insert(array_table* self, void* item)
 	
 	ENSURE(item)
 	
-	free_count= int_list_length(self->free_slots);
+	free_count= int_list_length(me->free_slots);
 	
 	if (free_count > 0)
 	{
 		last = free_count - 1;
-		index = int_list_get(self->free_slots, last);
-		int_list_remove_at(self->free_slots, last);
+		index = int_list_get(me->free_slots, last);
+		int_list_remove_at(me->free_slots, last);
 	}
-	else if (self->next < self->allocated)
+	else if (me->next < me->allocated)
 	{
-		index = self->next;
-		self->next++;
+		index = me->next;
+		me->next++;
 	}
 	else
 	{
-		new_allocate = self->allocated * 2;
-		self->items = reallocate_memory(
-										self->items,
+		new_allocate = me->allocated * 2;
+		me->items = reallocate_memory(
+										me->items,
 										sizeof(void*),
-										self->allocated,
+										me->allocated,
 										new_allocate);
-		self->allocated = new_allocate;
-		index = self->next;
-		self->next++;		
+		me->allocated = new_allocate;
+		index = me->next;
+		me->next++;		
 	}
 	
-	self->items[index] = item;
-	self->count++;
+	me->items[index] = item;
+	me->count++;
 	return index;
 }
 
-void array_table_delete(array_table* self, int key)
+void array_table_delete(array_table* me, int key)
 {
 	void* item;
-	ENSURE(key >= 0 && key < self->next)
-	item = self->items[key];
+	ENSURE(key >= 0 && key < me->next)
+	item = me->items[key];
 	if (item)
 	{
-		self->items[key] = 0;
-		int_list_add(self->free_slots, key);
-		self->count--;		
+		me->items[key] = 0;
+		int_list_add(me->free_slots, key);
+		me->count--;		
 	}
 }
 
@@ -1023,3 +1076,269 @@ unsigned int qhashmurmur3_32(const void *data, int nbytes)
 	return h;
 }
 
+
+// Returns ownership
+string16* string16_create(void)
+{
+	string16* me = allocate_memory(sizeof(string16));
+	me->base.type = &string16_t;
+	return me;
+}
+
+static string16* // Returns ownership
+string16_create_with_size(int length)
+{
+	int allocated;
+	string16* me;
+	me = string16_create();
+	
+	if (length > 0)
+	{
+		allocated = length + 1;
+		me->buffer = allocate_memory(allocated * sizeof(char16));
+		me->allocated = allocated;
+		me->length = length;	
+	}
+	
+	return me;
+}
+
+// Returns ownership
+string16* string16_from_buffer(const char16* buffer, int length)
+{
+	int i;
+	string16* me = 0; // Own
+	ENSURE(length >= 0)
+	me = string16_create_with_size(length);
+	if (length > 0 && buffer != 0)
+	{
+		for (i = 0; i < length; i++)
+		{
+			me->buffer[i] = buffer[i];
+		}
+		me->buffer[length] = 0;
+	}
+	return me;
+}
+
+int 
+string16_equal(const string16* left, const string16* right)
+{
+	if (left == right) return 1;
+	if (!left)
+	{
+		return right->length == 0;
+	}
+	if (!right)
+	{
+		return left->length == 0;
+	}
+	if (left->length != right->length) return 0;
+	if (left->length == 0) return 1;
+	if (memcmp(left->buffer, right->buffer, left->length * sizeof(char16)) == 0)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+unsigned int
+string16_hash(const string16* me)
+{
+	if (!me) return 0;
+	if (me->length == 0) return 0;
+	
+	return qhashmurmur3_32(
+						   me->buffer,
+						   me->length * sizeof(char16)
+						   );
+}
+
+
+// Returns ownership
+string16* string16_from_cstr(const char* str, int limit)
+{
+	string16* me;
+	int length;
+	int i;
+	ENSURE(limit >= 0)
+	ENSURE(limit <= MAX_CSTR)
+	
+	length = cstring_length(str, limit);
+	me = string16_create_with_size(length);
+	if (length > 0)
+	{
+		for (i = 0; i < length; i++)
+		{
+			me->buffer[i] = (char16)str[i];
+		}
+		me->buffer[length] = 0;
+	}
+	
+	return me;
+}
+
+void string16_destroy(
+					  string16* me // Takes ownership
+					  )
+{
+	if (!me) return;
+	ENSURE(me->base.type == &string16_t)
+	free_memory(me->buffer, me->allocated * sizeof(char16));
+	free_memory(me, sizeof(string16));
+}
+
+// Returns ownership
+string16* string16_clone(
+						 const string16* obj
+						 )
+{
+	if (obj && obj->length > 0)
+	{
+		return string16_from_buffer(obj->buffer, obj->length);
+	}
+	else
+	{
+		return string16_create();
+	}
+}
+
+
+void string16_add(string16* me, char16 element)
+{
+	int new_alloc;
+	int old_length = me->length;
+	ENSURE(me->length >= 0)
+	ENSURE(me->length == 0 || me->length < me->allocated)
+	
+	if (me->buffer == 0)
+	{
+		new_alloc = 16;
+		me->buffer = allocate_memory(new_alloc * sizeof(char16));
+		ENSURE(me->buffer)
+		me->allocated = new_alloc;		
+	}
+	else if (me->length + 1 == me->allocated)
+	{
+		new_alloc = me->allocated * 2;
+		me->buffer = reallocate_memory(me->buffer, sizeof(char16), me->allocated, new_alloc);
+		me->allocated = new_alloc;		
+	}
+	
+	me->length++;
+	me->buffer[old_length] = element;
+	me->buffer[me->length] = 0;
+}
+
+void string16_clear(string16* me)
+{
+	if (me->buffer)
+	{
+		me->buffer[0] = 0;
+		me->length = 0;
+	}
+}
+
+char16 string16_get(const string16* me, int index)
+{
+	ENSURE(index >= 0 && index < me->length)
+	return me->buffer[index];
+}
+
+void string16_set(string16* me, int index, char16 element)
+{
+	ENSURE(index >= 0 && index < me->length)
+	me->buffer[index] = element;
+}
+
+int string16_length(const string16* me)
+{
+	return me->length;
+}
+
+
+const char16* string16_buffer(const string16* me)
+{
+	return me->buffer;
+}
+
+void string16_split_lines(
+						  const string16* src,
+						  obj_list* dst // list of own string16
+						  )
+{
+	int begin, end; // inclusive
+	int i;
+	char16 c;
+	string16* current;
+	int length;
+	
+	begin = 0;
+	end = -1;
+	for (i = 0; i < src->length; i++)
+	{
+		c = src->buffer[i];
+		if (c == 13) continue;
+		if (c == 10)
+		{
+			length = end - begin + 1;
+			current = string16_from_buffer(src->buffer + begin, length);
+			obj_list_add(dst, current);
+			begin = i + 1;
+			end = -1;
+		}
+		else
+		{
+			end = i;
+		}
+	}
+	
+	// Last line
+	if (end != -1)
+	{
+		length = end - begin + 1;
+		current = string16_from_buffer(src->buffer + begin, length);
+		obj_list_add(dst, current);
+	}
+}
+
+int // -1 less, 0 equal, 1 greater
+string16_compare(
+				 const string16* left, // null
+				 const string16* right // null
+				 )
+{
+	int length;
+	int i;
+	char16 lc, rc;
+	if (left == right) return 0;
+	if (left == 0) return -1;
+	if (right == 0) return 1;
+	if (left->length < right->length)
+	{
+		length = left->length;
+	}
+	else
+	{
+		length = right->length;
+	}
+	for (i = 0; i < length; i++)
+	{
+		lc = left->buffer[i];
+		rc = right->buffer[i];
+		if (lc < rc) return -1;
+		if (lc > rc) return 1;
+	}
+	
+	if (left->length < right->length)
+	{
+		return -1;
+	}
+	
+	if (left->length > right->length)
+	{
+		return 1;
+	}
+	
+	return 0;
+}

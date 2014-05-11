@@ -285,12 +285,29 @@ static void obj_list_basic_test(void)
 
 static void check_string8(const string8* str, const char* expected)
 {
+	char c;
+	int i;
 	const char* buffer = string8_buffer(str);
 	int length = string8_length(str);
 	int exp_length = strlen(expected);
 	ENSURE(length == exp_length)
+	if (length == 0)
+	{
+		ENSURE(buffer == 0 || *buffer == 0)
+	}
+	else
+	{
+		for (i = 0; i <= length; i++)
+		{
+			ENSURE(buffer[i] == expected[i])
+			if (i < length)
+			{
+				c = string8_get(str, i);
+				ENSURE(c == expected[i])
+			}
+		}
+	}	
 	ENSURE(strcmp(buffer, expected) == 0)
-	
 }
 
 static void string8_basic_test(void)
@@ -364,6 +381,67 @@ static void string8_equal_test(void)
 	object_destroy(hi2);
 	object_destroy(bye);	
 }
+
+static void string8_split_lines_empty_empty(void)
+{
+	string8* text = string8_from_cstr("", 100);
+	obj_list* list = obj_list_create(1);
+	
+	string8_split_lines(text, list);
+	
+	ENSURE(obj_list_length(list) == 0)
+	
+	object_destroy(list);
+	object_destroy(text);
+}
+
+static void string8_split_lines_1line_1item(void)
+{
+	string8* text = string8_from_cstr("hello", 100);
+	obj_list* list = obj_list_create(1);
+	
+	string8_split_lines(text, list);
+	
+	ENSURE(obj_list_length(list) == 1)
+	check_string8(obj_list_get(list, 0), "hello");
+	
+	object_destroy(list);
+	object_destroy(text);
+}
+
+static void string8_split_lines_3lines_3items(void)
+{
+	string8* text = string8_from_cstr("one\r\ntwo\nthree", 100);
+	obj_list* list = obj_list_create(1);
+	
+	string8_split_lines(text, list);
+	
+	ENSURE(obj_list_length(list) == 3)
+	check_string8(obj_list_get(list, 0), "one");
+	check_string8(obj_list_get(list, 1), "two");
+	check_string8(obj_list_get(list, 2), "three");
+	object_destroy(list);
+	object_destroy(text);
+}
+
+
+static void string8_split_lines_3lines_trail_3items(void)
+{
+	string8* text = string8_from_cstr("one\r\ntwo\nthree\n", 100);
+	obj_list* list = obj_list_create(1);
+	
+	string8_split_lines(text, list);
+	
+
+	ENSURE(obj_list_length(list) == 3)
+	check_string8(obj_list_get(list, 0), "one");
+	check_string8(obj_list_get(list, 1), "two");
+	check_string8(obj_list_get(list, 2), "three");
+	
+	object_destroy(list);
+	object_destroy(text);
+}
+
 
 static void string8_hash_test(void)
 {
@@ -623,6 +701,517 @@ static void array_table_test(void)
 	array_table_cleanup(&table);
 }
 
+static void check_string16(const string16* str, const char* expected)
+{
+	char16 c;
+	int i;
+	const char16* buffer = string16_buffer(str);
+	int length = string16_length(str);
+	int exp_length = strlen(expected);
+	ENSURE(length == exp_length)
+	if (length == 0)
+	{
+		ENSURE(buffer == 0 || *buffer == 0)
+	}
+	else
+	{
+		for (i = 0; i <= length; i++)
+		{
+			ENSURE(buffer[i] == (char16)expected[i])
+			if (i < length)
+			{
+				c = string16_get(str, i);
+				ENSURE(c == (char16)expected[i])
+			}
+		}
+	}
+}
+
+static void string16_from_buffer_empty_empty(void)
+{
+	char16 c;
+	string16* s; // own
+	c = 'm';
+	s = string16_from_buffer(&c, 0);
+	check_string16(s, "");
+	
+	object_destroy(s);
+}
+
+static void string16_from_buffer_content(void)
+{
+	string16* s; // own
+	char16 buffer[] = { 'h', 'e', 'l', 'l', 'o' };
+	s = string16_from_buffer(buffer, 5);
+	check_string16(s, "hello");
+	
+	object_destroy(s);
+}
+
+static void string16_equal_same_yes(void)
+{
+	string16* s = string16_from_cstr("hi", 10);
+	
+	ENSURE(string16_equal(s, s))
+	ENSURE(string16_equal(0, 0))
+	
+	object_destroy(s);
+}
+
+static void string16_equal_left0_righte_yes(void)
+{
+	string16* s = string16_from_cstr("", 10);
+	
+	ENSURE(string16_equal(0, s))
+	
+	object_destroy(s);
+}
+
+static void string16_equal_lefte_right0_yes(void)
+{
+	string16* s = string16_from_cstr("", 10);
+	
+	ENSURE(string16_equal(s, 0))
+	
+	object_destroy(s);
+}
+
+static void string16_equal_diff_length_no(void)
+{
+	string16* a = string16_from_cstr("a", 10);
+	string16* ab = string16_from_cstr("ab", 10);	
+	
+	ENSURE(!string16_equal(a, ab))
+	
+	object_destroy(a);
+	object_destroy(ab);	
+}
+
+static void string16_equal_empty_empty_yes(void)
+{
+	string16* a = string16_from_cstr("", 10);
+	string16* ab = string16_from_cstr("", 10);	
+	
+	ENSURE(string16_equal(a, ab))
+	
+	object_destroy(a);
+	object_destroy(ab);	
+}
+
+static void string16_equal_equal_yes(void)
+{
+	string16* ab = string16_from_cstr("ab", 10);
+	string16* ab2 = string16_from_cstr("ab", 10);	
+	
+	ENSURE(string16_equal(ab, ab2))
+	
+	object_destroy(ab);
+	object_destroy(ab2);	
+}
+
+static void string16_equal_not_equal_no(void)
+{
+	string16* ab = string16_from_cstr("abc", 10);
+	string16* ab2 = string16_from_cstr("auc", 10);	
+	
+	ENSURE(!string16_equal(ab, ab2))
+	
+	object_destroy(ab);
+	object_destroy(ab2);	
+}
+
+static void string16_hash_null_0(void)
+{
+	string16* s = 0;
+	
+	ENSURE(string16_hash(s) == 0)
+}
+
+static void string16_hash_empty_0(void)
+{
+	string16* s = string16_from_cstr("", 10);
+	
+	ENSURE(string16_hash(s) == 0)
+	
+	object_destroy(s);
+}
+
+static void string16_hash_same_equal(void)
+{
+	string16* s = string16_from_cstr("hi", 10);
+	
+	ENSURE(string16_hash(s) == string16_hash(s))
+	
+	object_destroy(s);
+}
+
+static void string16_hash_equal_equal(void)
+{
+	string16* s = string16_from_cstr("hello", 10);
+	string16* s2 = string16_from_cstr("hello", 10);
+	
+	ENSURE(string16_hash(s2) == string16_hash(s))
+	
+	object_destroy(s);
+	object_destroy(s2);	
+}
+
+static void string16_hash_not_equal_diff(void)
+{
+	string16* s = string16_from_cstr("hello", 10);
+	string16* s2 = string16_from_cstr("hellb", 10);
+	
+	ENSURE(string16_hash(s2) != string16_hash(s))
+	
+	object_destroy(s);
+	object_destroy(s2);	
+}
+
+static void string16_from_cstr_empty(void)
+{
+	string16* s = string16_from_cstr("", 10);
+	
+	check_string16(s, "");
+	object_destroy(s);
+}
+
+static void string16_from_cstr_null(void)
+{
+	string16* s = string16_from_cstr(0, 10);
+	
+	check_string16(s, "");
+	object_destroy(s);
+}
+
+
+static void string16_from_cstr_content(void)
+{
+	string16* s = string16_from_cstr("hello, kitty", 100);
+	
+	check_string16(s, "hello, kitty");
+	object_destroy(s);
+}
+
+static void string16_clone_null_empty(void)
+{
+	string16* c = string16_clone(0);
+	
+	check_string16(c, "");
+	object_destroy(c);	
+}
+
+static void string16_clone_empty_empty(void)
+{
+	string16* s = string16_from_cstr("", 10);
+	string16* c = string16_clone(s);
+	
+	check_string16(c, "");
+	object_destroy(c);	
+	object_destroy(s);		
+}
+
+static void string16_clone_content_equal(void)
+{
+	string16* s = string16_from_cstr("hello", 10);
+	string16* c = string16_clone(s);
+	
+	check_string16(c, "hello");
+	ENSURE(string16_equal(s, c))
+	object_destroy(c);	
+	object_destroy(s);		
+}
+
+static void string16_add_long(void)
+{
+	string16* s = string16_create();
+	
+	string16_add(s, '1');
+	string16_add(s, '2');
+	string16_add(s, '3');
+	string16_add(s, '4');
+	string16_add(s, '5');
+	string16_add(s, '6');
+	string16_add(s, '7');
+	string16_add(s, '8');
+	string16_add(s, '9');
+	string16_add(s, '0');
+	string16_add(s, 'a');
+	string16_add(s, 'b');
+	string16_add(s, 'c');
+	string16_add(s, 'd');
+	string16_add(s, 'e');
+	string16_add(s, 'f');
+	string16_add(s, 'g');
+	string16_add(s, 'h');
+	string16_add(s, 'i');
+	string16_add(s, 'j');
+	string16_add(s, 'k');
+	
+	check_string16(s, "1234567890abcdefghijk");
+	
+	object_destroy(s);
+}
+
+static void string16_add_after_ascii(void)
+{
+	string16* s = string16_from_cstr("hello", 10);
+	string16_add(s, ',');
+	string16_add(s, ' ');
+	string16_add(s, 'k');
+	string16_add(s, 'i');
+	string16_add(s, 't');
+	string16_add(s, 't');
+	string16_add(s, 'y');
+	check_string16(s, "hello, kitty");
+	
+	object_destroy(s);
+}
+
+static void string16_clear_empty_empty(void)
+{
+	string16* s = string16_create();
+	string16_clear(s);
+	
+	check_string16(s, "");
+	object_destroy(s);
+}
+
+static void string16_clear_content_empty(void)
+{
+	string16* s = string16_from_cstr("full", 10);
+	string16_clear(s);
+	
+	check_string16(s, "");
+	object_destroy(s);
+}
+
+static void string16_set_content(void)
+{
+	string16* s = string16_from_cstr("number 1", 10);
+
+	string16_set(s, 7, '2');
+	
+	check_string16(s, "number 2");
+	object_destroy(s);	
+}
+
+static void string16_split_lines_empty_empty(void)
+{
+	string16* text = string16_from_cstr("", 100);
+	obj_list* list = obj_list_create(1);
+	
+	string16_split_lines(text, list);
+	
+	ENSURE(obj_list_length(list) == 0)
+	
+	object_destroy(list);
+	object_destroy(text);
+}
+
+static void string16_split_lines_1line_1item(void)
+{
+	string16* text = string16_from_cstr("hello", 100);
+	obj_list* list = obj_list_create(1);
+	
+	string16_split_lines(text, list);
+	
+	ENSURE(obj_list_length(list) == 1)
+	check_string16(obj_list_get(list, 0), "hello");
+	
+	object_destroy(list);
+	object_destroy(text);
+}
+
+static void string16_split_lines_3lines_3items(void)
+{
+	string16* text = string16_from_cstr("one\r\ntwo\nthree", 100);
+	obj_list* list = obj_list_create(1);
+	
+	string16_split_lines(text, list);
+	
+	ENSURE(obj_list_length(list) == 3)
+	check_string16(obj_list_get(list, 0), "one");
+	check_string16(obj_list_get(list, 1), "two");
+	check_string16(obj_list_get(list, 2), "three");
+	object_destroy(list);
+	object_destroy(text);
+}
+
+
+static void string16_split_lines_3lines_trail_3items(void)
+{
+	string16* text = string16_from_cstr("one\r\ntwo\nthree\n", 100);
+	obj_list* list = obj_list_create(1);
+	
+	string16_split_lines(text, list);
+	
+	
+	ENSURE(obj_list_length(list) == 3)
+	check_string16(obj_list_get(list, 0), "one");
+	check_string16(obj_list_get(list, 1), "two");
+	check_string16(obj_list_get(list, 2), "three");
+	
+	object_destroy(list);
+	object_destroy(text);
+}
+
+static void string16_compare_both_null_0(void)
+{
+	string16* left = 0;
+	string16* right = 0;
+	
+	ENSURE(string16_compare(left, right) == 0)
+}
+
+static void string16_compare_same_0(void)
+{
+	string16* left = string16_from_cstr("hi", 10); // own
+	string16* right = left;
+	
+	ENSURE(string16_compare(left, right) == 0)
+	
+	object_destroy(left);
+}
+
+static void string16_compare_left_null_less(void)
+{
+	string16* left = 0;	
+	string16* right = string16_from_cstr("hi", 10); // own
+	
+	ENSURE(string16_compare(left, right) == -1)
+	
+	object_destroy(left);
+	object_destroy(right);	
+}
+
+static void string16_compare_right_null_greater(void)
+{
+	string16* left = string16_from_cstr("hi", 10); // own
+	string16* right = 0;
+	
+	ENSURE(string16_compare(left, right) == 1)
+	
+	object_destroy(left);
+	object_destroy(right);	
+}
+
+static void string16_compare_equal_equal(void)
+{
+	string16* left = string16_from_cstr("hi", 10); // own
+	string16* right = string16_from_cstr("hi", 10); // own
+	
+	ENSURE(string16_compare(left, right) == 0)
+	
+	object_destroy(left);
+	object_destroy(right);	
+}
+
+static void string16_compare_less_less(void)
+{
+	string16* left = string16_from_cstr("hia", 10); // own
+	string16* right = string16_from_cstr("hib", 10); // own
+	
+	ENSURE(string16_compare(left, right) == -1)
+	ENSURE(string16_compare(right, left) == 1)
+	
+	object_destroy(left);
+	object_destroy(right);	
+}
+
+static void string16_compare_greater_greater(void)
+{
+	string16* left = string16_from_cstr("hib", 10); // own
+	string16* right = string16_from_cstr("hia", 10); // own
+	
+	ENSURE(string16_compare(left, right) == 1)
+	ENSURE(string16_compare(right, left) == -1)
+	
+	object_destroy(left);
+	object_destroy(right);	
+}
+
+static void string16_compare_shorter_less(void)
+{
+	string16* left = string16_from_cstr("hi", 10); // own
+	string16* right = string16_from_cstr("hib", 10); // own
+	
+	ENSURE(string16_compare(left, right) == -1)
+	ENSURE(string16_compare(right, left) == 1)
+	
+	object_destroy(left);
+	object_destroy(right);	
+}
+
+static void string16_compare_longer_greater(void)
+{
+	string16* left = string16_from_cstr("hia", 10); // own
+	string16* right = string16_from_cstr("hi", 10); // own
+	
+	ENSURE(string16_compare(left, right) == 1)
+	ENSURE(string16_compare(right, left) == -1)
+	
+	object_destroy(left);
+	object_destroy(right);	
+}
+
+static void string16_compare_empty_less(void)
+{
+	string16* left = string16_from_cstr("", 10); // own
+	string16* right = string16_from_cstr("hi", 10); // own
+	
+	ENSURE(string16_compare(left, right) == -1)
+	ENSURE(string16_compare(right, left) == 1)
+	
+	object_destroy(left);
+	object_destroy(right);	
+}
+
+
+static void string16_test(void)
+{
+	string16_from_buffer_empty_empty();
+	string16_from_buffer_content();
+	string16_equal_same_yes();
+	string16_equal_left0_righte_yes();
+	string16_equal_lefte_right0_yes();
+	string16_equal_diff_length_no();
+	string16_equal_empty_empty_yes();
+	string16_equal_equal_yes();
+	string16_equal_not_equal_no();
+	string16_hash_null_0();
+	string16_hash_empty_0();
+	string16_hash_same_equal();
+	string16_hash_equal_equal();
+	string16_hash_not_equal_diff();
+	string16_from_cstr_empty();
+	string16_from_cstr_null();
+	string16_from_cstr_content();
+	string16_clone_null_empty();
+	string16_clone_empty_empty();
+	string16_clone_content_equal();
+	string16_add_long();
+	string16_add_after_ascii();
+	string16_clear_empty_empty();
+	string16_clear_content_empty();
+	string16_set_content();
+	string16_split_lines_empty_empty();	
+	string16_split_lines_1line_1item();
+	string16_split_lines_3lines_3items();
+	string16_split_lines_3lines_trail_3items();	
+	string16_compare_both_null_0();
+	string16_compare_same_0();
+	
+	string16_compare_left_null_less();
+	string16_compare_right_null_greater();
+	string16_compare_equal_equal();
+	string16_compare_less_less();
+	string16_compare_greater_greater();
+	string16_compare_shorter_less();
+	string16_compare_longer_greater();
+	string16_compare_empty_less();
+}
+
+
 void lib_test(void)
 {
 	printf("lib_test\n");
@@ -637,4 +1226,12 @@ void lib_test(void)
 	array_table_test();
 	string8_equal_test();
 	string8_hash_test();
+	
+	
+	string8_split_lines_empty_empty();	
+	string8_split_lines_1line_1item();
+	string8_split_lines_3lines_3items();
+	string8_split_lines_3lines_trail_3items();
+
+	string16_test();
 }

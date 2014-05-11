@@ -3,7 +3,7 @@
 void lib_test(void);
 int fmain(int i, char** c);
 
-#define TEST_REPEAT 500
+#define TEST_REPEAT 10
 int main(int argc, char** argv)
 {
 	int i;
@@ -13,6 +13,6 @@ int main(int argc, char** argv)
 		lib_test();
 	}
 	
-	getchar();
+//	getchar();
 	return 0;
 }

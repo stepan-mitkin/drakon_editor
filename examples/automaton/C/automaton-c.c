@@ -821,7 +821,7 @@ void token_destroy(
         ENSURE(self->base.type == &token_t)
         /* item 235 */
         string8_destroy(self->text);
-        free_memory(self);
+        free_memory(self, sizeof(token));
         return;
     }
     
