@@ -2975,7 +2975,13 @@ proc gen_field_aux { class field } {
                 #item 1519
                 set outgoing $link
             } else {
-                
+                #item 2725
+                if {$dst_field == $name} {
+                    #item 2727
+                    set incoming $link
+                } else {
+                    
+                }
             }
         } else {
             #item 1513

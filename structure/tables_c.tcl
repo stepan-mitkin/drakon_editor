@@ -447,11 +447,11 @@ proc field_type { field } {
     #item 1441
     set field_name [ tab::get_field_name $field ]
     set properties [ tab::get_field_properties $field ]
+    #item 2469
+    set class [ tab::get_field_class $field ]
+    set class_name [ tab::get_class_name $class ]
     #item 1442
     if {$properties == {}} {
-        #item 1445
-        set class [ tab::get_field_class $field ]
-        set class_name [ tab::get_class_name $class ]
         #item 1446
         tab::report_error_class $class_name \
         "Field '$field_name' has no type."
@@ -466,21 +466,30 @@ proc field_type { field } {
         get set cget ctr own
         #item 1449
         if {$type == "link"} {
-            #item 1457
+            #item 2470
             set type2 [ tab::get_field2_type $field ]
             set link [ tab::get_field2_link $field ]
-            #item 1454
-            if {$type2 == "collection"} {
-                #item 1459
-                set target [ tab::get_collection_target $field $link ]
+            #item 2465
+            if {$link == ""} {
+                #item 2468
+                tab::report_error_class $class_name \
+                "No link definition found for link field '$field_name'."
+                #item 1448
+                return {}
             } else {
-                #item 1452
-                set target [ tab::get_target $link ]
+                #item 1454
+                if {$type2 == "collection"} {
+                    #item 1459
+                    set target [ tab::get_collection_target $field $link ]
+                } else {
+                    #item 1452
+                    set target [ tab::get_target $link ]
+                }
+                #item 1458
+                set target_name [ tab::get_class_name $target ]
+                #item 1453
+                return "$target_name*"
             }
-            #item 1458
-            set target_name [ tab::get_class_name $target ]
-            #item 1453
-            return "$target_name*"
         } else {
             #item 1495
             if {$own} {
