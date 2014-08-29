@@ -258,8 +258,7 @@ proc build_gf_declare { fields } {
             #item 2640
             set body [ field_body $field ]
             #item 2639
-            lappend lines \
-             "extern $body;"
+            #lappend lines "extern $body;"
             #item 26260003
             incr _ind2626
         }
@@ -312,7 +311,7 @@ proc build_gf_impl { fields } {
             }
             #item 2678
             lappend lines \
-             "$body$ivalue;"
+             "static $body$ivalue;"
             #item 26760003
             incr _ind2676
         }

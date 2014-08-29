@@ -30,9 +30,9 @@ void person_destroy(
     free_memory(self, sizeof(person));
 }
 static int g_module_initialised = 0;
-int mega_int = 10;
-string8* buffer = 0;
-obj_list* list = 0;
+static int mega_int = 10;
+static string8* buffer = 0;
+static obj_list* list = 0;
 void globals_init(void) {
     if (g_module_initialised) return;
     g_module_initialised = 1;

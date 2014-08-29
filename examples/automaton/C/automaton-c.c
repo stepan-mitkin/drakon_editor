@@ -763,7 +763,7 @@ int main(
     init();
     /* item 161 */
     text = string8_from_cstr(
-      "foo.Bar(34 / 4-(18+m * 3));", 100);
+      "foo.Bar(34 / 4-(18+m * 3)) ==800;", 100);
     
     tokens = lex(text);
     /* item 207 */
