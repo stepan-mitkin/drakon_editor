@@ -1,32 +1,34 @@
-# verilog generator temporarily disabled
-if 0 {
 gen::add_generator Verilog verilog_gen::generate
 
-# Проблемы с оригинальным DRAKON:
-# 1. Проблема с одинаковыми названиями состояний в разных автоматах
-# 2. Детекцию машин хотелось бы ещё и по тексту в start icon
-# 3. Обработка полок должна быть до экстракции машин
-# 4. Развёртка цикла for(;;) через if и while для верилога недопустима (
-#    если в функциях ещё и может прокатить - в зависимости от синтезатора, то
-#    в generate блоках точно не прокатит)
+# РџСЂРѕР±Р»РµРјС‹ СЃ РѕСЂРёРіРёРЅР°Р»СЊРЅС‹Рј DRAKON:
+# 1. РџСЂРѕР±Р»РµРјР° СЃ РѕРґРёРЅР°РєРѕРІС‹РјРё РЅР°Р·РІР°РЅРёСЏРјРё СЃРѕСЃС‚РѕСЏРЅРёР№ РІ СЂР°Р·РЅС‹С… Р°РІС‚РѕРјР°С‚Р°С…
+#    СЃРµР№С‡Р°СЃ РѕСЃРЅРѕРІРЅР°СЏ РїСЂРѕР±Р»РµРјР° СЃ РѕРґРёРЅР°РєРѕРІС‹РјРё РёРјРµРЅР°РјРё СЃРѕРѕР±С‰РµРЅРёР№ РІ
+#    СЂР°Р·РЅС‹С… Р°РІС‚РѕРјР°С‚Р°С… (original РІ get_message?)
+# 2. Р”РµС‚РµРєС†РёСЋ РјР°С€РёРЅ С…РѕС‚РµР»РѕСЃСЊ Р±С‹ РµС‰С‘ Рё РїРѕ С‚РµРєСЃС‚Сѓ РІ start icon
+# 3. РћР±СЂР°Р±РѕС‚РєР° РїРѕР»РѕРє РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РґРѕ СЌРєСЃС‚СЂР°РєС†РёРё РјР°С€РёРЅ
+# 4. Р Р°Р·РІС‘СЂС‚РєР° С†РёРєР»Р° for(;;) С‡РµСЂРµР· if Рё while РґР»СЏ РІРµСЂРёР»РѕРіР° РЅРµРґРѕРїСѓСЃС‚РёРјР° (
+#    РµСЃР»Рё РІ С„СѓРЅРєС†РёСЏС… РµС‰С‘ Рё РјРѕР¶РµС‚ РїСЂРѕРєР°С‚РёС‚СЊ - РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЃРёРЅС‚РµР·Р°С‚РѕСЂР°, С‚Рѕ
+#    РІ generate Р±Р»РѕРєР°С… С‚РѕС‡РЅРѕ РЅРµ РїСЂРѕРєР°С‚РёС‚)
 # 
-# Возможные способы решения этих вещей можно посмотреть внизу этого файла
+# Р’РѕР·РјРѕР¶РЅС‹Рµ СЃРїРѕСЃРѕР±С‹ СЂРµС€РµРЅРёСЏ СЌС‚РёС… РІРµС‰РµР№ РјРѕР¶РЅРѕ РїРѕСЃРјРѕС‚СЂРµС‚СЊ РІРЅРёР·Сѓ СЌС‚РѕРіРѕ С„Р°Р№Р»Р°
 
-# перемещение выделения по иконам клавишами курсора
-# горячие клавиши для вставки основных икон
-# shift + клавиши курсора двигают иконы в smart режиме
-# ctrl + клавиши курсора двигают иконы обычным способом
-# alt + клавиши курсора меняют размер иконы
+# РїРµСЂРµРјРµС‰РµРЅРёРµ РІС‹РґРµР»РµРЅРёСЏ РїРѕ РёРєРѕРЅР°Рј РєР»Р°РІРёС€Р°РјРё РєСѓСЂСЃРѕСЂР°
+# РіРѕСЂСЏС‡РёРµ РєР»Р°РІРёС€Рё РґР»СЏ РІСЃС‚Р°РІРєРё РѕСЃРЅРѕРІРЅС‹С… РёРєРѕРЅ
+# shift + РєР»Р°РІРёС€Рё РєСѓСЂСЃРѕСЂР° РґРІРёРіР°СЋС‚ РёРєРѕРЅС‹ РІ smart СЂРµР¶РёРјРµ
+# ctrl + РєР»Р°РІРёС€Рё РєСѓСЂСЃРѕСЂР° РґРІРёРіР°СЋС‚ РёРєРѕРЅС‹ РѕР±С‹С‡РЅС‹Рј СЃРїРѕСЃРѕР±РѕРј
+# alt + РєР»Р°РІРёС€Рё РєСѓСЂСЃРѕСЂР° РјРµРЅСЏСЋС‚ СЂР°Р·РјРµСЂ РёРєРѕРЅС‹
 
 
 # TODO:
-# 0. циклы
+# 0. С†РёРєР»С‹
 # 0b. repeat
 # 1. init(ial)
-# 2. инстанциация модулей
+# 2. РёРЅСЃС‚Р°РЅС†РёР°С†РёСЏ РјРѕРґСѓР»РµР№
 # 3. generate statements
 # 7. tasks
-
+# 8. РџСЂРѕР±Р»РµРјР° РІ verify_all: РµСЃР»Рё РїРѕСЃР»Рµ РїР°С‚С‡РёРЅРіР° РїСЂРѕРёСЃС…РѕРґРёС‚ РІС‹РєРёРґС‹РІР°РЅРёРµ 
+#    РёСЃРєР»СЋС‡РµРЅРёСЏ, С‚Рѕ РїРѕРІС‚РѕСЂРЅС‹Р№ РїР°С‚С‡РёРЅРі РїРѕС‚РѕРј РЅРµРІРѕР·РјРѕР¶РµРЅ
+#     ^- РІСЂРѕРґРµ РїРѕРїСЂР°РІРёР», РїСЂРѕРІРµСЂРёС‚СЊ
 
 namespace eval verilog_gen {
     
@@ -677,7 +679,7 @@ proc build_state_codes { fsm_encoding num_states } {
     return $state_codes
 }
 
-proc change_state { state } {
+proc change_state { state dname } {
     #item 2006
     set state \
     [ normalize_state_name $state ]
@@ -907,7 +909,7 @@ proc generate { db gdb filename } {
     monkey_patch_sma forward
     #item 326
     set machines \
-    [ sma::extract_all_machines\
+    [ sma::extract_many_machines\
       $gdb $callbacks ]
     #item 325
     monkey_patch_sma reverse
@@ -1174,13 +1176,14 @@ proc get_body { body indent } {
     return $lines
 }
 
-proc get_cases { gdb state } {
+proc get_cases { gdb state original_diagram } {
     #item 1352
     set result \
     [ $gdb eval {
         select diagram_id
         from diagrams
         where state = :state
+        and original = :original_diagram
         and is_default = 0
         order by ordinal } ]
     #item 1353
@@ -1331,7 +1334,7 @@ proc get_signal_names { text } {
     return $names
 }
 
-proc get_state_body { fhandle gdb functions state vlog_state state_var states_rename_table indent_n } {
+proc get_state_body { fhandle gdb functions state original_diagram vlog_state state_var states_rename_table indent_n } {
     #item 1628
     set indent \
     [ make_indent $indent_n ]
@@ -1385,7 +1388,7 @@ proc get_state_body { fhandle gdb functions state vlog_state state_var states_re
     }
     #item 1635
     set cases \
-    [ get_cases $gdb $state ]
+    [ get_cases $gdb $state $original_diagram]
     #item 2067
     set first_case \
     [ lindex $cases 0 ]
@@ -1757,8 +1760,6 @@ proc monkey_patch_sma { direction } {
     #item 2098
     set functions \
     [ list \
-    ::sma::build_sub_diagram \
-    ::sma::create_sub_diagrams \
     ::sma::all_start_with_receive \
     ::sma::build_machine \
     ::sma::find_end \
@@ -1803,7 +1804,7 @@ proc p.assign2 { variable value } {
     return "$variable == $value"
 }
 
-proc p.bad_case { switch_var select_icon_number } {
+proc p.bad_case { switch_var } {
     #item 245
     return ""
 }
@@ -2012,7 +2013,7 @@ proc p.print_to_file { gdb fhandle functions header parameters inputs outputs in
     } else {
         #item 1858
         error \
-          "Не все вставки удалось разрешить!"
+          "РќРµ РІСЃРµ РІСЃС‚Р°РІРєРё СѓРґР°Р»РѕСЃСЊ СЂР°Р·СЂРµС€РёС‚СЊ!"
     }
     #item 1786
     set old_functions \
@@ -2308,7 +2309,7 @@ proc print_machine_methods { fhandle gdb machine functions } {
         set states \
         [ dict get $machine states ]
         #item 1493
-        set name \
+        set original_diagram \
         [ dict get $machine name ]
         #item 1494
         set has_final_state \
@@ -2320,25 +2321,22 @@ proc print_machine_methods { fhandle gdb machine functions } {
         #item 1496
         if {[ dict exists \
   $parameters name ]} {
-            #item 1499
-            set diag_name \
-            $name
             #item 1500
             set name \
             [ dict get $parameters name]
             #item 1501
             puts $fhandle [ join [ list \
             "${indent}// FSM '$name'" \
-            " from diagram '$diag_name'" ]]
+            " from diagram '$original_diagram'" ]]
         } else {
             #item 1504
             puts $fhandle [join \
             [ list \
             "${indent}// FSM from " \
-            "diagram '$name'" ]]
+            "diagram '$original_diagram'" ]]
             #item 1505
             set name \
-            [ transliterate $name ]
+            [ transliterate $original_diagram ]
         }
         #item 1506
         if {[ dict exists $parameters encoding ]} {
@@ -2677,6 +2675,7 @@ proc print_machine_methods { fhandle gdb machine functions } {
                   $gdb \
                   $functions \
                   $state \
+                  $original_diagram \
                   $vlog_state_name \
                   $state_var \
                   $states_rename_table \
@@ -2919,22 +2918,39 @@ proc transform_shelf { keyword operator body } {
 }
 
 proc transliterate { text } {
+    #item 2121
+    set map \
+    [concat \
+    "\u0410\u0020\u0041\u0020\u0411\u0020\u0042\u0020\u0020\u0412\u0020" \
+    "\u0056\u0020\u0413\u0020\u0047\u0020\u0020\u0414\u0020\u0044\u0020" \
+    "\u0020\u0415\u0020\u0045\u0020\u0401\u0020\u0059\u004F\u0020\u0416" \
+    "\u0020\u004A\u0020\u0020\u0417\u0020\u005A\u0020\u0020\u0418\u0020" \
+    "\u0049\u0020\u0020\u0419\u0020\u0059\u0020\u0020\u041A\u0020\u004B" \
+    "\u0020\u041B\u0020\u004C\u0020\u0020\u041C\u0020\u004D\u0020\u041D" \
+    "\u0020\u004E\u0020\u0020\u041E\u0020\u004F\u0020\u0020\u041F\u0020" \
+    "\u0050\u0020\u0020\u0420\u0020\u0052\u0020\u0421\u0020\u0053\u0020" \
+    "\u0020\u0422\u0020\u0054\u0020\u0020\u0423\u0020\u0055\u0020\u0020" \
+    "\u0424\u0020\u0046\u0020\u0020\u0425\u0020\u0048\u0020\u0020\u0426" \
+    "\u0020\u0043\u0020\u0427\u0020\u0043\u0048\u0020\u0428\u0020\u0053\u0048" \
+    "\u0020\u0429\u0020\u0053\u0048\u0020\u042A\u0020\u004A\u0020" \
+    "\u0020\u042B\u0020\u0049\u0020\u0020\u042C\u0020\u004A\u0020\u042D" \
+    "\u0020\u0045\u0020\u0020\u042E\u0020\u0059\u0055\u0020\u042F\u0020" \
+    "\u0059\u0041\u0020\u0430\u0020\u0061\u0020\u0020\u0431\u0020\u0062" \
+    "\u0020\u0020\u0432\u0020\u0076\u0020\u0433\u0020\u0067\u0020\u0434" \
+    "\u0020\u0064\u0020\u0435\u0020\u0065\u0020\u0451\u0020\u0065\u0020" \
+    "\u0436\u0020\u0067\u0020\u0437\u0020\u007A\u0020\u0020\u0438\u0020" \
+    "\u0069\u0020\u0439\u0020\u006A\u0020\u043A\u0020\u006B\u0020\u043B" \
+    "\u0020\u006C\u0020\u043C\u0020\u006D\u0020\u043D\u0020\u006E\u0020" \
+    "\u043E\u0020\u006F\u0020\u043F\u0020\u0070\u0020\u0440\u0020\u0072" \
+    "\u0020\u0441\u0020\u0073\u0020\u0442\u0020\u0074\u0020\u0443\u0020" \
+    "\u0075\u0020\u0444\u0020\u0066\u0020\u0445\u0020\u0068\u0020\u0446" \
+    "\u0020\u0063\u0020\u0447\u0020\u0063\u0068\u0020\u0448\u0020\u0073\u0068" \
+    "\u0020\u0449\u0020\u0073\u0068\u0020\u044A\u0020\u006A\u0020" \
+    "\u0020\u044B\u0020\u0069\u0020\u0020\u044C\u0020\u006A\u0020\u044D" \
+    "\u0020\u0065\u0020\u044E\u0020\u0079\u0075\u0020\u044F\u0020\u0079\u0061\u0020"]
     #item 1060
     set text \
-    [ string map {\
-     А A  Б B  В V  Г G  Д D  Е E\
-     Ё YO Ж J  З Z  И I  Й Y  К K\
-     Л L  М M  Н N  О O  П P  Р R\
-     С S  Т T  У U  Ф F  Х H  Ц C\
-     Ч CH Ш SH Щ SH Ъ J  Ы I  Ь J\
-     Э E  Ю YU Я YA\
-     а a  б b  в v  г g  д d  е e\
-     ё e  ж g  з z  и i  й j  к k\
-     л l  м m  н n  о o  п p  р r\
-     с s  т t  у u  ф f  х h  ц c\
-     ч ch ш sh щ sh ъ j  ы i  ь j\
-     э e  ю yu я ya\
-     } $text ]
+    [ string map  $map $text ]
     #item 1061
     return $text
 }
@@ -2970,7 +2986,7 @@ proc trim_lines { lines trim_chars } {
     return $result
 }
 
-    # end of namespace verilog_gen
+# end of namespace verilog_gen
 } 
 
 namespace eval sma {
@@ -3032,76 +3048,79 @@ namespace eval sma {
 	return $result
     }
 
-    proc build_machine_vlog { gdb diagram_id callbacks } {
-	variable g_last_present
-	#item 164
-	clear_last
-	#item 262
-	set receives [ get_receives $gdb $diagram_id ]
-	#item 263
-	if {$receives == {}} {
-	    #item 264
-	    bad_diagram $diagram_id \
-		"No 'receive' statements found."
-	} else {
-	    #item 165
-	    if {(([has_branches $gdb $diagram_id]) && ([receives_are_first $gdb $receives])) && ([all_start_with_receive $gdb $diagram_id])} {
-		#item 344
-		set parameters [ get_params_text $gdb $diagram_id ]
-		#item 352
-		set headers [ get_headers $gdb $diagram_id ]
-		if { $g_last_present  } {
-		    set state_headers [ lrange $headers 0 end-1 ]
-		    set last_branch [ lindex $headers end ]
-		    set last_name [ get_text $gdb $last_branch ]
-		} else {
-		    set state_headers [ lrange $headers 0 end ]
-		    set last_branch -1
-		    set last_name "##@@Unused@@##"
-		}
-		#item 353
-		set message_types [ find_message_types $gdb $state_headers ]
-		set state_names {}
-		#item 755
-		set boiler {}
-		#item 3540001
-		set _col354 $state_headers
-		set _len354 [ llength $_col354 ]
-		set _ind354 0
-		while { 1 } {
-		    #item 3540002
-		    if {$_ind354 < $_len354} {
-			
-		    } else {
-			break
-		    }
-		    #item 3540004
-		    set header [ lindex $_col354 $_ind354 ]
-		    #item 754
-		    lassign \
-			[create_sub_diagrams $gdb $diagram_id $header $message_types \
-			     $parameters $last_name $callbacks] \
-			state good bad
-		    #item 756
-		    lappend boiler $state \
-			[ list "good" $good "bad" $bad ]
-		    lappend state_names $state
-		    #item 3540003
-		    incr _ind354
-		}
-	    } else {
-		
-	    }
-	}
-	#item 757
-	set last [ is_last_used ]
-	#item 766
-	set param_names [ get_param_names $parameters ]
-	#item 758
-	return [ list "last" $last "boiler" $boiler \
-		     "states" $state_names "messages" $message_types \
-		     "parameters" $parameters "param_names" $param_names ]
+proc build_machine_vlog { gdb diagram_id callbacks } {
+    variable g_last_present
+    #item 164
+    clear_last
+    #item 262
+    set receives [ get_receives $gdb $diagram_id ]
+    #item 263
+    if {$receives == {}} {
+        #item 264
+        bad_diagram $diagram_id \
+         "No 'receive' statements found."
+    } else {
+        #item 165
+        if {(([has_branches $gdb $diagram_id]) && ([receives_are_first $gdb $receives])) && ([all_start_with_receive $gdb $diagram_id])} {
+            #item 344
+            set parameters [ get_params_text $gdb $diagram_id ]
+            #item 352
+            set headers [ get_headers $gdb $diagram_id ]
+	          if { $g_last_present  } {
+		           set state_headers [ lrange $headers 0 end-1 ]
+		           set last_branch [ lindex $headers end ]
+		           set last_name [ get_text $gdb $last_branch ]
+		        } else {
+		           set state_headers [ lrange $headers 0 end ]
+		           set last_branch -1
+		           set last_name "##@@Unused@@##"
+		        }
+            #item 353
+            set message_types [ find_message_types $gdb $state_headers ]
+            set state_names {}
+            #item 755
+            set boiler {}
+            #item 3540001
+            set _col354 $state_headers
+            set _len354 [ llength $_col354 ]
+            set _ind354 0
+            while { 1 } {
+                #item 3540002
+                if {$_ind354 < $_len354} {
+                    
+                } else {
+                    break
+                }
+                #item 3540004
+                set header [ lindex $_col354 $_ind354 ]
+                #item 754
+                lassign \
+                [create_sub_diagrams $gdb $diagram_id $header $message_types \
+                 $parameters $last_name $callbacks] \
+                state good bad
+                #item 756
+                lappend boiler $state \
+                 [ list "good" $good "bad" $bad ]
+                lappend state_names $state
+                #item 3540003
+                incr _ind354
+            }
+        } else {
+            
+        }
     }
+    #item 757
+    set last [ is_last_used ]
+    #item 766
+    set param_names [ get_param_names $parameters ]
+    #item 870
+    set dia_name [ diagram_name $gdb $diagram_id ]
+    #item 758
+    return [ list "last" $last "boiler" $boiler \
+     "states" $state_names "messages" $message_types \
+     "parameters" $parameters "param_names" $param_names \
+     "name" $dia_name ]
+}
 
     proc find_end_vlog { gdb diagram_id } {
 	#item 659
@@ -3148,172 +3167,6 @@ namespace eval sma {
 	return $result
     }
 
-    proc extract_all_machines { gdb callbacks } {
-	#item 132
-	set infos {}
-	set diagrams [ $gdb eval {
-	    select diagram_id from diagrams } ]
-	#item 1330001
-	set _col133 $diagrams
-	set _len133 [ llength $_col133 ]
-	set _ind133 0
-	while { 1 } {
-	    #item 1330002
-	    if {$_ind133 < $_len133} {
-		
-	    } else {
-		#item 138
-		return $infos
-	    }
-	    #item 1330004
-	    set diagram_id [ lindex $_col133 $_ind133 ]
-	    #item 135
-	    if {[graph::is_machine $diagram_id]} {
-		#item 148
-		set info [ build_machine $gdb $diagram_id $callbacks ]
-		set name [ diagram_name $gdb $diagram_id ]
-		set info [ concat $info  [ list "name" $name ]]
-		#item 147
-		delete_diagram $gdb $diagram_id
-		#item 139
-		lappend infos $info
-	    } else {
-		
-	    }
-	    #item 1330003
-	    incr _ind133
-	}
-	return $infos
-    }
-
-    proc build_sub_diagram_vlog { gdb diagram_id state case parameters last_branch callbacks ordinal } {
-	#item 528
-	set message [ get_text $gdb $case ]
-	#item 529
-	if {$message == ""} {
-	    #item 532
-	    set name "${diagram_id}_${state}_default"
-	    set default 1
-	} else {
-	    #item 524
-	    set name "${diagram_id}_${state}_${message}"
-	    set default 0
-	}
-	#item 525
-	set private { "private" }
-	set signature [ concat $private $parameters ]
-	#item 527
-	set param_text [ join $signature "\n" ]
-	#item 699
-	set first [ gen::p.get_single_next $gdb $case ]
-	#item 533
-	set end_item [ find_end $gdb $diagram_id ]
-	#item 698
-	set new_diagram [ make_diagram $gdb $name $param_text ]
-	enrich_diagram $gdb $new_diagram \
-	    "${diagram_id}_${state}" $message $ordinal $default
-	#item 660
-	set end_vertex [ gen::p.insert_vertex \
-			     $gdb $new_diagram $end_item "beginend" "End" "" 0 ]
-	#item 547
-	clear_visited
-	#item 703
-	set new_first \
-	    [copy_vertexes $gdb $new_diagram $first \
-		 $last_branch $end_vertex $callbacks ""]
-	#item 702
-	set_first_icon $gdb $new_diagram $new_first
-	#item 738
-	#print_diagram $gdb $new_diagram
-    }
-
-    proc create_sub_diagrams_vlog { gdb diagram_id header message_types parameters last_branch callbacks } {
-	#item 493
-	set state [ get_text $gdb $header ]
-	#item 486
-	set select [ gen::p.get_next $gdb $header 1 ]
-	#item 485
-	set types [ message_types_for_select $gdb $select ]
-	#item 489
-	set has_default [ contains $types "" ]
-	#item 494
-	set redirected {}
-        lassign [ get_type_text $gdb $select ] icon_type _
-        if { $icon_type == "action" } {
-	    set_text $gdb $select "##@@receive@@##"
-	    build_sub_diagram $gdb $diagram_id $state $select \
-		$parameters $last_branch $callbacks 0
-        } else {
-	    #item 4870001
-	    set _col487 $message_types
-	    set _len487 [ llength $_col487 ]
-	    set _ind487 0
-	    while { 1 } {
-		#item 4870002
-		if {$_ind487 < $_len487} {
-		    
-		} else {
-		    break
-		}
-		#item 4870004
-		set common_type [ lindex $_col487 $_ind487 ]
-		#item 490
-		if {[contains $types $common_type]} {
-		    
-		} else {
-		    #item 495
-		    lappend redirected $common_type
-		}
-		#item 4870003
-		incr _ind487
-	    }
-	    #item 526
-	    set next [ find_next $gdb $select ]
-	    set i 0
-	    #item 4990001
-	    set _col499 $next
-	    set _len499 [ llength $_col499 ]
-	    set _ind499 0
-	    while { 1 } {
-		#item 4990002
-		if {$_ind499 < $_len499} {
-		    
-		} else {
-		    break
-		}
-		#item 4990004
-		set case [ lindex $_col499 $_ind499 ]
-		#item 502
-		build_sub_diagram $gdb $diagram_id $state $case \
-		    $parameters $last_branch $callbacks $i
-		#item 845
-		incr i
-		#item 4990003
-		incr _ind499
-	    }
-        }
-	#item 503
-	if {$redirected == {}} {
-	    #item 753
-	    set bad {}
-	    set good {}
-	} else {
-	    #item 748
-	    set methods $redirected
-	    #item 506
-	    if {$has_default} {
-		#item 752
-		set bad {}
-		set good $methods
-	    } else {
-		#item 509
-		set bad $methods
-		set good {}
-	    }
-	}
-	#item 747
-	return [ list "${diagram_id}_${state}" $good $bad ]
-    }
 }
 
 namespace eval gen {
@@ -3347,8 +3200,8 @@ namespace eval gen {
 	    and type = 'shelf'
 	} ]
 	
-	foreach shelv $shelves {
-	    process_shelf $gdb $shelv $shelf_proc
+	foreach shelf $shelves {
+	    process_shelf $gdb $shelf $shelf_proc
 	}
     }
     
@@ -3486,20 +3339,23 @@ namespace eval graph {
     }
 
 
-    # спец обработка графа для верилога
+    # СЃРїРµС† РѕР±СЂР°Р±РѕС‚РєР° РіСЂР°С„Р° РґР»СЏ РІРµСЂРёР»РѕРіР°
     proc verify_all { db } {
-	set language "Verilog"
+	array set properties [ mwc::get_file_properties ]
+	set language $properties(language)
 	
 
 	if { $language == "Verilog" } {
-	    rename ::graph::copy_from ::graph::copy_from_backup
-	    rename ::graph::copy_from_vlog ::graph::copy_from
+            if { [ info procs ::graph::copy_from_backup ] == "" } {
+	    	rename ::graph::copy_from ::graph::copy_from_backup
+	    	rename ::graph::copy_from_vlog ::graph::copy_from
 
-	    rename ::graph::is_machine ::graph::is_machine_backup
-	    rename ::graph::is_machine_vlog ::graph::is_machine
+	    	rename ::graph::is_machine ::graph::is_machine_backup
+	    	rename ::graph::is_machine_vlog ::graph::is_machine
 
-	    rename ::graph::p.find_starts ::graph::p.find_starts_backup
-	    rename ::graph::p.find_starts_vlog ::graph::p.find_starts
+	    	rename ::graph::p.find_starts ::graph::p.find_starts_backup
+	    	rename ::graph::p.find_starts_vlog ::graph::p.find_starts
+            }
 	}
 	
 	copy_from $db
@@ -3530,5 +3386,4 @@ namespace eval graph {
     }
 
 
-}
 }
