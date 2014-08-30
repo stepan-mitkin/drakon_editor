@@ -212,6 +212,10 @@ idle(Message_, State) ->
         % item 211
         {next_state, idle, State}
     ;
+    {dummy, _} ->
+        % item 211
+        {next_state, idle, State}
+    ;
     {letter, Char} ->
         % item 44
         {next_state, identifier, add_char(State, Char)}

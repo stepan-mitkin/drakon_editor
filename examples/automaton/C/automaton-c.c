@@ -172,10 +172,10 @@ lexer_callback lexer_digit_methods[] = {
 };
 lexer_callback lexer_dummy_methods[] = {
     0,
-    lexer_idle_dummy,
-    lexer_identifier_dummy,
+    0,
+    0,
     lexer_number_dummy,
-    lexer_operator_dummy
+    0
 };
 lexer_callback lexer_letter_methods[] = {
     0,
@@ -204,6 +204,7 @@ int lexer_digit(int* machine, lexer_data* data, char c) {
     if (machine == 0) return 0;
     if (*machine <= 0 || *machine > 4) return 0;
     fun = lexer_digit_methods[*machine];
+    if (!fun) return 0;
     next = fun(data, c);
     *machine = next;
     return 1;
@@ -214,6 +215,7 @@ int lexer_dummy(int* machine, lexer_data* data, char c) {
     if (machine == 0) return 0;
     if (*machine <= 0 || *machine > 4) return 0;
     fun = lexer_dummy_methods[*machine];
+    if (!fun) return 0;
     next = fun(data, c);
     *machine = next;
     return 1;
@@ -224,6 +226,7 @@ int lexer_letter(int* machine, lexer_data* data, char c) {
     if (machine == 0) return 0;
     if (*machine <= 0 || *machine > 4) return 0;
     fun = lexer_letter_methods[*machine];
+    if (!fun) return 0;
     next = fun(data, c);
     *machine = next;
     return 1;
@@ -234,6 +237,7 @@ int lexer_operator(int* machine, lexer_data* data, char c) {
     if (machine == 0) return 0;
     if (*machine <= 0 || *machine > 4) return 0;
     fun = lexer_operator_methods[*machine];
+    if (!fun) return 0;
     next = fun(data, c);
     *machine = next;
     return 1;
@@ -244,6 +248,7 @@ int lexer_whitespace(int* machine, lexer_data* data, char c) {
     if (machine == 0) return 0;
     if (*machine <= 0 || *machine > 4) return 0;
     fun = lexer_whitespace_methods[*machine];
+    if (!fun) return 0;
     next = fun(data, c);
     *machine = next;
     return 1;
@@ -583,6 +588,9 @@ static int lexer_number_dummy(
     lexer_data* data,
     char c
 ) {
+    // item 81
+    return LEXER_OPERATOR;
+    
 }
 
 static int lexer_number_letter(

@@ -45,6 +45,7 @@ public class Lexer {
         void Letter(Lexer obj, char c);
         void Operator(Lexer obj, char c);
         void Whitespace(Lexer obj, char c);
+        void dummy(Lexer obj, char c);
     }
     private ILexer_State _state = Idle_State;
     public ILexer_State State { get { return _state; } }
@@ -62,6 +63,9 @@ public class Lexer {
         public void Whitespace(Lexer obj, char c) {
             obj.Idle_Whitespace(c);
         }
+        public void dummy(Lexer obj, char c) {
+            obj.Idle_dummy(c);
+        }
     }
     public static readonly ILexer_State Idle_State = new Idle_State_Definition();
     private class Identifier_State_Definition : ILexer_State {
@@ -77,6 +81,9 @@ public class Lexer {
         }
         public void Whitespace(Lexer obj, char c) {
             obj.Identifier_Whitespace(c);
+        }
+        public void dummy(Lexer obj, char c) {
+            obj.Identifier_dummy(c);
         }
     }
     public static readonly ILexer_State Identifier_State = new Identifier_State_Definition();
@@ -94,6 +101,9 @@ public class Lexer {
         public void Whitespace(Lexer obj, char c) {
             obj.Number_Whitespace(c);
         }
+        public void dummy(Lexer obj, char c) {
+            obj.Number_dummy(c);
+        }
     }
     public static readonly ILexer_State Number_State = new Number_State_Definition();
     private class Operator_State_Definition : ILexer_State {
@@ -110,6 +120,9 @@ public class Lexer {
         public void Whitespace(Lexer obj, char c) {
             obj.Operator_Whitespace(c);
         }
+        public void dummy(Lexer obj, char c) {
+            obj.Operator_dummy(c);
+        }
     }
     public static readonly ILexer_State Operator_State = new Operator_State_Definition();
     private class Intermediate_State_Definition : ILexer_State {
@@ -124,6 +137,9 @@ public class Lexer {
             throw new System.InvalidOperationException("The 'Lexer' object is in the intermediate state.");
         }
         public void Whitespace(Lexer obj, char c) {
+            throw new System.InvalidOperationException("The 'Lexer' object is in the intermediate state.");
+        }
+        public void dummy(Lexer obj, char c) {
             throw new System.InvalidOperationException("The 'Lexer' object is in the intermediate state.");
         }
     }
@@ -147,6 +163,23 @@ public class Lexer {
         ILexer_State current = _state;
         _state = Intermediate_State;
         current.Whitespace(this, c);
+    }
+    public void dummy(char c) {
+        ILexer_State current = _state;
+        _state = Intermediate_State;
+        current.dummy(this, c);
+    }
+    private void Idle_dummy(char c)
+    {
+        throw new System.InvalidOperationException("Lexer: Method 'dummy' is not expected in state 'Idle'.");
+    }
+    private void Identifier_dummy(char c)
+    {
+        throw new System.InvalidOperationException("Lexer: Method 'dummy' is not expected in state 'Identifier'.");
+    }
+    private void Operator_dummy(char c)
+    {
+        throw new System.InvalidOperationException("Lexer: Method 'dummy' is not expected in state 'Operator'.");
     }
 
     public Lexer() {
@@ -381,6 +414,11 @@ public class Lexer {
         CreateNumber();
         // item 34
         _state = Idle_State;
+    }
+
+    private void Number_dummy(char c) {
+        // item 81
+        _state = Operator_State;
     }
 
     private void Operator_Digit(char c) {

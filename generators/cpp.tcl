@@ -392,7 +392,7 @@ proc build_globals { globals } {
     return [ list $header $body ]
 }
 
-proc build_sm_body { machines } {
+proc build_sm_body { gdb machines } {
     #item 2231
     set lines {}
     #item 2352
@@ -517,8 +517,16 @@ proc build_sm_body { machines } {
                     }
                     #item 22690004
                     set state [ lindex $_col2269 $_ind2269 ]
-                    #item 2276
-                    lappend cblist "    ${machine_name}_${state}_${message}"
+                    #item 2811
+                    set handler "${machine_name}_${state}_${message}"
+                    #item 2818
+                    if {[diagram_exists $gdb $handler]} {
+                        #item 2276
+                        lappend cblist "    $handler"
+                    } else {
+                        #item 2821
+                        lappend cblist "    0"
+                    }
                     #item 22690003
                     incr _ind2269
                 }
@@ -1035,6 +1043,15 @@ proc delete_diagram { gdb diagram_id } {
     	delete from diagrams
     	where diagram_id = :diagram_id;
     }
+}
+
+proc diagram_exists { gdb name } {
+    #item 2817
+    return [ $gdb onecolumn {
+    	select count(*)
+    	from diagrams
+    	where name = :name
+    } ]
 }
 
 proc diagram_name { gdb diagram_id } {
@@ -2631,7 +2648,7 @@ proc p.generate { db gdb filename language } {
     append_sm_names $gdb
     #item 2215
     set sm_header [ build_sm_header $machines ]
-    set sm_body [ build_sm_body $machines ]
+    set sm_body [ build_sm_body $gdb $machines ]
     #item 2792
     tab::generate_tables $gdb $callbacks 0
     #item 1324
@@ -3771,6 +3788,8 @@ proc print_sm_method { machine_name parameters bare_params message state_count }
     #item 2345
     lappend lines \
      "    fun = ${machine_name}_${message}_methods\[*machine\];"
+    lappend lines \
+     "    if (!fun) return 0;"
     #item 2333
     set params_for_call \
      [ make_params_for_call $bare_params ]

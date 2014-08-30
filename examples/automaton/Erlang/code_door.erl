@@ -106,6 +106,12 @@ open(Message_, State) ->
         % item 53
         {next_state, locked, State}
     ;
+    dummy ->
+        % item 62
+        do_lock(),
+        % item 53
+        {next_state, locked, State}
+    ;
     _ ->
         % item 54
         {next_state, open, State}
