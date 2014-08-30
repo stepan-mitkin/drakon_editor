@@ -432,6 +432,18 @@ proc p.vertex_exists { gdb vertex_id } {
 	return [ expr { $count > 0 } ]
 }
 
+proc p.get_following { gdb vertex_id } {
+	set dsts [ $gdb eval {
+		select dst
+		from links
+		where src = :vertex_id } ]
+	if { [ llength $dsts ] != 1 } { return "" }
+	set dst [ lindex $dsts 0 ]
+	
+
+	return $dst
+}
+
 proc p.get_single_next { gdb vertex_id } {
 	set dsts [ $gdb eval {
 		select dst

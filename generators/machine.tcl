@@ -248,7 +248,7 @@ proc build_sub_diagram { gdb diagram_id state case parameters last_branch callba
     #item 527
     set param_text [ join $signature "\n" ]
     #item 699
-    set first [ gen::p.get_single_next $gdb $case ]
+    set first [ gen::p.get_following $gdb $case ]
     #item 869
     set original [ diagram_name $gdb $diagram_id ]
     #item 533

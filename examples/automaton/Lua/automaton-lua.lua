@@ -261,6 +261,11 @@ function lexer_number_digit(self, data, c)
     self.state = lexer_state_number
 end
 
+function lexer_number_dummy(self, data, c)
+    -- item 81
+    self.state = lexer_state_operator
+end
+
 function lexer_number_letter(self, data, c)
     -- item 76
     add_char(data, c)
@@ -441,21 +446,25 @@ function try_make_long_op(data, c)
 end
 
 lexer_state_idle.digit = lexer_idle_digit
+lexer_state_idle.dummy = lexer_idle_dummy
 lexer_state_idle.letter = lexer_idle_letter
 lexer_state_idle.operator = lexer_idle_operator
 lexer_state_idle.whitespace = lexer_idle_whitespace
 lexer_state_idle.state_name = "idle"
 lexer_state_identifier.digit = lexer_identifier_digit
+lexer_state_identifier.dummy = lexer_identifier_dummy
 lexer_state_identifier.letter = lexer_identifier_letter
 lexer_state_identifier.operator = lexer_identifier_operator
 lexer_state_identifier.whitespace = lexer_identifier_whitespace
 lexer_state_identifier.state_name = "identifier"
 lexer_state_number.digit = lexer_number_digit
+lexer_state_number.dummy = lexer_number_dummy
 lexer_state_number.letter = lexer_number_letter
 lexer_state_number.operator = lexer_number_operator
 lexer_state_number.whitespace = lexer_number_whitespace
 lexer_state_number.state_name = "number"
 lexer_state_operator.digit = lexer_operator_digit
+lexer_state_operator.dummy = lexer_operator_dummy
 lexer_state_operator.letter = lexer_operator_letter
 lexer_state_operator.operator = lexer_operator_operator
 lexer_state_operator.whitespace = lexer_operator_whitespace
@@ -466,6 +475,9 @@ function make_lexer()
   obj.state = lexer_state_idle
   obj.digit = function(self, data, c)
     self.state.digit(self, data, c)
+  end
+  obj.dummy = function(self, data, c)
+    self.state.dummy(self, data, c)
   end
   obj.letter = function(self, data, c)
     self.state.letter(self, data, c)
