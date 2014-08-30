@@ -429,6 +429,8 @@ proc make_machine_ctr { name states param_names messages } {
     #item 1902
     lappend lines \
      "  local obj = {}"
+    lappend lines \
+     "  obj.type_name = \"$name\""
     #item 1903
     set first [ lindex $states 0 ]
     lappend lines "  obj.state = ${name}_state_${first}"

@@ -462,6 +462,7 @@ lexer_state_operator.whitespace = lexer_operator_whitespace
 lexer_state_operator.state_name = "operator"
 function make_lexer()
   local obj = {}
+  obj.type_name = "lexer"
   obj.state = lexer_state_idle
   obj.digit = function(self, data, c)
     self.state.digit(self, data, c)
