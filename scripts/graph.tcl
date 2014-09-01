@@ -243,7 +243,26 @@ proc verify_one { db diagram_id } {
 	p.do_extract_auto $diagram_id
 }
 
+proc is_verilog {} {
+	array set properties [ mwc::get_file_properties ]
+	if { [ info exists properties(language) ] } {
+		set language $properties(language)
+		if { $language == "Verilog" } {
+			return 1
+		}
+	}
+	return 0
+}
+
 proc verify_all { db } {
+	if { [ is_verilog ] } {
+		verify_all_vlog $db
+	} else {
+		verify_all_std $db
+	}
+}
+
+proc verify_all_std { db } {
 	copy_from $db
 	$db eval {
 		select diagram_id

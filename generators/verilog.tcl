@@ -743,6 +743,15 @@ proc complain_dia { name message } {
     graph::p.error $id {} $message
 }
 
+proc do_monkey_patch { } {
+    #item 2126
+    set direction "forward"
+    #item 2127
+    monkey_patch_gen $direction
+    monkey_patch_graph $direction
+    monkey_patch_sma $direction
+}
+
 proc enforce_nogoto { name } {
     #item 1421
     complain_dia $name \
@@ -852,6 +861,35 @@ proc form_ascii_state_name { name len } {
 }
 
 proc generate { db gdb filename } {
+    #item 2137
+    do_monkey_patch
+    
+    if { [ catch {
+    	generate_kernel $db $gdb $filename
+    } message ] } {
+    	undo_monkey_patch
+    	error $message
+    } else {
+    	undo_monkey_patch
+    }
+}
+
+proc generate_body { gdb diagram_id start_item node_list sorted incoming } {
+    #item 1464
+    set callbacks \
+    [ make_callbaks ]
+    #item 1465
+    return [ cbody::generate_body \
+                 $gdb \
+                 $diagram_id \
+                 $start_item \
+                 $node_list \
+                 $sorted \
+                 $incoming \
+                 $callbacks ]
+}
+
+proc generate_kernel { db gdb filename } {
     #item 307
     variable tdb
     #item 308
@@ -903,25 +941,15 @@ proc generate { db gdb filename } {
         #item 3120003
         incr _ind312
     }
-    #item 1724
-    monkey_patch_graph forward
-    #item 324
-    monkey_patch_sma forward
     #item 326
     set machines \
     [ sma::extract_many_machines\
       $gdb $callbacks ]
-    #item 325
-    monkey_patch_sma reverse
-    #item 1725
-    monkey_patch_graph reverse
     #item 327
     set diagrams \
     [ $gdb eval {\
        select diagram_id\
        from diagrams } ]
-    #item 334
-    monkey_patch_gen forward
     #item 3350001
     set _col335 $diagrams
     set _len335 [ llength $_col335 ]
@@ -946,8 +974,6 @@ proc generate { db gdb filename } {
         #item 3350003
         incr _ind335
     }
-    #item 341
-    monkey_patch_gen reverse
     #item 342
     set use_nogoto \
     1
@@ -994,21 +1020,6 @@ proc generate { db gdb filename } {
             
         }
     }
-}
-
-proc generate_body { gdb diagram_id start_item node_list sorted incoming } {
-    #item 1464
-    set callbacks \
-    [ make_callbaks ]
-    #item 1465
-    return [ cbody::generate_body \
-                 $gdb \
-                 $diagram_id \
-                 $start_item \
-                 $node_list \
-                 $sorted \
-                 $incoming \
-                 $callbacks ]
 }
 
 proc get_all_insertions { functions } {
@@ -1751,7 +1762,8 @@ proc monkey_patch_graph { direction } {
     set functions \
     [ list \
     ::graph::is_machine \
-    ::graph::p.find_starts ]
+    ::graph::p.find_starts \
+    ::graph::copy_from ]
     #item 2095
     monkey_patch $direction $functions
 }
@@ -2986,6 +2998,15 @@ proc trim_lines { lines trim_chars } {
     return $result
 }
 
+proc undo_monkey_patch { } {
+    #item 2131
+    set direction "reverse"
+    #item 2132
+    monkey_patch_gen $direction
+    monkey_patch_graph $direction
+    monkey_patch_sma $direction
+}
+
 # end of namespace verilog_gen
 } 
 
@@ -2994,7 +3015,7 @@ namespace eval sma {
     variable g_last_present
     set g_last_present 0
 
-    proc all_start_with_receive_vlog { gdb diagram_id } {
+proc all_start_with_receive_vlog { gdb diagram_id } {
 	variable g_last_present
 	set g_last_present 0
 	#item 270
@@ -3122,7 +3143,7 @@ proc build_machine_vlog { gdb diagram_id callbacks } {
      "name" $dia_name ]
 }
 
-    proc find_end_vlog { gdb diagram_id } {
+proc find_end_vlog { gdb diagram_id } {
 	#item 659
 	$gdb eval {
 	    select item_id, text
@@ -3134,9 +3155,9 @@ proc build_machine_vlog { gdb diagram_id callbacks } {
 	    }
 	}
 	return [ insert_vertex $gdb $diagram_id "beginend" "End" ]
-    }
+}
 
-    proc message_types_for_select_vlog { gdb select } {
+proc message_types_for_select_vlog { gdb select } {
 	lassign [ get_type_text $gdb $select ] icon_type _
 	if { $icon_type == "action" } { return [list ""] }
 	#item 408
@@ -3171,7 +3192,7 @@ proc build_machine_vlog { gdb diagram_id callbacks } {
 
 namespace eval gen {
 
-    proc p.rewire_for_vlog { gdb start end parts append_semicolon } {
+proc p.rewire_for_vlog { gdb start end parts append_semicolon } {
 	set diagram_id [ p.vertex_diagram $gdb $start ]
 	lassign $parts init check advance
 	set item_id [ p.vertex_item $gdb $start ]
@@ -3187,10 +3208,10 @@ namespace eval gen {
 	    delete from links where src = :start;
 	    delete from vertices where vertex_id in (:start, :end);
 	}	
-    }
+}
 
 
-    proc fix_shelves { gdb callbacks append_semicolon diagram_id } {
+proc fix_shelves { gdb callbacks append_semicolon diagram_id } {
 	set shelf_proc [ get_callback $callbacks shelf ]
 	
 	set shelves [ $gdb eval {
@@ -3203,13 +3224,13 @@ namespace eval gen {
 	foreach shelf $shelves {
 	    process_shelf $gdb $shelf $shelf_proc
 	}
-    }
+}
     
 }
 
 namespace eval graph {
 
-    proc p.find_starts_vlog { diagram_id } {
+proc p.find_starts_vlog { diagram_id } {
 	variable end_text_rus
 	set ends_count 0
 	set starts {}
@@ -3249,9 +3270,9 @@ namespace eval graph {
 	    p.error $diagram_id {} [ mc2 "The diagram must have one or more starts." ]
 	}
 	return $starts
-    }
+}
 
-    proc is_machine_vlog { diagram_id } {
+proc is_machine_vlog { diagram_id } {
 
 	if { ![ mwc::is_drakon $diagram_id ] } { return 0 }
 
@@ -3285,10 +3306,10 @@ namespace eval graph {
 	}
 
 	return 0
-    }
+}
 
 
-    proc copy_from_vlog { db } {
+proc copy_from_vlog { db } {
 	graph2::reset.counter
 	
 	p.create_db
@@ -3336,54 +3357,20 @@ namespace eval graph {
 		values (:diagram_id, :name)
 	    }
 	}
-    }
+}
 
-
-    # спец обработка графа для верилога
-    proc verify_all { db } {
-	array set properties [ mwc::get_file_properties ]
-	set language $properties(language)
+# спец обработка графа для верилога
+proc verify_all_vlog { db } {
+	verilog_gen::do_monkey_patch
 	
-
-	if { $language == "Verilog" } {
-            if { [ info procs ::graph::copy_from_backup ] == "" } {
-	    	rename ::graph::copy_from ::graph::copy_from_backup
-	    	rename ::graph::copy_from_vlog ::graph::copy_from
-
-	    	rename ::graph::is_machine ::graph::is_machine_backup
-	    	rename ::graph::is_machine_vlog ::graph::is_machine
-
-	    	rename ::graph::p.find_starts ::graph::p.find_starts_backup
-	    	rename ::graph::p.find_starts_vlog ::graph::p.find_starts
-            }
+	if { [ catch {
+		verify_all_std $db
+	} message ] } {
+		verilog_gen::undo_monkey_patch
+		error $message
+	} else {
+		verilog_gen::undo_monkey_patch
 	}
-	
-	copy_from $db
-	$db eval {
-	    select diagram_id
-	    from diagrams
-	} {
-
-	    
-	    p.do_build_graph $diagram_id
-	    if { ![ mwc::is_drakon $diagram_id ] } { continue }
-	    
-	    if { [ p.errors $diagram_id ] } { continue }
-	    p.do_extract_auto $diagram_id
-	}
-	
-	if { $language == "Verilog" } {
-	    rename ::graph::copy_from ::graph::copy_from_vlog
-	    rename ::graph::copy_from_backup ::graph::copy_from
-
-	    rename ::graph::is_machine ::graph::is_machine_vlog
-	    rename ::graph::is_machine_backup ::graph::is_machine
-
-	    rename ::graph::p.find_starts ::graph::p.find_starts_vlog
-	    rename ::graph::p.find_starts_backup ::graph::p.find_starts
-
-	}
-    }
-
+}
 
 }

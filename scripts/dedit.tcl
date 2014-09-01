@@ -3290,6 +3290,15 @@ proc property_keys { } {
 
 proc get_file_properties { } {
 	variable db
+	
+	set name [ $db onecolumn {
+		SELECT name FROM sqlite_master WHERE type='table' AND name='info'
+	} ]
+	
+	if { $name == "" } {
+		return {}
+	}
+	
 	set result {}
 	set keys [ property_keys ]
 	$db eval {
