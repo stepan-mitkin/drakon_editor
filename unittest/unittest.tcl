@@ -1,4 +1,4 @@
-#!/usr/bin/tclsh8.5
+#!/usr/bin/env tclsh8.6
 
 package require msgcat
 namespace import ::msgcat::mc
