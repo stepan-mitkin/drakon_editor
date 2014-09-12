@@ -141,13 +141,54 @@ function foreachDemo() {
     printListArrow(sequence);
     printListFor(sequence);
     printListForeach(sequence);
+    foreachWithKeys(sequence);
+    // item 337
+    var user = { email: "user@example.com", name: "Buster" };
+    foreachWithKeys(user);
     // item 156
     print();
+}
+
+function foreachWithKeys(collection) {
+    // item 320
+    print("using foreach with keys:");
+    // item 334
+    var list = [];
+    // item 3160001
+    var _ind316 = 0;
+    var _col316 = collection;
+    var _keys316 = Object.keys(_col316); 
+    var _len316 = _keys316.length;
+    while (true) {
+        // item 3160002
+        if (_ind316 < _len316) {
+            
+        } else {
+            break;
+        }
+        // item 3160004
+        var key = _keys316[_ind316]; var item = _col316[key];
+        // item 317
+        list.push(key + ":" + item);
+        // item 3160003
+        _ind316++;
+    }
+    // item 333
+    printArray(list);
+}
+
+function printArray(list) {
+    // item 329
+    var items = list.join(", ");
+    // item 330
+    print(items);
 }
 
 function printListArrow(collection) {
     // item 131
     print("using if and arrow:");
+    // item 336
+    var list = [];
     // item 126
     var length = collection.length;
     var i = 0;
@@ -160,17 +201,19 @@ function printListArrow(collection) {
         }
         // item 125
         var item = collection[i];
-        print(item);
+        list.push(item);
         // item 129
         i++;
     }
-    // item 132
-    print("");
+    // item 335
+    printArray(list);
 }
 
 function printListFor(collection) {
     // item 142
     print("using for:");
+    // item 332
+    var list = [];
     // item 184
     var length = collection.length;
     // item 1390001
@@ -184,17 +227,19 @@ function printListFor(collection) {
         }
         // item 183
         var item = collection[i];
-        print(item);
+        list.push(item);
         // item 1390003
         i += 1
     }
-    // item 143
-    print("");
+    // item 331
+    printArray(list);
 }
 
 function printListForeach(collection) {
     // item 119
     print("using foreach:");
+    // item 322
+    var list = [];
     // item 1150001
     var _ind115 = 0;
     var _col115 = collection;
@@ -210,12 +255,12 @@ function printListForeach(collection) {
         // item 1150004
         var item = _col115[_keys115[_ind115]];
         // item 116
-        print(item);
+        list.push(item);
         // item 1150003
         _ind115++;
     }
     // item 118
-    print("");
+    printArray(list);
 }
 
 function quicksort(comparer, collection, begin, end) {

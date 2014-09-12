@@ -26,12 +26,30 @@ proc foreach_current { item_id first second } {
 	set index_var "_ind$item_id"
 	set coll_var "_col$item_id"
 	set keys_var "_keys$item_id"
-	return "var $first = $coll_var\[$keys_var\[$index_var\]\];"
+	lassign [ parse_key_value $first ] key value
+	if { $key == "" } {
+        return "var $first = $coll_var\[$keys_var\[$index_var\]\];"
+    } else {
+        return "var $key = $keys_var\[$index_var\]; var $value = $coll_var\[$key\];"
+    }
 }
 
 proc foreach_incr { item_id first second } {
 	set index_var "_ind$item_id"
 	return "$index_var++;"
+}
+
+proc parse_key_value { item } {
+    set parts [ split $item "," ]
+    if { [ llength $parts ] > 1 } {
+        set key [ string trim [ lindex $parts 0 ] ]
+        set value [ string trim [ lindex $parts 1 ] ]
+    } else {
+        set value [ string trim [ lindex $parts 0 ] ]
+        set key ""
+    }
+    
+    return [ list $key $value ]
 }
 
 proc make_callbacks { } {
