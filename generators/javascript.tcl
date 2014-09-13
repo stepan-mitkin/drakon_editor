@@ -3,6 +3,8 @@ gen::add_generator Javascript gen_js::generate
 
 namespace eval gen_js {
 
+variable handlers {}
+
 proc shelf { primary secondary } {
 	return "$secondary = $primary;"
 }
@@ -77,7 +79,7 @@ proc make_callbacks { } {
 	gen::put_callback callbacks for_current		gen_js::foreach_current
 	gen::put_callback callbacks for_incr		gen_js::foreach_incr
 	gen::put_callback callbacks body			gen_js::generate_body
-	gen::put_callback callbacks signature		gen_tcl::extract_signature
+	gen::put_callback callbacks signature		gen_js::extract_signature
 	gen::put_callback callbacks and				gen_java::p.and
 	gen::put_callback callbacks or				gen_java::p.or
 	gen::put_callback callbacks not				gen_java::p.not
@@ -86,8 +88,49 @@ proc make_callbacks { } {
 	gen::put_callback callbacks for_declare		gen_js::for_declare
 	gen::put_callback callbacks shelf		gen_js::shelf
 	
-
+    gen::put_callback callbacks change_state 	gen_js::change_state
+    gen::put_callback callbacks fsm_merge   0
+    
 	return $callbacks
+}
+
+proc extract_signature { text name } {
+	set lines [ gen::separate_from_comments $text ]
+	set first_line [ lindex $lines 0 ]
+	set first [ lindex $first_line 0 ]
+	if { $first == "#comment" } {
+		return [ list {} [ gen::create_signature "comment" {} {} {} ]]
+	}
+
+    variable handlers
+    set is_handler [ contains $handlers $name ]
+    
+	set parameters {}
+	if { $is_handler } {
+        lappend parameters {self {}}
+	}
+	foreach current $lines {
+        if { $is_handler } {
+            set left [ lindex $current 0 ]
+            if { $left == "private" || $left == "state machine" } {
+                continue
+            }
+        }
+		lappend parameters $current
+	}
+
+	return [ list {} [ gen::create_signature procedure public $parameters "" ] ]
+}
+
+proc change_state { next_state machine_name } {
+    #item 1832
+    if {$next_state == ""} {
+        #item 1836
+        return "self.state = null;"
+    } else {
+        #item 1835
+        return "self.state = ${machine_name}_state_${next_state};"
+    }
 }
 
 proc p.declare { type name value } {
@@ -126,27 +169,153 @@ proc for_declare { item_id first second } {
 }
 
 proc generate { db gdb filename } {
+    # prepare
+    
 	set callbacks [ make_callbacks ]
+	lassign [ gen::scan_file_description $db { header footer } ] header footer
+	
+	# state machines
+	
+    set machines [ sma::extract_many_machines $gdb $callbacks ]
+     
+    variable handlers
+    set handlers [ append_sm_names $gdb ]
+    set machine_ctrs [ make_machine_ctrs $gdb $machines ]
+    set machine_decl [ make_machine_declares $machines ]	
+	
+	# fix
+	
+    set diagrams [ $gdb eval {
+        select diagram_id from diagrams } ]
+    
+    foreach diagram_id $diagrams {
+        gen::fix_graph_for_diagram $gdb $callbacks 1 $diagram_id
+    }
 
-	gen::fix_graph $gdb $callbacks 0
-	unpack [ gen::scan_file_description $db { header footer } ] header footer
-
+    if { [ graph::errors_occured ] } { return }
+    
+    # generate
+    
 	set use_nogoto 1
 	set functions [ gen::generate_functions $db $gdb $callbacks $use_nogoto ]
 
 	if { [ graph::errors_occured ] } { return }
 
-
+    # write output
+    
 	set hfile [ replace_extension $filename "js" ]
 	set f [ open $hfile w ]
 	catch {
-		p.print_to_file $f $functions $header $footer
+		p.print_to_file $f $functions $header $footer $machine_decl $machine_ctrs
 	} error_message
 
 	catch { close $f }
 	if { $error_message != "" } {
 		error $error_message
 	}
+}
+
+proc make_machine_ctrs { gdb machines } {
+    set result ""
+    foreach machine $machines {
+        set states [ dict get $machine "states"]
+        set param_names [ dict get $machine "param_names" ]
+        set messages [ dict get $machine "messages" ]
+        set name [ dict get $machine "name" ]
+
+        set ctr [make_machine_ctr $gdb $name $states $param_names $messages]
+
+        append result $ctr    
+    }
+    return $result
+}
+
+proc get_function { gdb name state message} {
+    set diagram_name "${name}_${state}_${message}"
+    set found [ $gdb onecolumn {
+        select count(*)
+        from diagrams
+        where name = :diagram_name
+    } ]
+    
+    if { $found == 1 } {
+        return $diagram_name
+    } else {
+        return "function\(\) \{\}"
+    }
+}
+
+proc make_machine_ctr { gdb name states param_names messages } {
+    set lines {}
+    
+    foreach state $states {
+        foreach message $messages {
+            set fun [ get_function $gdb $name $state $message ]
+            lappend lines \
+             "${name}_state_${state}.$message = $fun;"            
+        }
+        lappend lines "${name}_state_${state}.state_name = \"$state\";"
+    }
+    
+    
+    set params [ lrange $param_names 1 end ]
+    set params_str [ join $params ", " ]
+
+    lappend lines "function ${name}\(\) \{"
+
+    lappend lines \
+     "  this.type_name = \"$name\";"
+
+    set first [ lindex $states 0 ]
+    lappend lines "  this.state = ${name}_state_${first};"
+    
+    foreach message $messages {
+        lappend lines \
+         "  this.$message = function\($params_str\) \{"
+        lappend lines \
+         "    this.state.$message\(this, $params_str\);"
+        lappend lines \
+         "  \}"
+    }
+    
+    lappend lines \
+     "\}"
+    
+    return [ join $lines "\n" ]
+}
+
+proc make_machine_declares { machines } {
+    set lines {}
+    foreach machine $machines {
+        set states [ dict get $machine "states"]
+        set name [ dict get $machine "name" ]
+        foreach state $states {
+            lappend lines "var ${name}_state_${state} = \{\};"
+        }
+    }
+    return [ join $lines "\n" ]
+}
+
+proc append_sm_names { gdb } {
+    #item 1852
+    set ids {}
+    #item 1825
+    $gdb eval {
+    	select diagram_id, original, name
+    	from diagrams
+    	where original is not null
+    } {
+    	set sm_name $original
+    	set new_name "${sm_name}_$name"
+    	$gdb eval {
+    		update diagrams
+    		set name = :new_name
+    		where diagram_id = :diagram_id
+    	}
+    	lappend ids $new_name
+    }
+    #item 1853
+    return $ids
 }
 
 proc build_declaration { name signature } {
@@ -162,7 +331,7 @@ proc build_declaration { name signature } {
 	return $result
 }
 
-proc p.print_to_file { fhandle functions header footer } {
+proc p.print_to_file { fhandle functions header footer machine_decl machine_ctrs } {
 	if { $header != "" } {
 		puts $fhandle $header
 	}
@@ -170,7 +339,7 @@ proc p.print_to_file { fhandle functions header footer } {
 	puts $fhandle \
 	    "// Autogenerated with DRAKON Editor $version"
 
-
+    puts $fhandle $machine_decl
 	foreach function $functions {
 		unpack $function diagram_id name signature body
 		set type [ lindex $signature 0 ]
@@ -183,6 +352,7 @@ proc p.print_to_file { fhandle functions header footer } {
 			puts $fhandle "\}"
 		}
 	}
+	puts $fhandle $machine_ctrs
 	puts $fhandle ""
 	puts $fhandle $footer
 }
