@@ -318,9 +318,26 @@ proc append_sm_names { gdb } {
     return $ids
 }
 
+proc is_closure { name } {
+    if { [ string match "* function" $name ] } {
+        return 1
+    }
+    
+    if { [ string match "*=function" $name ] } {
+        return 1
+    }
+    
+    return 0
+}    
+
 proc build_declaration { name signature } {
-	unpack $signature type access parameters returns
-	set result "function $name\("
+	lassign $signature type access parameters returns
+	if { [ is_closure $name ] } {
+        set result "$name\("
+    } else {
+        set result "function $name\("
+    }
+    
 	set params {}
 	foreach parameter $parameters {
 		lappend params [ lindex $parameter 0 ]
@@ -341,7 +358,7 @@ proc p.print_to_file { fhandle functions header footer machine_decl machine_ctrs
 
     puts $fhandle $machine_decl
 	foreach function $functions {
-		unpack $function diagram_id name signature body
+		lassign $function diagram_id name signature body
 		set type [ lindex $signature 0 ]
 		if { $type != "comment" } {
 			puts $fhandle ""

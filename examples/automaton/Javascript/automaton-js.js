@@ -1,5 +1,10 @@
 "use strict";
 
+
+var AutoDemo = {};
+
+(function(ns, undefined) { // Begin of namespace
+
 var TT_NUMBER = "number";
 var TT_OPERATOR = "operator";
 var TT_IDENTIFIER = "identifier";
@@ -344,14 +349,14 @@ function lex_init() {
     }
 }
 
-function main() {
+ns.main = function() {
     // item 346
     lex_init();
     // item 161
-    var text = "foo.Bar(34 / 4-(18+m * 3)) ==800";
+    var text = " foo.Bar(34 / 4-(18+m * 3)) ==800";
     var tokens = tokenize(text);
     // item 207
-    print("Text:\n" + text);
+    print("Text:\n" + text + "\n");
     print("Tokens:");
     // item 3570001
     var _ind357 = 0;
@@ -386,7 +391,7 @@ function token_create(type, chars) {
 
 function token_print(token) {
     // item 333
-    var message = token.type + ": " + token.text;
+    var message = " " + token.type + ": " + token.text;
     // item 355
     print(message);
 }
@@ -506,4 +511,6 @@ function Lexer() {
   }
 }
 
-main();
+})(AutoDemo); // End of namespace
+
+AutoDemo.main();
