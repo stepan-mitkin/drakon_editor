@@ -36,6 +36,10 @@ proc foreach_current { item_id first second } {
     }
 }
 
+proc compare { variable constant } {
+    return "$variable === $constant"
+}
+
 proc foreach_incr { item_id first second } {
 	set index_var "_ind$item_id"
 	return "$index_var++;"
@@ -58,8 +62,8 @@ proc make_callbacks { } {
 	set callbacks {}
 	
 	gen::put_callback callbacks assign			gen_java::assign
-	gen::put_callback callbacks compare			gen_java::compare
-	gen::put_callback callbacks compare2		gen_java::compare2
+	gen::put_callback callbacks compare			gen_js::compare
+	gen::put_callback callbacks compare2		gen_js::compare
 	gen::put_callback callbacks while_start 	gen_java::while_start
 	gen::put_callback callbacks if_start		gen_java::if_start
 	gen::put_callback callbacks elseif_start	gen_java::elseif_start

@@ -88,11 +88,11 @@ function fibonacci(n) {
     // item 185
     var result = [0];
     // item 1610001
-    if (n == 0) {
+    if (n === 0) {
         
     } else {
         // item 1610002
-        if (n == 1) {
+        if (n === 1) {
             // item 187
             result.push(1);
         } else {
@@ -280,11 +280,11 @@ function quicksort(comparer, collection, begin, end) {
     var length = end - begin;
     var last = end - 1;
     // item 2040001
-    if ((length == 0) || (length == 1)) {
+    if ((length === 0) || (length === 1)) {
         
     } else {
         // item 2040003
-        if (length == 2) {
+        if (length === 2) {
             // item 219
             if (compare(comparer, collection, begin, last) <= 0) {
                 
@@ -371,7 +371,7 @@ function stringsAreSorted(array) {
     var _next_item_ = 0;
     _next_item_ = 710002;
     while (true) {
-        if (_next_item_ == 710002) {
+        if (_next_item_ === 710002) {
             if (i < length) {
                 // item 73
                 current = array[i];
@@ -382,7 +382,7 @@ function stringsAreSorted(array) {
                 return null;
             }
     
-        } else if (_next_item_ == 740002) {
+        } else if (_next_item_ === 740002) {
             if (j < length) {
                 // item 76
                 var after = array[j];
@@ -395,35 +395,35 @@ function stringsAreSorted(array) {
                 _next_item_ = 710002;
             }
     
-        } else if (_next_item_ == 810001) {
-            if (_sw810000_ == 1) {
+        } else if (_next_item_ === 810001) {
+            if (_sw810000_ === 1) {
                 // item 90
                 _next_item_ = 740003;
             } else {
                 _next_item_ = 810002;
             }
     
-        } else if (_next_item_ == 810002) {
-            if (_sw810000_ == 0) {
+        } else if (_next_item_ === 810002) {
+            if (_sw810000_ === 0) {
                 // item 89
                 _next_item_ = 740003;
             } else {
                 _next_item_ = 810003;
             }
     
-        } else if (_next_item_ == 740003) {
+        } else if (_next_item_ === 740003) {
             j += 1;
             _next_item_ = 740002;
     
-        } else if (_next_item_ == 810003) {
-            if (_sw810000_ == -1) {
+        } else if (_next_item_ === 810003) {
+            if (_sw810000_ === -1) {
                 _next_item_ = 88;
             } else {
                 // item 810004
                 _next_item_ = 88;
             }
     
-        } else if (_next_item_ == 88) {
+        } else if (_next_item_ === 88) {
             // item 259
             print("current = " + current);
             print("after = " + after);
@@ -499,6 +499,8 @@ function twoLoopsInOneFunction() {
     printArray(list2);
 }
 
+
+// Your code at the end of the file.
 
 })(Demo); // End of namespace
 
