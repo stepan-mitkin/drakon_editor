@@ -60,11 +60,6 @@ int GetPathToTcl(char* output, int length)
 		return 1;
 	}
 	
-	if (GetCommandOutput("which tclsh8.5", output, length))
-	{
-		return 1;
-	}
-	
 	return 0;
 }
 

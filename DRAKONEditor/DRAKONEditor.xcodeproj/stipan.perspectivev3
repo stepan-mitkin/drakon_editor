@@ -303,6 +303,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -344,6 +346,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
+									<integer>5</integer>
+									<integer>3</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -393,7 +397,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>CD12635B18A6536400607B61</string>
+										<string>CDE15F8B19CF413800B72DC7</string>
 										<key>history</key>
 										<array>
 											<string>CD5987D3149352FC00FFCB9A</string>
@@ -402,7 +406,7 @@
 											<string>CD011D52176C5ADA00531BAE</string>
 											<string>CD6749501794A98C00C7F70A</string>
 											<string>CD1DDE4818511D4100370924</string>
-											<string>CD12634E18A650C500607B61</string>
+											<string>CDE15F6619CF39B500B72DC7</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -416,18 +420,18 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {1057, 553}}</string>
+								<string>{{0, 0}, {1057, 545}}</string>
 								<key>RubberWindowFrame</key>
 								<string>0 56 1235 722 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>553pt</string>
+							<string>545pt</string>
 						</dict>
 						<dict>
 							<key>Proportion</key>
-							<string>123pt</string>
+							<string>131pt</string>
 							<key>Tabs</key>
 							<array>
 								<dict>
@@ -441,7 +445,7 @@
 									<key>GeometryConfiguration</key>
 									<dict>
 										<key>Frame</key>
-										<string>{{10, 27}, {1057, 96}}</string>
+										<string>{{10, 27}, {1057, 104}}</string>
 										<key>RubberWindowFrame</key>
 										<string>0 56 1235 722 0 0 1280 778 </string>
 									</dict>
@@ -525,11 +529,11 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>CD126337189E744300607B61</string>
+				<string>CDE15F7019CF39C000B72DC7</string>
 				<string>1CA23ED40692098700951B8B</string>
-				<string>CD126338189E744300607B61</string>
+				<string>CDE15F7119CF39C000B72DC7</string>
 				<string>CD5987A31493498600FFCB9A</string>
-				<string>CD126339189E744300607B61</string>
+				<string>CDE15F7219CF39C000B72DC7</string>
 				<string>1CA23EDF0692099D00951B8B</string>
 				<string>1CA23EE00692099D00951B8B</string>
 				<string>1CA23EE10692099D00951B8B</string>
@@ -702,7 +706,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>413553508.63934898</real>
+	<real>433013047.93119198</real>
 	<key>ToolbarConfigUserDefaultsMinorVersion</key>
 	<string>2</string>
 	<key>ToolbarDisplayMode</key>
@@ -719,7 +723,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>/Users/stipan/Documents/progs/ds/DRAKONEditor/DRAKONEditor.xcodeproj</string>
+		<string>/Users/stipan/drakon_editor/DRAKONEditor/DRAKONEditor.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>0 56 1235 722 0 0 1280 778 </string>
