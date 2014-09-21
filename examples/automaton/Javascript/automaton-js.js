@@ -353,11 +353,15 @@ ns.main = function() {
     // item 346
     lex_init();
     // item 161
-    var text = " foo.Bar(34 / 4-(18+m * 3)) ==800";
+    var text = "foo.Bar(34 / 4-(18+m * 3)) ==800";
     var tokens = tokenize(text);
     // item 207
-    print("Text:\n" + text + "\n");
-    print("Tokens:");
+    printHeader("Text to parse");
+    printLine(text);
+    printHeader("Tokens");
+    // item 381
+    addHTML("<table id='table1'></table>");
+    addTableLine("table1", "th", "Token type", "Token text");
     // item 3570001
     var _ind357 = 0;
     var _col357 = tokens;
@@ -390,10 +394,13 @@ function token_create(type, chars) {
 }
 
 function token_print(token) {
-    // item 333
-    var message = " " + token.type + ": " + token.text;
-    // item 355
-    print(message);
+    // item 386
+    addTableLine(
+    	"table1",
+    	"td",
+    	token.type,
+    	token.text
+    );
 }
 
 function tokenize(text) {

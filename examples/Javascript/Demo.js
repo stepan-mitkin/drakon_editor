@@ -1,6 +1,9 @@
 // Your code at the beginning of the file.
 "use strict;"
 
+
+// We use the "closure" namespace pattern here.
+// But it is not necessary.
 var Demo = {};
 
 (function(ns, undefined) { // Begin of namespace
@@ -124,7 +127,7 @@ function fibonacci(n) {
 
 function foreachDemo() {
     // item 155
-    print("iteration demo");
+    printElement("h2", "Iteration demo");
     // item 153
     var sequence = fibonacci(15);
     // item 154
@@ -137,13 +140,11 @@ function foreachDemo() {
     foreachWithKeys(user);
     // item 362
     twoLoopsInOneFunction();
-    // item 156
-    print();
 }
 
 function foreachWithKeys(collection) {
     // item 320
-    print("using foreach with keys:");
+    printHeader("Using 'foreach' with keys");
     // item 334
     var list = [];
     // item 3160001
@@ -170,9 +171,6 @@ function foreachWithKeys(collection) {
 }
 
 ns.main = function() {
-    // item 52
-    print("DRAKON-Javascript demo");
-    print("======================");
     // item 310
     alt_select_test();
     // item 189
@@ -189,12 +187,12 @@ function printArray(list) {
     // item 329
     var items = list.join(", ");
     // item 330
-    print(items);
+    printLine(items);
 }
 
 function printListArrow(collection) {
     // item 131
-    print("using if and arrow:");
+    printHeader("Using 'if' and arrow");
     // item 336
     var list = [];
     // item 126
@@ -219,7 +217,7 @@ function printListArrow(collection) {
 
 function printListFor(collection) {
     // item 142
-    print("using for:");
+    printHeader("Using 'for'");
     // item 332
     var list = [];
     // item 184
@@ -245,7 +243,7 @@ function printListFor(collection) {
 
 function printListForeach(collection) {
     // item 119
-    print("using foreach:");
+    printHeader("Using 'foreach'");
     // item 322
     var list = [];
     // item 1150001
@@ -330,7 +328,7 @@ function quicksort(comparer, collection, begin, end) {
 
 function quicksortDemo() {
     // item 62
-    print("quick sort demo");
+    printElement("h2", "Quick sort demo");
     // item 58
     var unsorted = [ "the", "sooner", "we", "start", "this", "the", "better" ];
     var sorted   = [ "aa", "bb", "cc", "dd", "ee", "ff" ];
@@ -351,13 +349,11 @@ function quicksortDemo() {
     stringsAreSorted(empty);
     stringsAreSorted(flat);
     // item 60
-    print(unsorted);
-    print(sorted);
-    print(reverse);
-    print(empty);
-    print(flat);
-    // item 65
-    print();
+    printLine(unsorted);
+    printLine(sorted);
+    printLine(reverse);
+    printLine(empty);
+    printLine(flat);
 }
 
 function stringsAreSorted(array) {
@@ -425,11 +421,11 @@ function stringsAreSorted(array) {
     
         } else if (_next_item_ === 88) {
             // item 259
-            print("current = " + current);
-            print("after = " + after);
-            print("collection = " + array);
-            print("result = " + current.localeCompare(after));
-            print("...not sorted.");
+            printLine("current = " + current);
+            printLine("after = " + after);
+            printLine("collection = " + array);
+            printLine("result = " + current.localeCompare(after));
+            printLine("...not sorted.");
             // item 77
             throw "Collection is not sorted.";
     

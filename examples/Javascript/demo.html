@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>DRAKON-JavaScript demo</title>
+
+<style>
+body {
+    font-family: Georgia, Serif;
+    
+    background-color: #e0e0ff;
+}
+
+p {
+    font-size: 12pt;
+}
+
+h1 {
+    background-color: #000090;
+    border-radius: 8px;
+    color: white;
+    padding: 5px;
+    font-size: 18pt;
+}
+
+h2 {
+    font-size: 18pt;
+    text-align: center;
+}
+
+h3 {
+    font-size: 14pt;
+}
+
+#output {
+    background-color: #ffffff;
+    margin: 0px;
+    padding: 5px;
+    border: solid black 1px;
+    border-radius: 8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>DRAKON-JavaScript demo</h1>
+<p><a href="http://drakon-editor.sourceforge.net/">http://drakon-editor.sourceforge.net/</a></p>
+<p>The text below is the output of a script in the <b>Demo.js</b> file.</p>
+<p><b>Demo.js</b> was generated with DRAKON Editor from <b>Demo.drn</b>.</p>
+
+<div id="output">
+</div>
+
+</body>
+<script>
+function printElement(tag, text) {
+    var element = document.createElement(tag);
+    var t = document.createTextNode(text);
+    element.appendChild(t);
+    var output = document.getElementById("output");
+    output.appendChild(element);
+}
+function printLine(text) {
+    printElement("p", text);
+}
+
+function printHeader(text) {
+    printElement("h3", text);
+}
+</script>
+
+<script src="Demo.js"></script>
+
+
+</html>
