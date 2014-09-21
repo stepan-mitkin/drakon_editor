@@ -25,7 +25,7 @@
 <p>A: No. DRAKON Editor keeps your data in an Sqlite database file. There are free viewers that can browse and edit such files. See <b>docs/drn_file_format.html</b> for details.</p>
 
 <p><b>Q: Can I write real programs with DRAKON Editor?</b></p>
-<p>A: Yes! Currently, Java, Processing.org, C#, Plain C, C++, Python, Tcl, Javascript, Lua and Erlang are supported. Tutorials can be found in the <b>examples/language</b> folders.</p>
+<p>A: Yes! Currently, Java, Processing.org, C#, Plain C, C++, Python, Tcl, Javascript, Lua, Erlang, Verilog and AutoHotkey are supported. Tutorials can be found in the <b>examples/language</b> folders.</p>
 
 <p><b>Q: How to change the fonts?</b></p>
 <p>A: To change the screen font, go to <b>File/File properties...</b> and choose the <b>Canvas font</b>.</p>
@@ -39,8 +39,8 @@
 
 <p>DRAKON Editor does not require any installation besides unzipping. It requires, however, <i>tcl</i> to be present on your computer:</p>
 <ul>
-<li><b>Windows</b> and <b>Mac OS</b>: download and install ActiveTcl: <a href="http://www.activestate.com/activetcl/downloads">http://www.activestate.com/activetcl/downloads</a></li>
-<li><b>Linux</b>: install the following packages: tcl8.5, tk8.5, tcllib, libsqlite3-tcl, libtk-img.
+<li><b>Windows</b> and <b>Mac OS</b>: download and install ActiveTcl 8.6: <a href="http://www.activestate.com/activetcl/downloads">http://www.activestate.com/activetcl/downloads</a></li>
+<li><b>Linux</b>: install the following packages: tcl8.6, tk8.6, tcllib, libsqlite3-tcl, libtk-img.
 </ul>
 
 <h2>Shortcuts</h2>
@@ -138,9 +138,15 @@
 
 <h2>What's new in version 1.23</h2>
 <ul>
-<li>AutoHotkey support.</li>
-<li>Verilog support.</li>
-<li>State machines and ERIL in the C language code generator.</li>
+<li>Code generation for the AutoHotkey language.</li>
+<li>Code generation for the Verilog language.</li>
+<li>Code generation for state machines (finite automata) in Lua and JavaScript.</li>
+<li>Improvements in the JavaScript generator: better iteration, support for method functions and "closure" namespaces.</li>
+<li>State machines and ERIL support in the code generator for the C language.</li>
+<li>More flexibility added to "Select-Case" icons. It is now possible to put any condition in a "Case" icon, not just a value. </li>
+<li>Other small improvements in code generation for several languages.</li>
+<li>Bug fixes.</li>
+<li>Switch to Tcl/Tk 8.6. It's a major change in system requirements. DRAKON Editor now needs Tcl/Tk 8.6 to run. Tcl/Tk 8.5 is not supported any more.</li>
 </ul>
 
 <h2>What's new in version 1.22</h2>
@@ -317,6 +323,6 @@
 <p>Stepan Mitkin, Alexander Ilyin, Maas-Maarten Zeeman, Vasil Dyadov, Vasili Bachiashvili.</p>
 <p><a href="http://drakon-editor.sourceforge.net/">http://drakon-editor.sourceforge.net/</a></p>
 <p><b>drakon.editor@gmail.com</b></p>
-<p>7 February 2014.</p>
+<p>21 September 2014.</p>
 </body>
 </html>
