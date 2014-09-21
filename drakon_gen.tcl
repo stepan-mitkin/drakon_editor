@@ -15,7 +15,7 @@ proc require { package errors } {
 
 require msgcat {
 	"This script requires MsgCat package."
-	"Consider installing tk8.5 or later."
+	"Consider installing tk8.6 or later."
 }
 namespace import ::msgcat::mc
 
@@ -53,7 +53,7 @@ load_generators
 
 proc print_usage { } {
 	puts "\nThis utility generates code from a .drn file."
-	puts "Usage: tclsh8.5 drakon_gen.tcl <options>"
+	puts "Usage: tclsh8.6 drakon_gen.tcl <options>"
 	puts "Options:"
 	puts "-in <filename>          The input filename."
 	puts "-out <dir>              The output directory. Optional."

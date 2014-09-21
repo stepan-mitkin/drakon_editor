@@ -29,12 +29,12 @@ require snit {
 
 require Tk {
 	"This script requires Tk package."
-	"Consider installing tk8.5 or later."
+	"Consider installing tk8.6 or later."
 }
 
 require msgcat {
 	"This script requires MsgCat package."
-	"Consider installing tk8.5 or later."
+	"Consider installing tk8.6 or later."
 }
 
 require Img {
@@ -43,12 +43,12 @@ require Img {
 }
 
 
-if { $tk_version < 8.5 || $tcl_version < 8.5 } {
+if { $tk_version < 8.6 || $tcl_version < 8.6 } {
 	puts "tcl version: $tcl_version"
 	puts "tk version: $tk_version"
 
-	puts "This script requires Tk package of version at least 8.5."
-	puts "Consider installing tk8.5 or later."
+	puts "This script requires Tk package of version at least 8.6."
+	puts "Consider installing tk8.6 or later."
 	exit
 }
 
