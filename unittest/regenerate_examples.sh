@@ -1,5 +1,20 @@
 #!/usr/bin/env bash
 
+tclsh8.6 ../drakon_gen.tcl -in "../docs/AutoHotkey/Diagrams from Documentation/1 (Hello, world).drn"
+tclsh8.6 ../drakon_gen.tcl -in "../docs/AutoHotkey/Diagrams from Documentation/2 (header and footer).drn"
+tclsh8.6 ../drakon_gen.tcl -in "../docs/AutoHotkey/Diagrams from Documentation/3 Free type (Hello, world).drn"
+tclsh8.6 ../drakon_gen.tcl -in "../docs/AutoHotkey/Diagrams from Documentation/4 (hotkey diagrams).drn"
+tclsh8.6 ../drakon_gen.tcl -in "../docs/AutoHotkey/Diagrams from Documentation/5 (sum of parameters).drn"
+tclsh8.6 ../drakon_gen.tcl -in "../docs/AutoHotkey/Diagrams from Documentation/6 (if).drn"
+tclsh8.6 ../drakon_gen.tcl -in "../docs/AutoHotkey/Diagrams from Documentation/7 (Switch).drn"
+tclsh8.6 ../drakon_gen.tcl -in "../docs/AutoHotkey/Diagrams from Documentation/8 (Switch).drn"
+tclsh8.6 ../drakon_gen.tcl -in "../docs/AutoHotkey/Diagrams from Documentation/9 (Do-check loop).drn"
+tclsh8.6 ../drakon_gen.tcl -in "../docs/AutoHotkey/Diagrams from Documentation/10 (Check-Do loop).drn"
+tclsh8.6 ../drakon_gen.tcl -in "../docs/AutoHotkey/Diagrams from Documentation/11 (Do-Check-Do (hybrid) loop).drn"
+tclsh8.6 ../drakon_gen.tcl -in "../docs/AutoHotkey/Diagrams from Documentation/12 (For loop).drn"
+tclsh8.6 ../drakon_gen.tcl -in "../docs/AutoHotkey/Diagrams from Documentation/13 (For loop without loop icons).drn"
+tclsh8.6 ../drakon_gen.tcl -in "../docs/AutoHotkey/Diagrams from Documentation/14 (Simplified For loop).drn"
+
 tclsh8.6 ../drakon_gen.tcl -in "../examples/AutoHotkey/Fibonacci sequence.drn"
 tclsh8.6 ../drakon_gen.tcl -in "../examples/AutoHotkey/Get position and color of pixel.drn"
 tclsh8.6 ../drakon_gen.tcl -in "../examples/automaton/C/automaton-c.drn"
