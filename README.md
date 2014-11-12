@@ -20,7 +20,7 @@
  - If there is no `.drn` file, modify existing source code file.
 
 
-<br><br><br>
+<br><br>
 ##DRAKON
 
 DRAKON is is an algorithmic visual programming language developed within the Buran space project.
@@ -46,7 +46,7 @@ http://drakon-editor.sourceforge.net/language.html
 http://en.wikipedia.org/wiki/DRAKON
 
 
-<br><br><br>
+<br><br>
 ##DRAKON Editor
 
 - DRAKON Editor is a free open source tool for authoring DRAKON diagrams. It also supports state machine diagrams, entity-relationship and class diagrams.
@@ -59,7 +59,7 @@ Homepage: http://drakon-editor.sourceforge.net/
 Documentation: http://drakon-editor.sourceforge.net/editor.html
 
 
-<br><br><br>
+<br><br>
 ##How to use release version of DRAKON Editor
 
 Installing Tcl and required packages:
@@ -85,7 +85,7 @@ Installing and running DRAKON Editor:
 3. Run `drakon_editor.tcl`
 
 
-<br><br><br>
+<br><br>
 ##How to use development version of DRAKON Editor
 
 Warning! Development version of DRAKON Editor is not as stable as release version and is only for testing purposes.
