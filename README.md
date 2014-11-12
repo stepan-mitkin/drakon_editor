@@ -44,7 +44,7 @@ http://en.wikipedia.org/wiki/DRAKON
 <br>
 ##DRAKON Editor
 
-- DRAKON Editor is a free open source tool for authoring DRAKON diagrams. It also supports state machine diagrams, entity-relationship and class diagrams.
+DRAKON Editor is a free open source tool for authoring DRAKON diagrams. It also supports state machine diagrams, entity-relationship and class diagrams.
 - DRAKON Editor runs on Windows, Mac and Linux.
 - The user interface of DRAKON Editor is extremely simple and straightforward.
 - Software developers can build real programs with DRAKON Editor. Source code can be generated in several programming languages, including Java, Processing.org, D, C#, C/C++ (with Qt support), Python, Tcl, Javascript, Lua, Erlang, AutoHotkey and Verilog.
