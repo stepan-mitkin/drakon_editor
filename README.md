@@ -1,5 +1,4 @@
 ##How to work on DRAKON Editor source code.
-=========================================
 
 1. Before submiting patch make sure that unit tests run without error by running `unittest/unittest.tcl`. There will be error messages and stack traces. It's okay. The bottom line must be "success".
 
@@ -22,7 +21,6 @@
 
 
 ##DRAKON
-======
 
 DRAKON is is an algorithmic visual programming language developed within the Buran space project.
 Beside programming, DRAKON is also used in medicine, law, business processes and in other non-programming related fields.
@@ -44,7 +42,6 @@ http://en.wikipedia.org/wiki/DRAKON
 
 
 ##DRAKON Editor
-=============
 
 DRAKON Editor is a free open source tool for authoring DRAKON diagrams. It also supports state machine diagrams, entity-relationship and class diagrams.
 DRAKON Editor runs on Windows, Mac and Linux.
@@ -57,7 +54,6 @@ Documentation: http://drakon-editor.sourceforge.net/editor.html
 
 
 ##How to use release version of DRAKON Editor
-===========================================
 
 Installing Tcl and required packages:
 DRAKON Editor needs Tcl 8.6 or higher to run:
@@ -80,7 +76,6 @@ Installing and running DRAKON Editor:
 
 
 ##How to use development version of DRAKON Editor
-===============================================
 
 Warning! Development version of DRAKON Editor is not as stable as release version and is only for testing purposes.
 
