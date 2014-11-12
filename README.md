@@ -1,10 +1,7 @@
 How to work on DRAKON Editor source code.
 =========================================
 
-1. Before submiting patch make sure that unit tests run without error by running `unittest/unittest.tcl`.
-
-There will be error messages and stack traces. It's okay.
-The bottom line must be "success".
+1. Before submiting patch make sure that unit tests run without error by running `unittest/unittest.tcl`. There will be error messages and stack traces. It's okay. The bottom line must be "success".
 
 
 2. Add new unit tests if necessary.
@@ -14,13 +11,13 @@ The bottom line must be "success".
 
 
 4. If you change the code generator:
-- Update unittest/regenerate_examples.sh
-- Run unittest/regenerate_examples.sh
+ - Update unittest/regenerate_examples.sh
+ - Run unittest/regenerate_examples.sh
 
 
 5. If you want to change DRAKON Editor source code:
-- First look for `.drn` file of source code you want to modify, modify it, generate code from it and commit `.drn` file and generated file.
-- If there is no `.drn` file, modify existing source code file.
+ - First look for `.drn` file of source code you want to modify, modify it, generate code from it and commit `.drn` file and generated file.
+ - If there is no `.drn` file, modify existing source code file.
 
 
 
