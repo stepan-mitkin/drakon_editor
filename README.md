@@ -1,6 +1,7 @@
 ##How to work on DRAKON Editor source code.
 
-1. Before submiting patch make sure that unit tests run without error by running `unittest/unittest.tcl`. There will be error messages and stack traces. It's okay. The bottom line must be "success".
+1. Before submiting patch make sure that unit tests run without error by running `unittest/unittest.tcl`. 
+ - There will be error messages and stack traces. It's okay. The bottom line must be "success".
 
 
 2. Add new unit tests if necessary.
@@ -59,18 +60,21 @@ Installing Tcl and required packages:
 DRAKON Editor needs Tcl 8.6 or higher to run:
 - Windows and Mac users can download Active Tcl here: http://www.activestate.com/activetcl/downloads
 - Linux users need to install the following packages:
-	tcl8.5
-	tk8.5
-	tcllib
-	libsqlite3-tcl
-	libtk-img
+ - tcl8.5
+ - tk8.5
+ - tcllib
+ - libsqlite3-tcl
+ - libtk-img
 	
 On Ubuntu:
 `sudo apt-get install tcl8.5 tk8.5 tcllib libsqlite3-tcl libtk-img`
 
 Installing and running DRAKON Editor:
+
 1. Download release version of DRAKON Editor from here: http://drakon-editor.sourceforge.net/editor.html#downloads
+
 2. Unzip archive.
+
 3. Run `drakon_editor.tcl`
 
 
@@ -79,8 +83,12 @@ Installing and running DRAKON Editor:
 
 Warning! Development version of DRAKON Editor is not as stable as release version and is only for testing purposes.
 
-See notes about Tcl instalation in "How to use release version of DRAKON Editor" section.
+See notes about Tcl instalation in "How to use release version of DRAKON Editor" section and after follow these steps:
+
 1. Click "Download ZIP" at current page.
+
 2. Unzip archive.
+
 3. Run `drakon_editor.tcl` 
+
 4. By default Russion version of DRAKON Editor will be launched. If you need to launch English version of DRAKON Editor then delete folder `/msgs`
