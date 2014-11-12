@@ -23,10 +23,8 @@
 <br>
 ##DRAKON
 
-DRAKON is is an algorithmic visual programming language developed within the Buran space project.
-
-Beside programming, DRAKON is also used in medicine, law, business processes and in other non-programming related fields.
-
+DRAKON is is an algorithmic visual programming language developed within the Buran space project.<br>
+Beside programming, DRAKON is also used in medicine, law, business processes and in other non-programming related fields.<br>
 The rules of DRAKON are optimized to ensure easy understanding by human beings. In DRAKON clarity is above all. DRAKON is made as much ergonomic as possible, as much human readable as possible. DRAKON makes possible to create diagrams that are cognitively optimized for easy comprehension, making it a tool for intelligence augmentation.
 
 Why to use DRAKON than other diagramming systems?
@@ -37,12 +35,9 @@ Why to use DRAKON than other diagramming systems?
 - Branching is done in a simple, visible and consistent way.
 - Each diagram has one entry and one exit.
 
-Learn DRAKON: 
-
-http://drakon-editor.sourceforge.net/DRAKON.pdf 
-
-http://drakon-editor.sourceforge.net/language.html
-
+Learn DRAKON: <br>
+http://drakon-editor.sourceforge.net/DRAKON.pdf <br>
+http://drakon-editor.sourceforge.net/language.html <br>
 http://en.wikipedia.org/wiki/DRAKON
 
 
@@ -54,8 +49,7 @@ http://en.wikipedia.org/wiki/DRAKON
 - The user interface of DRAKON Editor is extremely simple and straightforward.
 - Software developers can build real programs with DRAKON Editor. Source code can be generated in several programming languages, including Java, Processing.org, D, C#, C/C++ (with Qt support), Python, Tcl, Javascript, Lua, Erlang, AutoHotkey and Verilog.
 
-Homepage: http://drakon-editor.sourceforge.net/
-
+Homepage: http://drakon-editor.sourceforge.net/ <br>
 Documentation: http://drakon-editor.sourceforge.net/editor.html
 
 
@@ -73,7 +67,7 @@ DRAKON Editor needs Tcl 8.6 or higher to run:
  - libsqlite3-tcl
  - libtk-img
 	
-On Ubuntu:
+On Ubuntu:<br>
 `sudo apt-get install tcl8.5 tk8.5 tcllib libsqlite3-tcl libtk-img`
 <br><br>
 Installing and running DRAKON Editor:
