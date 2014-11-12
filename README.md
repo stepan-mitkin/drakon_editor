@@ -24,7 +24,9 @@
 ##DRAKON
 
 DRAKON is is an algorithmic visual programming language developed within the Buran space project.
+
 Beside programming, DRAKON is also used in medicine, law, business processes and in other non-programming related fields.
+
 The rules of DRAKON are optimized to ensure easy understanding by human beings. In DRAKON clarity is above all. DRAKON is made as much ergonomic as possible, as much human readable as possible. DRAKON makes possible to create diagrams that are cognitively optimized for easy comprehension, making it a tool for intelligence augmentation.
 
 Why to use DRAKON than other diagramming systems?
@@ -36,20 +38,24 @@ Why to use DRAKON than other diagramming systems?
 - Each diagram has one entry and one exit.
 
 Learn DRAKON: 
+
 http://drakon-editor.sourceforge.net/DRAKON.pdf 
+
 http://drakon-editor.sourceforge.net/language.html
+
 http://en.wikipedia.org/wiki/DRAKON
 
 
 
 ##DRAKON Editor
 
-DRAKON Editor is a free open source tool for authoring DRAKON diagrams. It also supports state machine diagrams, entity-relationship and class diagrams.
-DRAKON Editor runs on Windows, Mac and Linux.
-The user interface of DRAKON Editor is extremely simple and straightforward.
-Software developers can build real programs with DRAKON Editor. Source code can be generated in several programming languages, including Java, Processing.org, D, C#, C/C++ (with Qt support), Python, Tcl, Javascript, Lua, Erlang, AutoHotkey and Verilog.
+- DRAKON Editor is a free open source tool for authoring DRAKON diagrams. It also supports state machine diagrams, entity-relationship and class diagrams.
+- DRAKON Editor runs on Windows, Mac and Linux.
+- The user interface of DRAKON Editor is extremely simple and straightforward.
+- Software developers can build real programs with DRAKON Editor. Source code can be generated in several programming languages, including Java, Processing.org, D, C#, C/C++ (with Qt support), Python, Tcl, Javascript, Lua, Erlang, AutoHotkey and Verilog.
 
 Homepage: http://drakon-editor.sourceforge.net/
+
 Documentation: http://drakon-editor.sourceforge.net/editor.html
 
 
@@ -57,6 +63,7 @@ Documentation: http://drakon-editor.sourceforge.net/editor.html
 ##How to use release version of DRAKON Editor
 
 Installing Tcl and required packages:
+
 DRAKON Editor needs Tcl 8.6 or higher to run:
 - Windows and Mac users can download Active Tcl here: http://www.activestate.com/activetcl/downloads
 - Linux users need to install the following packages:
