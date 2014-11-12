@@ -67,8 +67,7 @@ DRAKON Editor needs Tcl 8.6 or higher to run:
  - libsqlite3-tcl
  - libtk-img
 	
-On Ubuntu:<br>
-`sudo apt-get install tcl8.5 tk8.5 tcllib libsqlite3-tcl libtk-img`
+On Ubuntu: `sudo apt-get install tcl8.5 tk8.5 tcllib libsqlite3-tcl libtk-img`
 <br><br>
 Installing and running DRAKON Editor:
 
