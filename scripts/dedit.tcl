@@ -46,6 +46,15 @@ proc find_scroll { screen old_scroll old_zoom new_zoom } {
 	return $scroll
 }
 
+proc apply_zoom_to_all {} {
+    variable db
+    variable zoom
+    $db eval {
+        update diagrams
+        set zoom = :zoom
+    }
+}
+
 proc change_zoom_to { canvas_width canvas_height new_zoom } {
 	variable zoom
 	variable db
@@ -1421,9 +1430,10 @@ proc update_undo { } {
 
 proc build_new_diagram { id name sil parent_node node_id } {
 	variable db
+	variable zoom
 	
 	set result {}
-	lappend result [ list insert diagrams diagram_id $id name '$name' origin "'0 0'" zoom 100 ]
+	lappend result [ list insert diagrams diagram_id $id name '$name' origin "'0 0'" zoom $zoom ]
 	lappend result [ list insert tree_nodes node_id $node_id parent $parent_node type 'item' diagram_id $id ]
 	
 	if { $sil } {

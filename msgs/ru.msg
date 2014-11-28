@@ -318,6 +318,7 @@
 ::msgcat::mcset ru "Zoom 100%" "Масштаб 100%"
 ::msgcat::mcset ru "Zoom in" "Увеличить масштаб"
 ::msgcat::mcset ru "Zoom out" "Уменьшить масштаб"
+::msgcat::mcset ru "Apply zoom to all diagrams" "Применить масштаб ко всем диаграммам"
 ::msgcat::mcset ru "Entity-Relationship diagram" "Диаграмма сущность-связь"
 ::msgcat::mcset ru "Case" "Вариант"
 ::msgcat::mcset ru "Yes" "Да"

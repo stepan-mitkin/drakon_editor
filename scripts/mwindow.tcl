@@ -488,9 +488,11 @@ proc create_ui { } {
 	.mainmenu.view add command -label [ mc2 "Zoom out" ] -underline 5 -command mw::zoomout -accelerator [ acc Down ]
 	.mainmenu.view add command -label [ mc2 "Zoom 100%" ] -underline 5 -command mw::zoom100
 	.mainmenu.view add command -label [ mc2 "Zoom in" ] -underline 5 -command mw::zoomin -accelerator [ acc Up ]
+	.mainmenu.view add command -label [ mc2 "Apply zoom to all diagrams" ] -underline 0 -command mw::apply_zoom_to_all
 	.mainmenu.view add separator	
 	.mainmenu.view add command -label [ mc2 "Home" ] -underline 2 -command mw::zoom_home
 	.mainmenu.view add command -label [ mc2 "See all" ] -underline 0 -command mw::zoom_see_all
+	
 
 	# DRAKON submenu
 	.mainmenu.drakon add command -label [ mc2 "Verify" ] -underline 0 -command mw::verify -accelerator [ acc R ]
@@ -1635,6 +1637,11 @@ proc zoom100 { } {
 	variable canvas_width
 	variable canvas_height
 	mwc::change_zoom_to $canvas_width $canvas_height 100
+	insp::reset
+}
+
+proc apply_zoom_to_all { } {
+	mwc::apply_zoom_to_all
 	insp::reset
 }
 
