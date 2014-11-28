@@ -891,7 +891,7 @@ proc shift_ctrl_handler { code } {
 proc shortcut_handler { window code key } {
 	set key [ string tolower $key ]
 	array set codes [ ui::key_codes ]
-	if { $code == $codes(y) } {
+	if { $code == $codes(y) || $key == "y"} {
 		mwc::redo
 	} elseif { $code == $codes(z) || $key == "z" } {
 		mwc::undo

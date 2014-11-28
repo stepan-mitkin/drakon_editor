@@ -250,7 +250,7 @@ proc mac_keycodes { } {
 proc key_codes { } {
 	global tcl_platform
 	if { [ is_mac ] } {
-		return [ windows_keycodes ]
+		return [ mac_keycodes ]
 	} elseif { [ is_windows ] } {
 		return [ windows_keycodes ]
 	} else {
