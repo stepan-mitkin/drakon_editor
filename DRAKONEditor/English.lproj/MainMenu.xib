@@ -134,7 +134,7 @@
 							<object class="NSTextFieldCell" key="NSCell" id="981583128">
 								<int key="NSCellFlags">68288064</int>
 								<int key="NSCellFlags2">272630784</int>
-								<string key="NSContents">DRAKON Editor requires Active Tcl 8.5 or newer.</string>
+								<string key="NSContents">DRAKON Editor requires Active Tcl 8.6 or newer.</string>
 								<object class="NSFont" key="NSSupport" id="328607762">
 									<string key="NSName">LucidaGrande</string>
 									<double key="NSSize">13</double>

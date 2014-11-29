@@ -1,6 +1,6 @@
 
 proc application_version { } {
-	return 23
+	return 24
 }
 
 proc application_start_version { } {
@@ -12,5 +12,5 @@ proc version_string { } {
 }
 
 proc version_tag { } {
-	return "rc3"
+	return "rc1"
 }
