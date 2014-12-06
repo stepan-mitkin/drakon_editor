@@ -17,7 +17,8 @@ create table primitives
 	prim_id integer primary key,
 	item_id integer,
 	layer_id integer,
-	role text,	
+	role text,
+	ordinal integer,
 	above integer,
 	below integer,
 	ext_id integer,
@@ -27,7 +28,7 @@ create table primitives
 
 create index primitive_by_item_layer on primitives (item_id, layer_id);
 
-create unique index primitive_by_item_role on primitives (item_id, role);
+create unique index primitive_by_item_role on primitives (item_id, role, ordinal);
 
 create table layers
 (

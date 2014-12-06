@@ -161,14 +161,18 @@ proc update_normal_prim { item_id data } {
 proc create_prim { item_id layer role type coords text rect fore fill } {
 	variable canvas
   
-	set ext_id [ add_to_canvas $canvas $type $coords $text $fore $fill ]
-	if { $ext_id == "" } { return }
-	set prim_id [ mod::next_key mb primitives prim_id ]
-	set insert [ wrap insert primitives prim_id $prim_id item_id $item_id \
-		role '$role' above 0 below 0 ext_id $ext_id type '$type' rect '$rect' ]
-	mod::apply mb $insert
+  	set ordinal 0
+	set ids [ add_to_canvas $canvas $type $coords $text $fore $fill ]
+	foreach ext_id $ids {
+		set prim_id [ mod::next_key mb primitives prim_id ]
+		set insert [ wrap insert primitives prim_id $prim_id item_id $item_id \
+			role '$role' ordinal $ordinal above 0 below 0 ext_id $ext_id type '$type' rect '$rect' ]
+		mod::apply mb $insert
 	
-	zplace $prim_id $layer
+		zplace $prim_id $layer
+		
+		incr ordinal
+	}
 }
 
 proc update_prim { item_id role coords rect } {
@@ -189,12 +193,14 @@ proc add_prim_to_canvas { surface type coords text fore fill anchor } {
 
 	if { $mwc::zoom >= 40 } {
 		set font [ mwf::get_dia_font $mwc::zoom ]
-		return [ $surface create text $coords -text $text -font $font -fill $fill -anchor $anchor ]
+		#return [ $surface create text $coords -text $text -font $font -fill $fill -anchor $anchor ]
+		return [ hl::render_text $surface $coords $text $font $fill $anchor ]
 	}
-	return ""
+	return {}
 }
 
-proc add_to_canvas { surface type coords text fore fill } {	
+proc add_to_canvas { surface type coords text fore fill } {
+	set result {}
 	set width [ expr { ceil($mwc::zoom / 130.0) } ]
 	set command [ list $surface create $type $coords ]
 	if { $type == "text" } {
@@ -202,11 +208,11 @@ proc add_to_canvas { surface type coords text fore fill } {
 	} elseif { $type == "text_left" } {
 		return [ add_prim_to_canvas $surface $type $coords $text $fore $fill "w" ]
 	} elseif { $type == "line" } {	
-		return [ $surface create line $coords -fill $fill -width $width ]
+		lappend result [ $surface create line $coords -fill $fill -width $width ]
 	} else {
-		return [ $surface create $type $coords -outline $fore -fill $fill -width $width ]
+		lappend result [ $surface create $type $coords -outline $fore -fill $fill -width $width ]
 	}
-	return ""
+	return $result
 }
 
 proc make_vertex_prim { item_id layer data } {
