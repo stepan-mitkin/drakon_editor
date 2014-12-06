@@ -28,6 +28,7 @@ source ../scripts/alt_edit.tcl
 source ../scripts/colors.tcl
 source ../scripts/graph2.tcl
 source ../scripts/hie_engine.tcl
+source ../scripts/highlight.tcl
 source ../structure/tables.tcl
 source ../generators/c.tcl
 source ../generators/tcl.tcl
@@ -61,6 +62,7 @@ source graph2_test.tcl
 source hie_test.tcl
 source table_test.tcl
 source auto_test.tcl
+source highlight_test.tcl
 
 set script_path "../"
 set use_log 0

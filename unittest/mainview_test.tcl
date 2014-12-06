@@ -156,22 +156,6 @@ tproc zplace_test { } {
 
 
 
-tproc add_to_canvas_test { } {
-	dummy_canvas::clear
-	mv::init base dummy_canvas::cnvs
-	#canvas $type $coords $text $fore $fill
-	equal [mv::add_to_canvas dummy_canvas::cnvs rectangle {10 20 30 40} {} #000000 #ffffff ] 1
-	equal [ mv::add_to_canvas dummy_canvas::cnvs text {10 20} "good" "" #ffffff ] 2
-	equal [ mv::add_to_canvas dummy_canvas::cnvs polygon {10 20} "good" #0ff00f #ffffff  ] 3
-	equal [ mv::add_to_canvas dummy_canvas::cnvs rectangle {10 20 11 22} {} #0ff00f #000000  ] 4
-
-	dummy_canvas::check {
-		{create rectangle {10 20 30 40} -outline #000000 -fill #ffffff -width 1.0}
-		{create text {10 20} -text good -font main_font -fill #ffffff -anchor center}
-		{create polygon {10 20} -outline #0ff00f -fill #ffffff -width 1.0}
-		{create rectangle {10 20 11 22} -outline #0ff00f -fill #000000 -width 1.0}
-	}
-}
 
 tproc create_prim_test { } {
 	set sql [ read_all_text ../scripts/schema.sql ]
@@ -215,65 +199,6 @@ tproc create_prim_test { } {
 
 	equal [ mb onecolumn { select count(*) from primitives } ] 0	
 	
-	mod::close base
-}
-
-tproc insert_delete { } {
-	set sql [ read_all_text ../scripts/schema.sql ]
-	equal [ mod::create base :memory: t1 20 1 $sql ] ""
-	mv::init base dummy_canvas::cnvs	
-	dummy_canvas::clear
-
-	set dia { insert diagrams diagram_id 7	name 'seventh' origin "'0 0'" }
-	set act { insert items item_id 101 diagram_id 7 type 'action' text 'preved' selected 0 
-		x 70 y 50 w 40 h 30 a 0 b 0 }
-	set ver { insert items item_id 102 diagram_id 7 type 'vertical' selected 0
-		x 10 y 20 w 0 h 30 a 0 b 0 }
-	
-	mod::apply base [ list $dia $act $ver ]
-	
-	mv::insert 101 foo
-	mv::insert 102 foo
-	
-	check_layer lines 3 3 1
-	check_layer icons 1 2 2
-	
-	dummy_canvas::check {
-		{create rectangle {30 20 110 80} -outline #000000 -fill #ffffff -width 1.0}
-		{create text {40 50} -text preved -font main_font -fill #000000 -anchor w}
-		{raise 2 1}
-		{create line {10 20 10 50} -fill #000000 -width 1.0} 
-		{lower 3 1}
-	}
-	dummy_canvas::clear
-	
-	equal [ mb onecolumn { select count(*) from item_shadows } ] 2
-	equal [ mb onecolumn { select count(*) from primitives } ] 3
-	
-	
-	mv::delete 101 foo
-	
-	dummy_canvas::check {
-		{delete 1}
-		{delete 2}}
-		
-	check_layer lines 3 3 1
-	check_layer icons 0 0 0
-	
-	mv::delete 102 foo
-
-	dummy_canvas::check {
-		{delete 1}
-		{delete 2}
-		{delete 3}
-		}
-		
-	check_layer lines 0 0 0
-	check_layer icons 0 0 0
-
-	equal [ mb onecolumn { select count(*) from item_shadows } ] 0
-	equal [ mb onecolumn { select count(*) from primitives } ] 0
-
 	mod::close base
 }
 
@@ -356,83 +281,6 @@ tproc hit_handle_test { } {
 	equal [ mv::hit_handle 101 8000 8000 ] ""
 	equal [ mv::hit_handle 101 60 50 ] ""
 
-	mod::close base
-}
-
-tproc selection_test { } {
-	set sql [ read_all_text ../scripts/schema.sql ]
-	equal [ mod::create base :memory: t1 20 1 $sql ] ""
-	mv::init base dummy_canvas::cnvs	
-	dummy_canvas::clear
-			
-	set dia { insert diagrams diagram_id 7	name 'seventh' origin "'0 0'" }
-	set act1 { insert items item_id 101 diagram_id 7 type 'action' 
-		text 'preved' selected 0 
-		x 40 y 20 w 20 h 10 a 0 b 0 }
-	set act2 { insert items item_id 102 diagram_id 7 type 'action' 
-		text 'preved2' selected 0 
-		x 140 y 40 w 20 h 20 a 0 b 0 }
-	set act3 { insert items item_id 103 diagram_id 7 type 'action' 
-		text 'preved3' selected 0 
-		x 80 y 80 w 40 h 10 a 0 b 0 }
-		
-	mod::apply base [ list $dia $act1 $act2 $act3 ]
-	
-	mv::insert 101 foo
-	mv::insert 102 foo
-	mv::insert 103 foo
-	
-	mv::selection { 55 45 } { 100 55 }
-	
-	equal [ mb onecolumn { select count(*) from item_shadows where selected = 1 } ] 0
-	
-	dummy_canvas::check {
-		{create rectangle {20 10 60 30} -outline #000000 -fill #ffffff -width 1.0}
-	{create text {30 20} -text preved -font main_font -fill #000000 -anchor w}
-	{raise 2 1}
-		{create rectangle {120 20 160 60} -outline #000000 -fill #ffffff -width 1.0}
-		{raise 3 2}
-	{create text {130 40} -text preved2 -font main_font -fill #000000 -anchor w}
-	{raise 4 3} 
-		{create rectangle {40 70 120 90} -outline #000000 -fill #ffffff -width 1.0}
-		{raise 5 4}
-	{create text {50 80} -text preved3 -font main_font -fill #000000 -anchor w}
-	{raise 6 5}
-		{create rectangle 55 45 100 55 -outline #000000}
-	}
-	
-	mv::selection { 60 45 } { 140 80 }
-
-	equal [ mod::one mb selected item_shadows item_id 101 ] 0
-	equal [ mod::one mb selected item_shadows item_id 102 ] 1
-	equal [ mod::one mb selected item_shadows item_id 103 ] 1
-	
-	mv::selection { 60 45 } { 70 50 }
-
-	equal [ mod::one mb selected item_shadows item_id 101 ] 0
-	equal [ mod::one mb selected item_shadows item_id 102 ] 1
-	equal [ mod::one mb selected item_shadows item_id 103 ] 1
-	
-	mv::selection { 60 45 } { 0 -50 } 
-
-	equal [ mod::one mb selected item_shadows item_id 101 ] 1
-	equal [ mod::one mb selected item_shadows item_id 102 ] 1
-	equal [ mod::one mb selected item_shadows item_id 103 ] 1
-	
-	equal [ mb onecolumn { select count(*) from primitives 
-		where layer_id = 3 } ] 24
-	
-	dummy_canvas::clear
-	equal $mv::selection_rect 7
-	
-	mv::selection_hide
-	
-	dummy_canvas::check {
-		{delete 7}
-	}
-	
-	equal $mv::selection_rect ""
-	
 	mod::close base
 }
 

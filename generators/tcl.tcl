@@ -4,7 +4,23 @@ gen::add_generator Tcl gen_tcl::generate
 namespace eval gen_tcl {
 
 
-
+proc highlight { tokens } {
+	set result {}
+	foreach token $tokens {
+		lassign $token type
+		if { $type == "op" } {
+			set color "#ff00ff"
+		} elseif { $type == "number" } {
+			set color "#ffffff"
+		} elseif { $type == "token" } {
+			set color "#90ff00"
+		} else {
+			set color "#ff0000"
+		}
+		lappend result $color
+	}
+	return $result
+}
 
 
 

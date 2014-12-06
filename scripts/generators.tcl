@@ -11,6 +11,10 @@ proc load_generators {} {
 namespace eval gen {
 array set generators {}
 
+proc get_generators {} {
+	variable generators
+	return [ array get generators ]
+}
 
 proc add_generator { language generator } {
 	variable generators

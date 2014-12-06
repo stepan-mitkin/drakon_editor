@@ -292,6 +292,8 @@ proc ok { } {
 	variable next_action
 	variable error_message
 	
+	hl::reset
+	
 	if { $language == $none } {
 		set props {}
 	} else {

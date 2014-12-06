@@ -3143,6 +3143,7 @@ proc dia_properties { } {
 
 proc create_file { } {
 	variable db
+	hl::reset
 	log create_file
 	set filename [ ds::requestspath main .drn ]
 	if { $filename != "" } {
@@ -3156,6 +3157,7 @@ proc create_file { } {
 
 proc open_file { } {
 	variable db
+	hl::reset	
 	set filename [ ds::requestopath main ]
 	if { $filename != "" } {
 		mod::close $db
