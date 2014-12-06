@@ -112,7 +112,15 @@ proc render_text { surface coords text font fill anchor } {
     set ids {}
     #item 297
     if {$text == ""} {
-        
+        #item 15
+        set main [ $surface create text \
+        	$coords \
+        	-text $text \
+        	-font $font \
+        	-fill $fill \
+        	-anchor $anchor ]
+        #item 34
+        set ids [ list $main ]
     } else {
         #item 224
         variable lexer

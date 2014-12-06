@@ -1,6 +1,6 @@
 
 proc application_version { } {
-	return 24
+	return 25
 }
 
 proc application_start_version { } {

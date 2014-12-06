@@ -1016,6 +1016,7 @@ proc lup { move_data } {
 	
 	commit_transaction lup
 	state reset
+	mv::fill $diagram_id
 }
 
 proc rdown { cx cy } {
@@ -1965,6 +1966,7 @@ proc undo { } {
 	com::undo $db
 	commit_transaction undo
 	state reset
+	refill_all 0 0
 }
 
 proc redo { } {
@@ -1973,6 +1975,7 @@ proc redo { } {
 	com::redo $db
 	commit_transaction redo
 	state reset
+	refill_all 0 0 
 }
 
 proc get_node_info { node_id } {

@@ -18,6 +18,6 @@ mkdir tmp
 cp ../drakon_editor.tcl .
 cp ../drakon_gen.tcl .
 cp ../readme.html .
-zip -r ../drakon_editor1.24_rus.zip *
+zip -r ../drakon_editor1.25_rus.zip *
 cd ..
 rm -rf release

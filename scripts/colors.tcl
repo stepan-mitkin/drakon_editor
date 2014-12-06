@@ -22,6 +22,13 @@ namespace eval colors {
 	variable vertex_fg "#000000"
 	variable comment_bg "#e0e0e0"
 	variable comment_fg "#ffffc0"
+	
+	variable syntax_identifier "#000000"
+	variable syntax_string "#a00000"
+	variable syntax_keyword "#00008B"
+	variable syntax_number "#000000"
+	variable syntax_comment "#228B22"
+	variable syntax_operator "#800080"
 
 ### Dark night
 #	variable canvas_bg "#001027"

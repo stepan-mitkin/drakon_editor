@@ -3,19 +3,131 @@ gen::add_generator Tcl gen_tcl::generate
 
 namespace eval gen_tcl {
 
+variable keywords
+
+array set keywords { append 1
+binary 1
+format 1
+regexp 1
+regsub 1
+scan 1
+string 1
+subst 1
+concat 1
+join 1
+lappend 1
+lindex 1
+linsert 1
+list 1
+llength 1
+lrange 1
+lreplace 1
+lsearch 1
+lset 1
+lsort 1
+split 1
+expr 1
+after 1
+break 1
+catch 1
+continue 1
+error 1
+eval 1
+for 1
+foreach 1
+if 1
+return 1
+switch 1
+update 1
+uplevel 1
+vwait 1
+while 1
+array 1
+global 1
+incr 1
+namespace 1
+proc 1
+rename 1
+set 1
+trace 1
+unset 1
+upvar 1
+variable 1
+close 1
+eof 1
+fblocked 1
+fconfigure 1
+fcopy 1
+file 1
+fileevent 1
+flush 1
+gets 1
+open 1
+puts 1
+read 1
+seek 1
+socket 1
+tell 1
+load 1
+package 1
+source 1
+cd 1
+clock 1
+exec 1
+exit 1
+glob 1
+pid 1
+pwd 1
+time 1
+}
+
 
 proc highlight { tokens } {
+	variable keywords
 	set result {}
+	set state "idle"
 	foreach token $tokens {
-		lassign $token type
-		if { $type == "op" } {
-			set color "#ff00ff"
-		} elseif { $type == "number" } {
-			set color "#ffffff"
-		} elseif { $type == "token" } {
-			set color "#90ff00"
+		lassign $token type text
+		if { $text == "\n" } {
+			set state "idle"
+		} elseif { $state == "idle"} {
+			if { $type == "op" } {
+				set color $colors::syntax_operator
+				if { $text == "\"" } {
+					set state "string"
+				} elseif { $text == "#" } {
+					set state "comment"
+					set color $colors::syntax_comment
+				}
+			} elseif { $type == "number" } {
+				set color $colors::syntax_number
+			} elseif { $type == "token" } {
+				if { [ info exists keywords($text) ] } {
+					set color $colors::syntax_keyword
+				} else {
+					set color $colors::syntax_identifier
+				}
+			}
+		} elseif { $state == "comment" } {
+			set color $colors::syntax_comment
+		} elseif { $state == "string" } {
+			if { $text == "\{" || $text == "\}" || $text == "\(" || $text == "\)" || 
+				$text == "\[" || $text == "\]" || $text == "$" } {
+				set color $colors::syntax_operator
+			} elseif { $text == "\"" } {
+				set color $colors::syntax_operator
+				set state "idle"
+			} elseif { $text == "\\" } {
+				set state "escaping"
+				set color $colors::syntax_string
+			} else {
+				set color $colors::syntax_string
+			}
+		} elseif { $state == "escaping" } {
+			set color $colors::syntax_string
+			set state "string"			
 		} else {
-			set color "#ff0000"
+			set color "#000000"
 		}
 		lappend result $color
 	}

@@ -155,6 +155,7 @@ proc create_normal_prim { item_id layer data } {
 proc update_normal_prim { item_id data } {
 	lassign $data role type coords text line fill rect
 	set coords [ mwc::zoom_vertices $coords ]
+
 	update_prim $item_id $role $coords $rect
 }
 
@@ -175,17 +176,47 @@ proc create_prim { item_id layer role type coords text rect fore fill } {
 	}
 }
 
+proc remove_texts { } {
+	variable canvas
+	
+	set ids [ mb eval { 
+		select prim_id
+		from primitives
+		where type in ('text', 'text_left')
+	} ]
+	
+	foreach id $ids {	
+		set ext_id [ mb onecolumn { 
+			select ext_id
+			from primitives
+			where prim_id = :id 
+		} ]
+		
+		if { $ext_id != "" } {
+			$canvas delete $ext_id
+		}
+
+		mb eval { delete from primitives where prim_id = :id }
+	}	
+}
+
 proc update_prim { item_id role coords rect } {
 	variable canvas
 	
-	mb eval { select prim_id, ext_id from primitives
+	mb eval { select prim_id, ext_id, type from primitives
 		where item_id = :item_id and role = :role } {
 		
-		mb eval { update primitives
-			set rect = :rect
-			where prim_id = :prim_id }
-			
-		$canvas coords $ext_id $coords
+		if { $type == "text" || $type == "text_left" } {
+			$canvas itemconfigure $ext_id -state hidden
+		} else {		
+		
+			mb eval { update primitives
+				set rect = :rect
+				where prim_id = :prim_id }
+		
+		
+			$canvas coords $ext_id $coords
+		}
 	}
 }
 
