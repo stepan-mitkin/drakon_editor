@@ -7,6 +7,7 @@ variable scheme_combo
 variable element_combo
 variable color_entry
 variable cnvs
+variable colors
 
 variable window ""
 
@@ -20,116 +21,119 @@ variable element_list {
 	"Comment secondary"
 	"Background"
 	"Text"
+	"Code: identifier"
+	"Code: string"
+	"Code: keyword"
+	"Code: number"
+	"Code: comment"
+	"Code: operator"
 }
 
 variable scheme_list {
 	Parrot
 	Strict
 	Black
-	White
 	Night
 	"Colored night"
-	Glamour
-	"Is drake"
-}
-
-variable is {
-  background 	"#00ffff"
-  line 			"#000000"
-  text 			"#000000"
-  action	 	"#ffffff"
-  if 			"#ffffff"
-  switch	 	"#ffffff"
-  loop			"#ffffff"
-  comment		"#ffffff"
-  comment_s		"#ffffff"
 }
 
 
 variable strict {
-  background 	"#C3E7EF"
-  line 			"#000000"
-  text 			"#000000"
-  action	 	"#ffffff"
-  if 			"#ffffff"
-  switch	 	"#ffffff"
-  loop			"#ffffff"
-  comment		"#ffffa0"
-  comment_s		"#38BAC8"
+	background 	"#C3E7EF"
+	line 			"#000000"
+	text 			"#000000"
+	action	 	"#ffffff"
+	if 			"#ffffff"
+	switch	 	"#ffffff"
+	loop			"#ffffff"
+	comment		"#ffffa0"
+	comment_s		"#38BAC8"
+	syntax_identifier "#000000"
+	syntax_string "#d00000"
+	syntax_keyword "#0000cB"
+	syntax_number "#808080"
+	syntax_comment "#228B22"
+	syntax_operator "#800080"  
 }
 
 variable parrot {
-  background 	"#d0d0ff"
-  line 			"#000000"
-  text 			"#000000"
-  action	 	"#ffffff"
-  if 			"#ffffa0"
-  switch	 	"#ffa0a0"
-  loop			"#a0ffa0"
-  comment		"#ffff00"
-  comment_s		"#909090"
-}
-
-variable white {
-  background 	"#ffffff"
-  line 			"#000000"
-  text 			"#000000"
-  action	 	"#ffffff"
-  if 			"#ffffff"
-  switch	 	"#ffffff"
-  loop			"#ffffff"
-  comment		"#ffffff"
-  comment_s		"#dddddd"
+	background 	"#d0d0ff"
+	line 			"#000000"
+	text 			"#000000"
+	action	 	"#ffffff"
+	if 			"#ffffa0"
+	switch	 	"#ffa0a0"
+	loop			"#a0ffa0"
+	comment		"#ffff00"
+	comment_s		"#909090"
+	syntax_identifier "#000000"
+	syntax_string "#d00000"
+	syntax_keyword "#0000cB"
+	syntax_number "#808080"
+	syntax_comment "#228B22"
+	syntax_operator "#800080"   
 }
 
 variable black {
-  background 	"#000000"
-  line 			"#ffffff"
-  text 			"#ffffff"
-  action	 	"#000000"
-  if 			"#000000"
-  switch	 	"#000000"
-  loop			"#000000"
-  comment		"#303030"
-  comment_s		"#303030"
+	background 	"#000000"
+	line 			"#b0b0b0"
+	text 			"#ffffff"
+	action	 	"#000000"
+	if 			"#000000"
+	switch	 	"#000000"
+	loop			"#000000"
+	comment		"#303030"
+	comment_s		"#303030"
+	syntax_identifier "#d0d0d0"
+	syntax_string "#909090"
+	syntax_keyword "#ffffff"
+	syntax_number "#ffffff"
+	syntax_comment "#505050"
+	syntax_operator "#dddddd"  
 }
 
 variable night {
-  background 	"#000040"
-  line 			"#aaaaff"
-  text 			"#ffffaa"
-  action	 	"#000000"
-  if 			"#000000"
-  switch	 	"#000000"
-  loop			"#000000"
-  comment		"#0000a0"
-  comment_s		"#0000a0"
+	background 	"#000040"
+	line 			"#8080c0"
+	text 			"#ffffaa"
+	action	 	"#000000"
+	if 			"#000000"
+	switch	 	"#000000"
+	loop			"#000000"
+	comment		"#0000a0"
+	comment_s		"#0000a0"
+	syntax_identifier "#BCD5FF"
+	syntax_string "#38527F"
+	syntax_keyword "#70A5FF"
+	syntax_number "#ffffff"
+	syntax_comment "#808080"
+	syntax_operator "#86B3FF"  
 }
 
 variable colored_night {
-  background 	"#000040"
-  line 			"#aaaaff"
-  text 			"#ffffaa"
-  action	 	"#000000"
-  if 			"#303000"
-  switch	 	"#350000"
-  loop			"#003500"
-  comment		"#0000a0"
-  comment_s		"#0000a0"
+	background 	"#000040"
+	line 			"#8080c0"
+	text 			"#ffffaa"
+	action	 	"#000000"
+	if 			"#202000"
+	switch	 	"#250000"
+	loop			"#002500"
+	comment		"#0000a0"
+	comment_s		"#0000a0"
+	syntax_identifier "#EBD9C0"
+	syntax_string "#CC8623"
+	syntax_keyword "#6CCC88"
+	syntax_number "#ffffff"
+	syntax_comment "#808080"
+	syntax_operator "#ABEBCF"
 }
 
-variable glamour {
-	background "#ff9090"
-	line "#000000"
-	text "#000000"
-	comment_s "#ff0000"
-	action "#ffffff"
-	switch "#ffeeee"
-	loop "#ffdddd"
-	if "#ffeedd"
-	comment "#ff5555"
-}
-
+#	syntax_identifier "#EBD9C0"
+#	syntax_string "#CC8623"
+#	syntax_keyword "#6CCC88"
+#	syntax_number "#ffffff"
+#	syntax_comment "#808080"
+#	syntax_operator "#ABEBCF"
 
 array set colors $strict
 
@@ -158,7 +162,14 @@ proc load_from_settings {} {
 	set colors::text_fg [ color_safe $colors_dict text ]
 	set colors::line_fg [ color_safe $colors_dict line ]
 	set colors::comment_bg [ color_safe $colors_dict comment_s ]
-	set colors::comment_fg [ color_safe $colors_dict comment ]	
+	set colors::comment_fg [ color_safe $colors_dict comment ]
+
+	set colors::syntax_identifier [ color_safe $colors_dict syntax_identifier ]
+	set colors::syntax_string [ color_safe $colors_dict syntax_string ]
+	set colors::syntax_keyword [ color_safe $colors_dict syntax_keyword ]
+	set colors::syntax_number [ color_safe $colors_dict syntax_number ]
+	set colors::syntax_comment [ color_safe $colors_dict syntax_comment ]
+	set colors::syntax_operator [ color_safe $colors_dict syntax_operator ]
 }
 
 proc save_to_settings {} {
@@ -198,6 +209,12 @@ proc element_changed {} {
 		"Comment secondary" { set color_text [ color comment_s ] }
 		"Background"	{ set color_text [ color background ] }
 		"Text"	{ set color_text [ color text ] }		
+		"Code: identifier" { set color_text [ color syntax_identifier ] }
+		"Code: string" { set color_text [ color syntax_string ] }
+		"Code: keyword" { set color_text [ color syntax_keyword ] }
+		"Code: number" { set color_text [ color syntax_number ] }
+		"Code: comment" { set color_text [ color syntax_comment ] }
+		"Code: operator" { set color_text [ color syntax_operator ] }		
 	}
 	set color_entry $color_text
 }
@@ -222,7 +239,13 @@ proc color_changed { color } {
 		"Comment primary" { color_set comment $color }
 		"Comment secondary" { color_set comment_s $color }
 		"Background"	{ color_set background $color }
-		"Text"	{ color_set text $color }		
+		"Text"	{ color_set text $color }
+		"Code: identifier" { color_set syntax_identifier $color }
+		"Code: string" { color_set syntax_string $color }
+		"Code: keyword" { color_set syntax_keyword $color }
+		"Code: number" { color_set syntax_number $color }
+		"Code: comment" { color_set syntax_comment $color }
+		"Code: operator" { color_set syntax_operator $color }		
 	}
 	
 	draw_sample_picture
@@ -373,8 +396,14 @@ proc load_colors {} {
 	color_set action $colors::action_bg 
 	color_set text $colors::text_fg 
 	color_set line $colors::line_fg 
-	color_set comment_s $colors::comment_bg 
-	color_set comment $colors::comment_fg 	
+	color_set comment_s $colors::comment_bg
+	color_set comment $colors::comment_fg
+	color_set syntax_identifier $colors::syntax_identifier
+	color_set syntax_string  $colors::syntax_string
+	color_set syntax_keyword  $colors::syntax_keyword
+	color_set syntax_number $colors::syntax_number
+	color_set syntax_comment  $colors::syntax_comment
+	color_set syntax_operator  $colors::syntax_operator	
 }
 
 proc save_colors {} {
@@ -389,6 +418,13 @@ proc save_colors {} {
 	set colors::comment_bg [ color comment_s ]
 	set colors::comment_fg [ color comment ]
 	
+	set colors::syntax_identifier [ color syntax_identifier ]
+	set colors::syntax_string  [ color syntax_string ]
+	set colors::syntax_keyword  [ color syntax_keyword ]
+	set colors::syntax_number [ color syntax_number ]
+	set colors::syntax_comment  [ color syntax_comment ]
+	set colors::syntax_operator  [ color syntax_operator ]
+		
 	save_to_settings
 	
 	mwc::refill_current 1 1
@@ -446,8 +482,6 @@ proc theme_changed {} {
 		White { array set colors $white }
 		Night { array set colors $night }
 		"Colored night" { array set colors $colored_night }
-		Glamour { array set colors $glamour }
-		"Is drake" { array set colors $is }
 	}
 	
 	draw_sample_picture

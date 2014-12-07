@@ -589,7 +589,7 @@ proc p.print_text_lines { text x y scale align } {
 		set left $x
 	}
 	set height [ expr { $font_size * ( 1 + $spacing) * $count } ]
-	set first [ expr { $y - $height * 0.5 + $font_size } ]
+	set first [ expr { $y - $height * 0.5 + $font_size * 0.75 } ]
 	
 	repeat i $count {
 		set ty [ expr { $first + $font_size * (1 + $spacing) * $i } ]

@@ -95,6 +95,7 @@ proc highlight { tokens } {
 				set color $colors::syntax_operator
 				if { $text == "\"" } {
 					set state "string"
+					set color $colors::syntax_string					
 				} elseif { $text == "#" } {
 					set state "comment"
 					set color $colors::syntax_comment
@@ -115,7 +116,7 @@ proc highlight { tokens } {
 				$text == "\[" || $text == "\]" || $text == "$" } {
 				set color $colors::syntax_operator
 			} elseif { $text == "\"" } {
-				set color $colors::syntax_operator
+				set color $colors::syntax_string
 				set state "idle"
 			} elseif { $text == "\\" } {
 				set state "escaping"
