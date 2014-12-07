@@ -3,6 +3,10 @@ gen::add_generator Processing.org gen_processing::generate
 
 namespace eval gen_processing {
 
+proc highlight { tokens } {
+
+	return [ gen_java::highlight $tokens ]
+}
 
 proc make_callbacks { } {
 	set cbks [ gen_java::make_callbacks ]

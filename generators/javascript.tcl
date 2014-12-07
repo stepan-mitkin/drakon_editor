@@ -3,7 +3,29 @@ gen::add_generator Javascript gen_js::generate
 
 namespace eval gen_js {
 
+variable keywords {
+abstract 	arguments 	boolean 	break 	byte
+case 	catch 	char 	class 	const
+continue 	debugger 	default 	delete 	do
+double 	else 	enum 	eval 	export
+extends 	false 	final 	finally 	float
+for 	function 	goto 	if 	implements
+import 	in 	instanceof 	int 	interface
+let 	long 	native 	new 	null
+package 	private 	protected 	public 	return
+short 	static 	super 	switch 	synchronized
+this 	throw 	throws 	transient 	true
+try 	typeof 	var 	void 	volatile
+while 	with 	yield
+}
+
 variable handlers {}
+
+
+proc highlight { tokens } {
+	variable keywords
+	return [ gen_cs::highlight_generic $keywords $tokens ]
+}
 
 proc shelf { primary secondary } {
 	return "$secondary = $primary;"

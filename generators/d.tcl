@@ -31,6 +31,147 @@ variable keywords {
     static
 }
 
+variable d_keywords {
+abstract
+alias
+align
+asm
+assert
+auto
+
+body
+bool
+break
+byte
+
+case
+cast
+catch
+cdouble
+cent
+cfloat
+char
+class
+const
+continue
+creal
+
+dchar
+debug
+default
+delegate
+delete (deprecated)
+deprecated
+do
+double
+
+else
+enum
+export
+extern
+
+false
+final
+finally
+float
+for
+foreach
+foreach_reverse
+function
+
+goto
+
+idouble
+if
+ifloat
+immutable
+import
+in
+inout
+int
+interface
+invariant
+ireal
+is
+
+lazy
+long
+
+macro (unused)
+mixin
+module
+
+new
+nothrow
+null
+
+out
+override
+
+package
+pragma
+private
+protected
+public
+pure
+
+real
+ref
+return
+
+scope
+shared
+short
+static
+struct
+super
+switch
+synchronized
+
+template
+this
+throw
+true
+try
+typedef (deprecated)
+typeid
+typeof
+
+ubyte
+ucent
+uint
+ulong
+union
+unittest
+ushort
+
+version
+void
+volatile (deprecated)
+
+wchar
+while
+with
+
+__FILE__
+__MODULE__
+__LINE__
+__FUNCTION__
+__PRETTY_FUNCTION__
+
+__gshared
+__traits
+__vector
+__parameters
+
+}
+
+# An optional procedure for syntax highlighting
+proc highlight { tokens } {
+	variable d_keywords
+	return [ gen_cs::highlight_generic $d_keywords $tokens ]
+}
+
 # The code generator procedure. It will be called by DRAKON Editor.
 # Arguments:
 #   db - A handle to the database of the original file. Read only!

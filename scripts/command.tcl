@@ -81,7 +81,7 @@ proc undo { db } {
 	if { $current_step == "" || $current_step == 0 } { return }
 	
 	udb eval { select name, delegates from undo_steps where step_id = :current_step } {
-    run_delegates $delegates
+    	run_delegates $delegates
 		mw::set_status [ mc2 "Undone: \$name." ]
 	}
 	
@@ -114,7 +114,7 @@ proc redo { db } {
 	if { $current_step > $max_step } { return }
 	
 	udb eval { select name, delegates from undo_steps where step_id = :current_step } {
-    run_delegates $delegates
+    	run_delegates $delegates
 		mw::set_status [ mc2 "Redone: \$name." ]
 	}
 	

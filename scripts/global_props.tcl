@@ -53,7 +53,7 @@ variable strict {
 	syntax_keyword "#0000cB"
 	syntax_number "#808080"
 	syntax_comment "#228B22"
-	syntax_operator "#800080"  
+	syntax_operator "#a000a0"
 }
 
 variable parrot {
@@ -61,9 +61,9 @@ variable parrot {
 	line 			"#000000"
 	text 			"#000000"
 	action	 	"#ffffff"
-	if 			"#ffffa0"
-	switch	 	"#ffa0a0"
-	loop			"#a0ffa0"
+	if 			"#ffffd0"
+	switch	 	"#ffd0d0"
+	loop			"#d0ffd0"
 	comment		"#ffff00"
 	comment_s		"#909090"
 	syntax_identifier "#000000"
@@ -71,12 +71,12 @@ variable parrot {
 	syntax_keyword "#0000cB"
 	syntax_number "#808080"
 	syntax_comment "#228B22"
-	syntax_operator "#800080"   
+	syntax_operator "#a000a0"
 }
 
 variable black {
 	background 	"#000000"
-	line 			"#b0b0b0"
+	line 			"#909090"
 	text 			"#ffffff"
 	action	 	"#000000"
 	if 			"#000000"
@@ -84,9 +84,9 @@ variable black {
 	loop			"#000000"
 	comment		"#303030"
 	comment_s		"#303030"
-	syntax_identifier "#d0d0d0"
+	syntax_identifier "#e0e0e0"
 	syntax_string "#909090"
-	syntax_keyword "#ffffff"
+	syntax_keyword "#b0b0b0"
 	syntax_number "#ffffff"
 	syntax_comment "#505050"
 	syntax_operator "#dddddd"  
@@ -103,7 +103,7 @@ variable night {
 	comment		"#0000a0"
 	comment_s		"#0000a0"
 	syntax_identifier "#BCD5FF"
-	syntax_string "#38527F"
+	syntax_string "#48629F"
 	syntax_keyword "#70A5FF"
 	syntax_number "#ffffff"
 	syntax_comment "#808080"
