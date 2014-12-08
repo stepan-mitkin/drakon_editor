@@ -57,13 +57,13 @@ variable strict {
 }
 
 variable parrot {
-	background 	"#d0d0ff"
+	background 	"#C3E7EF"
 	line 			"#000000"
 	text 			"#000000"
 	action	 	"#ffffff"
-	if 			"#ffffd0"
-	switch	 	"#ffd0d0"
-	loop			"#d0ffd0"
+	if 			"#ffffe8"
+	switch	 	"#ffe8e8"
+	loop			"#e8ffe8"
 	comment		"#ffff00"
 	comment_s		"#909090"
 	syntax_identifier "#000000"
@@ -76,7 +76,7 @@ variable parrot {
 
 variable black {
 	background 	"#000000"
-	line 			"#909090"
+	line 			"#707070"
 	text 			"#ffffff"
 	action	 	"#000000"
 	if 			"#000000"
@@ -84,17 +84,17 @@ variable black {
 	loop			"#000000"
 	comment		"#303030"
 	comment_s		"#303030"
-	syntax_identifier "#e0e0e0"
+	syntax_identifier "#c0c0c0"
 	syntax_string "#909090"
 	syntax_keyword "#b0b0b0"
 	syntax_number "#ffffff"
 	syntax_comment "#505050"
-	syntax_operator "#dddddd"  
+	syntax_operator "#ffffff"  
 }
 
 variable night {
 	background 	"#000040"
-	line 			"#8080c0"
+	line 			"#7070c0"
 	text 			"#ffffaa"
 	action	 	"#000000"
 	if 			"#000000"
@@ -103,16 +103,16 @@ variable night {
 	comment		"#0000a0"
 	comment_s		"#0000a0"
 	syntax_identifier "#BCD5FF"
-	syntax_string "#48629F"
+	syntax_string "#6882aF"
 	syntax_keyword "#70A5FF"
 	syntax_number "#ffffff"
 	syntax_comment "#808080"
-	syntax_operator "#86B3FF"  
+	syntax_operator "#ffffff"  
 }
 
 variable colored_night {
 	background 	"#000040"
-	line 			"#8080c0"
+	line 			"#7070c0"
 	text 			"#ffffaa"
 	action	 	"#000000"
 	if 			"#202000"
@@ -120,12 +120,12 @@ variable colored_night {
 	loop			"#002500"
 	comment		"#0000a0"
 	comment_s		"#0000a0"
-	syntax_identifier "#EBD9C0"
-	syntax_string "#CC8623"
-	syntax_keyword "#6CCC88"
+	syntax_identifier "#FBF9C0"
+	syntax_string "#dC8623"
+	syntax_keyword "#ABFFCF"
 	syntax_number "#ffffff"
 	syntax_comment "#808080"
-	syntax_operator "#ABEBCF"
+	syntax_operator "#6CCC88"
 }
 
 #	syntax_identifier "#EBD9C0"

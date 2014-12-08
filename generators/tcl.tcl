@@ -5,7 +5,8 @@ namespace eval gen_tcl {
 
 variable keywords
 
-array set keywords { append 1
+array set keywords { 
+append 1
 binary 1
 format 1
 regexp 1
