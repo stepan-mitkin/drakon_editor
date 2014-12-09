@@ -1010,6 +1010,7 @@ proc lup { move_data } {
 		foreach changed_item $changed {
 			take_resize_from_shadow $changed_item
 		}
+		mv::fill $diagram_id
 	} elseif { [ state is alt_drag ] } {
 		start_action  [ mc2 "Move and change items" ]
 		take_shapes_from_shadow [ mv::get_changed ]
