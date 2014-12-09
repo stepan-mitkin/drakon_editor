@@ -2164,6 +2164,8 @@ proc do_rename_dia { node_id new } {
 		}
 	}
 	
+	mv::fill $id
+	
 	commit_transaction do_rename_dia
 	state reset
 	return ""
