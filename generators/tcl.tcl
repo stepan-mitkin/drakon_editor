@@ -89,6 +89,8 @@ proc highlight { tokens } {
 	set state "idle"
 	foreach token $tokens {
 		lassign $token type text
+		set color $colors::syntax_keyword
+		
 		if { $text == "\n" } {
 			set state "idle"
 		} elseif { $state == "idle"} {
