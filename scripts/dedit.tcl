@@ -1002,6 +1002,7 @@ proc lup { move_data } {
 		take_selection_from_shadow $diagram_id
 		start_action  [ mc2 "Move items" ]
 		take_drag_from_shadow
+		mv::fill $diagram_id
 	} elseif { [ state is resizing ] } {
 		take_selection_from_shadow $diagram_id
 		start_action  [ mc2 "Change shape" ]
@@ -1012,11 +1013,11 @@ proc lup { move_data } {
 	} elseif { [ state is alt_drag ] } {
 		start_action  [ mc2 "Move and change items" ]
 		take_shapes_from_shadow [ mv::get_changed ]
+		mv::fill $diagram_id
 	}
 	
 	commit_transaction lup
 	state reset
-	mv::fill $diagram_id
 }
 
 proc rdown { cx cy } {
