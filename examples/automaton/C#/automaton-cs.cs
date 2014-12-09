@@ -5,6 +5,27 @@ using System.Text;
 
 namespace AutomatonTest {
 
+public class Message
+{
+	public int Code;
+	public char C;
+}
+
+public interface IRuntime
+{
+
+}
+
+public interface IActor
+{
+	void OnMessage(IRuntime runtime, int myId, Message message);
+}	
+
+internal class RuntimeStub : IRuntime
+{
+
+}
+
 public enum TokenType
 {
 	None,
@@ -35,7 +56,11 @@ public class Token
 }
 
 public class Lexer {
-
+	public const int Whitespace = 1;
+	public const int Letter = 2;
+	public const int Digit = 3;
+	public const int Operator = 4;
+	public const int dummy = 5;
 
 	private static readonly List<string> LongOperators = new List<string>
 		{ "==", "<=", ">=", "!=", "&&", "||" };
@@ -43,7 +68,8 @@ public class Lexer {
 	
 	
 
-    public partial class LexerMachine {
+    public partial class LexerMachine
+    {
         
         // Currently built token and list of tokens.
         private readonly LexerData Data = new LexerData();
@@ -157,196 +183,509 @@ public class Lexer {
         }
 
         private void Idle_Whitespace(char c) {
-            // item 23
+            // item 216
             CurrentState = StateNames.Idle;
         }
 
         private void Idle_Letter(char c) {
-            // item 44
+            // item 237
             AddChar(Data, c);
-            // item 47
+            // item 240
             CurrentState = StateNames.Identifier;
         }
 
         private void Idle_Digit(char c) {
-            // item 45
+            // item 238
             AddChar(Data, c);
-            // item 48
+            // item 241
             CurrentState = StateNames.Number;
         }
 
         private void Idle_Operator(char c) {
-            // item 46
+            // item 239
             AddChar(Data, c);
-            // item 49
+            // item 242
             CurrentState = StateNames.Operator;
         }
 
         private void Identifier_Whitespace(char c) {
-            // item 65
+            // item 258
             CreateIdentifier(Data);
-            // item 31
+            // item 224
             CurrentState = StateNames.Idle;
         }
 
         private void Identifier_Letter(char c) {
-            // item 59
+            // item 252
             AddChar(Data, c);
-            // item 62
+            // item 255
             CurrentState = StateNames.Identifier;
         }
 
         private void Identifier_Digit(char c) {
-            // item 60
+            // item 253
             AddChar(Data, c);
-            // item 63
+            // item 256
             CurrentState = StateNames.Identifier;
         }
 
         private void Identifier_Operator(char c) {
-            // item 66
+            // item 259
             CreateIdentifier(Data);
-            // item 61
+            // item 254
             AddChar(Data, c);
-            // item 64
+            // item 257
             CurrentState = StateNames.Operator;
         }
 
         private void Number_Whitespace(char c) {
-            // item 82
+            // item 275
             CreateNumber(Data);
-            // item 34
+            // item 227
             CurrentState = StateNames.Idle;
         }
 
         private void Number_Letter(char c) {
-            // item 76
+            // item 269
             AddChar(Data, c);
-            // item 79
+            // item 272
             CurrentState = StateNames.Number;
         }
 
         private void Number_Digit(char c) {
-            // item 77
+            // item 270
             AddChar(Data, c);
-            // item 80
+            // item 273
             CurrentState = StateNames.Number;
         }
 
         private void Number_Operator(char c) {
-            // item 83
+            // item 276
             CreateNumber(Data);
-            // item 78
+            // item 271
             AddChar(Data, c);
-            // item 81
+            // item 274
             CurrentState = StateNames.Operator;
         }
 
         private void Number_dummy(char c) {
-            // item 81
+            // item 274
             CurrentState = StateNames.Operator;
         }
 
         private void Operator_Whitespace(char c) {
-            // item 99
+            // item 292
             CreateOperator(Data);
-            // item 26
+            // item 219
             CurrentState = StateNames.Idle;
         }
 
         private void Operator_Letter(char c) {
-            // item 100
+            // item 293
             CreateOperator(Data);
-            // item 93
+            // item 286
             AddChar(Data, c);
-            // item 96
+            // item 289
             CurrentState = StateNames.Identifier;
         }
 
         private void Operator_Digit(char c) {
-            // item 101
+            // item 294
             CreateOperator(Data);
-            // item 94
+            // item 287
             AddChar(Data, c);
-            // item 97
+            // item 290
             CurrentState = StateNames.Number;
         }
 
         private void Operator_Operator(char c) {
-            // item 103
+            // item 295
             if (TryMakeLongOperator(Data, c)) {
-                // item 106
+                // item 298
                 CurrentState = StateNames.Idle;
             } else {
-                // item 107
+                // item 299
                 CreateOperator(Data);
-                // item 95
+                // item 288
                 AddChar(Data, c);
-                // item 98
+                // item 291
+                CurrentState = StateNames.Operator;
+            }
+        }
+    }
+    public partial class LexerMachineWeak
+        : IActor
+    {
+        
+        // Currently built token and list of tokens.
+        private readonly LexerData Data = new LexerData();
+        
+        // The output list of tokens.
+        public List<Token> Tokens { get { return Data.Tokens; } }
+        public enum StateNames {
+            Invalid,
+            Idle,
+            Identifier,
+            Number,
+            Operator
+        }
+        private StateNames CurrentState = StateNames.Idle;
+        public void OnMessage(IRuntime runtime, int myId, Message message) {
+            switch (message.Code) {
+                case Digit:
+                    switch (CurrentState) {
+                        case StateNames.Idle:
+                            Idle_Digit(runtime, myId, message);
+                            break;
+                        case StateNames.Identifier:
+                            Identifier_Digit(runtime, myId, message);
+                            break;
+                        case StateNames.Number:
+                            Number_Digit(runtime, myId, message);
+                            break;
+                        case StateNames.Operator:
+                            Operator_Digit(runtime, myId, message);
+                            break;
+                        case StateNames.Invalid:
+                            throw new System.InvalidOperationException(
+                                "Actor was in Invalid state. Message: Digit");
+                    }
+                    break;
+                case Letter:
+                    switch (CurrentState) {
+                        case StateNames.Idle:
+                            Idle_Letter(runtime, myId, message);
+                            break;
+                        case StateNames.Identifier:
+                            Identifier_Letter(runtime, myId, message);
+                            break;
+                        case StateNames.Number:
+                            Number_Letter(runtime, myId, message);
+                            break;
+                        case StateNames.Operator:
+                            Operator_Letter(runtime, myId, message);
+                            break;
+                        case StateNames.Invalid:
+                            throw new System.InvalidOperationException(
+                                "Actor was in Invalid state. Message: Letter");
+                    }
+                    break;
+                case Operator:
+                    switch (CurrentState) {
+                        case StateNames.Idle:
+                            Idle_Operator(runtime, myId, message);
+                            break;
+                        case StateNames.Identifier:
+                            Identifier_Operator(runtime, myId, message);
+                            break;
+                        case StateNames.Number:
+                            Number_Operator(runtime, myId, message);
+                            break;
+                        case StateNames.Operator:
+                            Operator_Operator(runtime, myId, message);
+                            break;
+                        case StateNames.Invalid:
+                            throw new System.InvalidOperationException(
+                                "Actor was in Invalid state. Message: Operator");
+                    }
+                    break;
+                case Whitespace:
+                    switch (CurrentState) {
+                        case StateNames.Idle:
+                            Idle_Whitespace(runtime, myId, message);
+                            break;
+                        case StateNames.Identifier:
+                            Identifier_Whitespace(runtime, myId, message);
+                            break;
+                        case StateNames.Number:
+                            Number_Whitespace(runtime, myId, message);
+                            break;
+                        case StateNames.Operator:
+                            Operator_Whitespace(runtime, myId, message);
+                            break;
+                        case StateNames.Invalid:
+                            throw new System.InvalidOperationException(
+                                "Actor was in Invalid state. Message: Whitespace");
+                    }
+                    break;
+                case dummy:
+                    switch (CurrentState) {
+                        case StateNames.Idle:
+                            break;
+                        case StateNames.Identifier:
+                            break;
+                        case StateNames.Number:
+                            Number_dummy(runtime, myId, message);
+                            break;
+                        case StateNames.Operator:
+                            break;
+                        case StateNames.Invalid:
+                            throw new System.InvalidOperationException(
+                                "Actor was in Invalid state. Message: dummy");
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void Idle_Whitespace(IRuntime runtime, int myId, Message message) {
+            // item 338
+            CurrentState = StateNames.Idle;
+        }
+
+        private void Idle_Letter(IRuntime runtime, int myId, Message message) {
+            // item 359
+            AddChar(Data, message.C);
+            // item 362
+            CurrentState = StateNames.Identifier;
+        }
+
+        private void Idle_Digit(IRuntime runtime, int myId, Message message) {
+            // item 360
+            AddChar(Data, message.C);
+            // item 363
+            CurrentState = StateNames.Number;
+        }
+
+        private void Idle_Operator(IRuntime runtime, int myId, Message message) {
+            // item 361
+            AddChar(Data, message.C);
+            // item 364
+            CurrentState = StateNames.Operator;
+        }
+
+        private void Identifier_Whitespace(IRuntime runtime, int myId, Message message) {
+            // item 380
+            CreateIdentifier(Data);
+            // item 346
+            CurrentState = StateNames.Idle;
+        }
+
+        private void Identifier_Letter(IRuntime runtime, int myId, Message message) {
+            // item 374
+            AddChar(Data, message.C);
+            // item 377
+            CurrentState = StateNames.Identifier;
+        }
+
+        private void Identifier_Digit(IRuntime runtime, int myId, Message message) {
+            // item 375
+            AddChar(Data, message.C);
+            // item 378
+            CurrentState = StateNames.Identifier;
+        }
+
+        private void Identifier_Operator(IRuntime runtime, int myId, Message message) {
+            // item 381
+            CreateIdentifier(Data);
+            // item 376
+            AddChar(Data, message.C);
+            // item 379
+            CurrentState = StateNames.Operator;
+        }
+
+        private void Number_Whitespace(IRuntime runtime, int myId, Message message) {
+            // item 397
+            CreateNumber(Data);
+            // item 349
+            CurrentState = StateNames.Idle;
+        }
+
+        private void Number_Letter(IRuntime runtime, int myId, Message message) {
+            // item 391
+            AddChar(Data, message.C);
+            // item 394
+            CurrentState = StateNames.Number;
+        }
+
+        private void Number_Digit(IRuntime runtime, int myId, Message message) {
+            // item 392
+            AddChar(Data, message.C);
+            // item 395
+            CurrentState = StateNames.Number;
+        }
+
+        private void Number_Operator(IRuntime runtime, int myId, Message message) {
+            // item 398
+            CreateNumber(Data);
+            // item 393
+            AddChar(Data, message.C);
+            // item 396
+            CurrentState = StateNames.Operator;
+        }
+
+        private void Number_dummy(IRuntime runtime, int myId, Message message) {
+            // item 396
+            CurrentState = StateNames.Operator;
+        }
+
+        private void Operator_Whitespace(IRuntime runtime, int myId, Message message) {
+            // item 414
+            CreateOperator(Data);
+            // item 341
+            CurrentState = StateNames.Idle;
+        }
+
+        private void Operator_Letter(IRuntime runtime, int myId, Message message) {
+            // item 415
+            CreateOperator(Data);
+            // item 408
+            AddChar(Data, message.C);
+            // item 411
+            CurrentState = StateNames.Identifier;
+        }
+
+        private void Operator_Digit(IRuntime runtime, int myId, Message message) {
+            // item 416
+            CreateOperator(Data);
+            // item 409
+            AddChar(Data, message.C);
+            // item 412
+            CurrentState = StateNames.Number;
+        }
+
+        private void Operator_Operator(IRuntime runtime, int myId, Message message) {
+            // item 417
+            if (TryMakeLongOperator(Data, message.C)) {
+                // item 420
+                CurrentState = StateNames.Idle;
+            } else {
+                // item 421
+                CreateOperator(Data);
+                // item 410
+                AddChar(Data, message.C);
+                // item 413
                 CurrentState = StateNames.Operator;
             }
         }
     }
 
     public static List<Token> Lex(string text) {
-        IEnumerator<char> _it168 = null;
+        IEnumerator<char> _it311 = null;
         char c = default(char);
-        // item 167
+        // item 310
         Init();
         var lexer = new LexerMachine();
-        // item 1680001
-        _it168 = ((IEnumerable<char>)text).GetEnumerator();
+        // item 3110001
+        _it311 = ((IEnumerable<char>)text).GetEnumerator();
         while (true) {
-            // item 1680002
-            if (_it168.MoveNext()) {
+            // item 3110002
+            if (_it311.MoveNext()) {
                 
             } else {
                 break;
             }
-            // item 1680004
-            c = _it168.Current;
-            // item 172
+            // item 3110004
+            c = _it311.Current;
+            // item 315
             if (c == '_') {
-                // item 181
+                // item 323
                 lexer.Letter(c);
             } else {
-                // item 175
+                // item 318
                 if (Char.IsLetter(c)) {
-                    // item 181
+                    // item 323
                     lexer.Letter(c);
                 } else {
-                    // item 178
+                    // item 320
                     if (Char.IsDigit(c)) {
-                        // item 182
+                        // item 324
                         lexer.Digit(c);
                     } else {
-                        // item 183
+                        // item 325
                         if (IsOperator(c)) {
-                            // item 186
+                            // item 328
                             lexer.Operator(c);
                         } else {
-                            // item 187
+                            // item 329
                             lexer.Whitespace(' ');
                         }
                     }
                 }
             }
         }
-        // item 171
+        // item 314
         lexer.Whitespace(' ');
-        // item 170
+        // item 313
+        return lexer.Tokens;
+    }
+
+    public static List<Token> LexWeak(string text) {
+        IEnumerator<char> _it433 = null;
+        char c = default(char);
+        // item 432
+        Init();
+        var lexer = new LexerMachineWeak();
+        var runtime = new RuntimeStub();
+        int id = 0;
+        // item 452
+        var msg = new Message();
+        // item 4330001
+        _it433 = ((IEnumerable<char>)text).GetEnumerator();
+        while (true) {
+            // item 4330002
+            if (_it433.MoveNext()) {
+                
+            } else {
+                break;
+            }
+            // item 4330004
+            c = _it433.Current;
+            // item 453
+            msg.C = c;
+            // item 437
+            if (c == '_') {
+                // item 445
+                msg.Code = Letter;
+            } else {
+                // item 440
+                if (Char.IsLetter(c)) {
+                    // item 445
+                    msg.Code = Letter;
+                } else {
+                    // item 442
+                    if (Char.IsDigit(c)) {
+                        // item 446
+                        msg.Code = Digit;
+                    } else {
+                        // item 447
+                        if (IsOperator(c)) {
+                            // item 450
+                            msg.Code = Operator;
+                        } else {
+                            // item 451
+                            msg.C = ' ';
+                            msg.Code = Whitespace;
+                        }
+                    }
+                }
+            }
+            // item 454
+            lexer.OnMessage(runtime, id, msg);
+        }
+        // item 455
+        msg.C = ' ';
+        msg.Code = Whitespace;
+        lexer.OnMessage(runtime, id, msg);
+        // item 435
         return lexer.Tokens;
     }
 
     public static void Main() {
         IEnumerator<Token> _it204 = null;
         Token token = default(Token);
+        IEnumerator<Token> _it464 = null;
+        Token token2 = default(Token);
         // item 161
         string text = "foo.Bar(34 / 4-(18+m * 3));";
-        List<Token> tokens = Lex(text);
-        // item 207
         Console.WriteLine("Text:\n{0}", text);
+        // item 207
+        Console.WriteLine();
+        Console.WriteLine("Strongly-typed state machine test");
         Console.WriteLine("Tokens:");
+        // item 457
+        List<Token> tokens = Lex(text);
         // item 2040001
         _it204 = ((IEnumerable<Token>)tokens).GetEnumerator();
         while (true) {
@@ -360,6 +699,26 @@ public class Lexer {
             token = _it204.Current;
             // item 206
             Console.WriteLine(token);
+        }
+        // item 467
+        Console.WriteLine();
+        Console.WriteLine("Weakly-typed state machine test");
+        Console.WriteLine("Tokens:");
+        // item 468
+        List<Token> tokens2 = LexWeak(text);
+        // item 4640001
+        _it464 = ((IEnumerable<Token>)tokens2).GetEnumerator();
+        while (true) {
+            // item 4640002
+            if (_it464.MoveNext()) {
+                
+            } else {
+                break;
+            }
+            // item 4640004
+            token2 = _it464.Current;
+            // item 466
+            Console.WriteLine(token2);
         }
     }
 

@@ -692,6 +692,45 @@ proc generate_body { gdb diagram_id start_item node_list items incoming } {
     $items $incoming $callbacks ]
 }
 
+proc handle_message { fhandle ind states message names handlers } {
+    #item 1727
+    puts $fhandle "$ind            switch \(CurrentState\) \{"
+    #item 17240001
+    set _col1724 $states
+    set _len1724 [ llength $_col1724 ]
+    set _ind1724 0
+    while { 1 } {
+        #item 17240002
+        if {$_ind1724 < $_len1724} {
+            
+        } else {
+            break
+        }
+        #item 17240004
+        set state [ lindex $_col1724 $_ind1724 ]
+        #item 1729
+        set method "${state}_${message}"
+        #item 1733
+        puts $fhandle "$ind                case StateNames.$state:"
+        #item 1730
+        if {[ find_function_by_name $handlers $method ] == {}} {
+            
+        } else {
+            #item 1728
+            puts $fhandle "$ind                    $method\($names\);"
+        }
+        #item 1734
+        puts $fhandle "$ind                    break;"
+        #item 17240003
+        incr _ind1724
+    }
+    #item 1726
+    puts $fhandle "$ind                case StateNames.Invalid:"
+    puts $fhandle "$ind                    throw new System.InvalidOperationException\("
+    puts $fhandle "$ind                        \"Actor was in Invalid state. Message: $message\"\);"
+    puts $fhandle "$ind            \}"
+}
+
 proc highlight { tokens } {
     #item 1509
     variable cs_keywords
@@ -976,6 +1015,27 @@ proc is_ctr { method } {
     return [ expr { $type == "ctr" } ]
 }
 
+proc is_weak { machine } {
+    #item 1688
+    set params [ dict get $machine "parameters" ]
+    #item 1689
+    if {[ llength $params ] == 1} {
+        #item 1694
+        set first [ lindex $params 0 ]
+        #item 1693
+        if {$first == "state machine"} {
+            #item 1692
+            return 1
+        } else {
+            #item 1687
+            return 0
+        }
+    } else {
+        #item 1687
+        return 0
+    }
+}
+
 proc make_callbacks { } {
     #item 641
     set callbacks {}
@@ -1041,7 +1101,7 @@ proc method_of_access { procedure access } {
     }
 }
 
-proc p.print_proc { fhandle procedure class_name depth } {
+proc p.print_proc { weak_signature fhandle procedure class_name depth } {
     #item 97
     unpack $procedure diagram_id name signature body
     #item 968
@@ -1084,14 +1144,20 @@ proc p.print_proc { fhandle procedure class_name depth } {
     }
     #item 1015
     append header "$name\("
-    #item 1623
-    set params [ map2 $parameters gen_cs::take_first ]
-    #item 1613
-    if {[lindex $params 0 ] == "state machine"} {
-        #item 1616
-        set params [ lrange $params 1 end ]
+    #item 1677
+    if {$weak_signature} {
+        #item 1680
+        set params [ weak_params ]
     } else {
-        
+        #item 1623
+        set params [ map2 $parameters gen_cs::take_first ]
+        #item 1613
+        if {[lindex $params 0 ] == "state machine"} {
+            #item 1616
+            set params [ lrange $params 1 end ]
+        } else {
+            
+        }
     }
     #item 1021
     append header [ join $params ", " ]
@@ -1133,13 +1199,13 @@ proc p.print_to_file { fhandle functions methods header class class_name footer 
     set private   [ lfilter_user $functions gen_java::method_of_access "private"   ]
     set internal  [ lfilter_user $functions gen_java::method_of_access "internal"  ]
     #item 966
-    print_procs $fhandle $ctrs $class_name 1
+    print_procs 0 $fhandle $ctrs $class_name 1
     #item 967
-    print_procs $fhandle $public "" 1
-    print_procs $fhandle $internal "" 1
-    print_procs $fhandle $protected "" 1
-    print_procs $fhandle $private "" 1
-    print_procs $fhandle $none "" 1
+    print_procs 0 $fhandle $public "" 1
+    print_procs 0 $fhandle $internal "" 1
+    print_procs 0 $fhandle $protected "" 1
+    print_procs 0 $fhandle $private "" 1
+    print_procs 0 $fhandle $none "" 1
     #item 76
     puts $fhandle "\}"
     #item 1068
@@ -1182,42 +1248,9 @@ proc print_handler { fhandle states message params names handlers } {
     puts $fhandle ""
     #item 1554
     puts $fhandle "        public void $message\($params\) \{"
-    #item 1638
-    puts $fhandle "            switch \(CurrentState\) \{"
-    #item 15520001
-    set _col1552 $states
-    set _len1552 [ llength $_col1552 ]
-    set _ind1552 0
-    while { 1 } {
-        #item 15520002
-        if {$_ind1552 < $_len1552} {
-            
-        } else {
-            break
-        }
-        #item 15520004
-        set state [ lindex $_col1552 $_ind1552 ]
-        #item 1654
-        set method "${state}_${message}"
-        #item 1658
-        puts $fhandle "                case StateNames.$state:"
-        #item 1655
-        if {[ find_function_by_name $handlers $method ] == {}} {
-            
-        } else {
-            #item 1639
-            puts $fhandle "                    $method\($names\);"
-        }
-        #item 1659
-        puts $fhandle "                    break;"
-        #item 15520003
-        incr _ind1552
-    }
-    #item 1555
-    puts $fhandle "                case StateNames.Invalid:"
-    puts $fhandle "                    throw new System.InvalidOperationException\("
-    puts $fhandle "                        \"Actor was in Invalid state. Message: $message\"\);"
-    puts $fhandle "            \}"
+    #item 1736
+    handle_message $fhandle "" $states $message $names $handlers
+    #item 1718
     puts $fhandle "        \}"
 }
 
@@ -1244,11 +1277,21 @@ proc print_machine { fhandle machine } {
         set name [ dict get $machine "name" ]
         set handlers [ dict get $machine "handlers" ]
         set comments [ dict get $machine "comments" ]
+        #item 1681
+        set weak [ is_weak $machine ]
         #item 1661
         set body [ extract_body $comments ]
         #item 1541
-        puts $fhandle "    public partial class $name \{"
+        puts $fhandle "    public partial class $name"
+        #item 1708
+        if {$weak} {
+            #item 1711
+            puts $fhandle "        : IActor"
+        } else {
+            
+        }
         #item 1676
+        puts $fhandle "    \{"
         puts $fhandle "        $body"
         #item 1632
         puts $fhandle "        public enum StateNames \{"
@@ -1263,36 +1306,74 @@ proc print_machine { fhandle machine } {
         set first [ lindex $states 0 ]
         #item 1636
         puts $fhandle "        private StateNames CurrentState = StateNames.$first;"
-        #item 1557
-        set real_params [ lrange $parameters 1 end ]
-        set params [ join $real_params ", " ]
-        #item 1640
-        set pnames [ lrange $param_names 1 end ]
-        #item 1190
-        set arg_name_list [ join $pnames ", " ]
-        #item 15440001
-        set _col1544 $messages
-        set _len1544 [ llength $_col1544 ]
-        set _ind1544 0
-        while { 1 } {
-            #item 15440002
-            if {$_ind1544 < $_len1544} {
-                
-            } else {
-                break
+        #item 1705
+        if {$weak} {
+            #item 1557
+            set params [ join [ weak_params ] ", " ]
+            set pnames "runtime, myId, message"
+            #item 1738
+            puts $fhandle "        public void OnMessage\($params\) \{"
+            puts $fhandle "            switch \(message.Code\) \{"
+            #item 15440001
+            set _col1544 $messages
+            set _len1544 [ llength $_col1544 ]
+            set _ind1544 0
+            while { 1 } {
+                #item 15440002
+                if {$_ind1544 < $_len1544} {
+                    
+                } else {
+                    break
+                }
+                #item 15440004
+                set message [ lindex $_col1544 $_ind1544 ]
+                #item 1740
+                puts $fhandle "                case $message:"
+                #item 1737
+                handle_message $fhandle "        " $states \
+                 $message $pnames $handlers
+                #item 1741
+                puts $fhandle "                    break;"
+                #item 15440003
+                incr _ind1544
             }
-            #item 15440004
-            set message [ lindex $_col1544 $_ind1544 ]
-            #item 1543
-            print_handler $fhandle \
-              $states $message $params $arg_name_list \
-              $handlers
-            #item 15440003
-            incr _ind1544
+            #item 1739
+            puts $fhandle "                default:"
+            puts $fhandle "                    break;"
+            puts $fhandle "            \}"
+            puts $fhandle "        \}"
+        } else {
+            #item 1701
+            set real_params [ lrange $parameters 1 end ]
+            set params [ join $real_params ", " ]
+            #item 1704
+            set pnames [ lrange $param_names 1 end ]
+            #item 1697
+            set arg_name_list [ join $pnames ", " ]
+            #item 16990001
+            set _col1699 $messages
+            set _len1699 [ llength $_col1699 ]
+            set _ind1699 0
+            while { 1 } {
+                #item 16990002
+                if {$_ind1699 < $_len1699} {
+                    
+                } else {
+                    break
+                }
+                #item 16990004
+                set message [ lindex $_col1699 $_ind1699 ]
+                #item 1698
+                print_handler $fhandle \
+                  $states $message $params $arg_name_list \
+                  $handlers
+                #item 16990003
+                incr _ind1699
+            }
         }
-        #item 1612
-        print_procs $fhandle $handlers "" 2
     }
+    #item 1612
+    print_procs $weak $fhandle $handlers "" 2
     #item 1542
     puts $fhandle "    \}"
 }
@@ -1318,7 +1399,7 @@ proc print_machines { fhandle machines } {
     }
 }
 
-proc print_procs { fhandle procedures class_name depth } {
+proc print_procs { weak_signature fhandle procedures class_name depth } {
     #item 9630001
     set _col963 $procedures
     set _len963 [ llength $_col963 ]
@@ -1333,7 +1414,7 @@ proc print_procs { fhandle procedures class_name depth } {
         #item 9630004
         set procedure [ lindex $_col963 $_ind963 ]
         #item 965
-        p.print_proc $fhandle $procedure $class_name $depth
+        p.print_proc $weak_signature $fhandle $procedure $class_name $depth
         #item 9630003
         incr _ind963
     }
@@ -1534,6 +1615,15 @@ proc try_parse_method_name { diagram_id name } {
     } else {
         #item 1305
         return [ list "" "" 0 ]
+    }
+}
+
+proc weak_params { } {
+    #item 1717
+    return { 
+    	"IRuntime runtime"
+    	"int myId"
+    	"Message message"
     }
 }
 
