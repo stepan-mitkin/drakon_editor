@@ -1000,6 +1000,25 @@ proc p.create_branches { diagram_id } {
 	}
 }
 
+proc is_weak_machine { diagram_id } {
+	if { ![ mwc::is_drakon $diagram_id ] } { return 0 }
+	
+	set starts [ p.find_starts $diagram_id ]
+	set start [ lindex $starts 0 ]
+	set params_icon [ p.get_params $start ]
+	if { $params_icon == "" } { return 0 }
+
+	set text [ gen::p.vertex_text gdb $params_icon ]
+	set trimmed [ string trim $text ]
+	
+	if { $trimmed == "state machine" } {
+		return 1
+	}
+	
+	return 0
+}
+
+
 proc is_machine { diagram_id } {
 
 	if { ![ mwc::is_drakon $diagram_id ] } { return 0 }

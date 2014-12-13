@@ -256,6 +256,14 @@ proc build_declaration { name signature } {
 	return $result
 }
 
+proc skip_diagram { name } {
+	if { $name == "FinalBranch" } {
+		return 1
+	}
+	
+	return 0
+}
+
 proc p.print_to_file { gdb fhandle functions header footer module machine standalone } {
 
 	set version [ version_string ]
@@ -271,6 +279,7 @@ proc p.print_to_file { gdb fhandle functions header footer module machine standa
 	set exported {}
 	foreach function $functions {
 		lassign $function diagram_id name signature body
+		if { [ skip_diagram $name ] } { continue }
 		if { [ is_machine_proc $gdb $diagram_id ] } { continue }
 		set access [ lindex $signature 1 ]
 		if { $access == "public" } {
@@ -298,6 +307,7 @@ proc p.print_to_file { gdb fhandle functions header footer module machine standa
 			from diagrams
 			where diagram_id = :diagram_id } ] state message ordinal is_default
 		
+		if { [ skip_diagram $name ] } { continue }
 		if { [ is_machine_proc $gdb $diagram_id ] } { continue }
 
 		
@@ -485,7 +495,7 @@ proc get_states { gdb } {
 	return [ $gdb eval {
 		select state
 		from diagrams
-		where state is not null
+		where state is not null and state != ''
 		group by state } ]
 }
 

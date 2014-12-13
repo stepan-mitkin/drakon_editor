@@ -2,6 +2,11 @@ gen::add_generator "C#" gen_cs::generate
 
 namespace eval gen_cs {
 
+
+variable handler_arg_names ""
+variable link_to_final_found 0
+
+
 variable cs_keywords {
 abstract
 as
@@ -176,10 +181,19 @@ proc bad_case { switch_var select_icon_number } {
 }
 
 proc change_state { next_state machine_name } {
+    #item 1744
+    variable handler_arg_names
+    variable link_to_final_found
     #item 1095
     if {$next_state == ""} {
+        #item 1745
+        set link_to_final_found 1
+        #item 1743
+        set lines {}
+        lappend lines "CurrentState = StateNames.Invalid;"
+        lappend lines "FinalBranch\($handler_arg_names\);"
         #item 1099
-        return "CurrentState = StateNames.Invalid;"
+        return [ join $lines "\n" ]
     } else {
         #item 1098
         return "CurrentState = StateNames.${next_state};"
@@ -283,7 +297,7 @@ proc extract_body { comments } {
         set first [ lindex $lines 0 ]
         set first_t [ string trim $first ]
         #item 1670
-        if {$first_t == "=== body ==="} {
+        if {$first_t == "=== fields ==="} {
             #item 1674
             set rest [ lrange $lines 1 end ]
             set new_text [ join $rest "\n        " ]
@@ -343,6 +357,58 @@ proc extract_class_name { section } {
             }
         }
     }
+}
+
+proc extract_many_cs_machines { gdb callbacks } {
+    #item 1762
+    variable handler_arg_names
+    variable link_to_final_found
+    #item 1760
+    set result {}
+    #item 1751
+    set diagrams [ $gdb eval {
+    	select diagram_id from diagrams } ]
+    #item 17520001
+    set _col1752 $diagrams
+    set _len1752 [ llength $_col1752 ]
+    set _ind1752 0
+    while { 1 } {
+        #item 17520002
+        if {$_ind1752 < $_len1752} {
+            
+        } else {
+            break
+        }
+        #item 17520004
+        set diagram_id [ lindex $_col1752 $_ind1752 ]
+        #item 1754
+        if {[graph::is_machine $diagram_id]} {
+            #item 1767
+            set link_to_final_found 0
+            #item 1763
+            if {[graph::is_weak_machine $diagram_id]} {
+                #item 1766
+                set handler_arg_names [weak_param_names_final]
+            } else {
+                #item 1768
+                set handler_arg_names ""
+            }
+            #item 1759
+            set info [ sma::build_machine $gdb $diagram_id $callbacks ]
+            #item 1758
+            sma::delete_diagram $gdb $diagram_id
+            #item 1772
+            lappend info "has_final" $link_to_final_found
+            #item 1757
+            lappend result $info
+        } else {
+            
+        }
+        #item 17520003
+        incr _ind1752
+    }
+    #item 1761
+    return $result
 }
 
 proc extract_signature { text name } {
@@ -597,7 +663,7 @@ proc generate { db gdb filename } {
      { header class footer } ] \
      header class footer
     #item 1532
-    set raw_machines [ sma::extract_many_machines \
+    set raw_machines [ extract_many_cs_machines \
      $gdb $callbacks ]
     #item 1089
     set diagrams [ $gdb eval {
@@ -708,8 +774,10 @@ proc handle_message { fhandle ind states message names handlers } {
         }
         #item 17240004
         set state [ lindex $_col1724 $_ind1724 ]
+        #item 1742
+        set message2 [ string map { - _ . _ } $message ]
         #item 1729
-        set method "${state}_${message}"
+        set method "${state}_${message2}"
         #item 1733
         puts $fhandle "$ind                case StateNames.$state:"
         #item 1730
@@ -1277,6 +1345,7 @@ proc print_machine { fhandle machine } {
         set name [ dict get $machine "name" ]
         set handlers [ dict get $machine "handlers" ]
         set comments [ dict get $machine "comments" ]
+        set has_final [ dict get $machine "has_final" ]
         #item 1681
         set weak [ is_weak $machine ]
         #item 1661
@@ -1310,7 +1379,7 @@ proc print_machine { fhandle machine } {
         if {$weak} {
             #item 1557
             set params [ join [ weak_params ] ", " ]
-            set pnames "runtime, myId, message"
+            set pnames [ weak_param_names ]
             #item 1738
             puts $fhandle "        public void OnMessage\($params\) \{"
             puts $fhandle "            switch \(message.Code\) \{"
@@ -1372,8 +1441,37 @@ proc print_machine { fhandle machine } {
             }
         }
     }
-    #item 1612
-    print_procs $weak $fhandle $handlers "" 2
+    #item 17820001
+    set _col1782 $handlers
+    set _len1782 [ llength $_col1782 ]
+    set _ind1782 0
+    while { 1 } {
+        #item 17820002
+        if {$_ind1782 < $_len1782} {
+            
+        } else {
+            break
+        }
+        #item 17820004
+        set procedure [ lindex $_col1782 $_ind1782 ]
+        #item 1791
+        unpack $procedure _ proc_name
+        #item 1785
+        if {$proc_name == "FinalBranch"} {
+            #item 1788
+            if {$has_final} {
+                #item 1784
+                p.print_proc $weak $fhandle $procedure "" 2
+            } else {
+                
+            }
+        } else {
+            #item 1784
+            p.print_proc $weak $fhandle $procedure "" 2
+        }
+        #item 17820003
+        incr _ind1782
+    }
     #item 1542
     puts $fhandle "    \}"
 }
@@ -1513,14 +1611,10 @@ proc separate_methods { gdb all_functions functions_name methods_name } {
         set function [ lindex $_col1271 $_ind1271 ]
         #item 1274
         lassign $function diagram_id name signature body
-        #item 1567
-        set original [ $gdb onecolumn {
-        	select original
-        	from diagrams
-        	where diagram_id = :diagram_id
-        } ]
         #item 1568
-        if {$original == ""} {
+        if {[sma::is_from_machine $gdb $diagram_id]} {
+            
+        } else {
             #item 1273
             lassign \
             [try_parse_method_name $diagram_id $name] \
@@ -1554,8 +1648,6 @@ proc separate_methods { gdb all_functions functions_name methods_name } {
                 #item 1291
                 lappend functions $function
             }
-        } else {
-            
         }
         #item 12710003
         incr _ind1271
@@ -1616,6 +1708,16 @@ proc try_parse_method_name { diagram_id name } {
         #item 1305
         return [ list "" "" 0 ]
     }
+}
+
+proc weak_param_names { } {
+    #item 1777
+    return "runtime, myId, message"
+}
+
+proc weak_param_names_final { } {
+    #item 1781
+    return "runtime, myId, null"
 }
 
 proc weak_params { } {

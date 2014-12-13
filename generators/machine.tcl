@@ -213,6 +213,18 @@ proc build_machine { gdb diagram_id callbacks } {
                 #item 3540003
                 incr _ind354
             }
+            #item 882
+            set last_header [ lindex $headers end ]
+            #item 883
+            build_sub_diagram \
+            	$gdb \
+            	$diagram_id \
+            	"" \
+            	$last_header \
+            	$parameters \
+            	$last_branch \
+            	$callbacks \
+            	0
         } else {
             
         }
@@ -233,15 +245,24 @@ proc build_machine { gdb diagram_id callbacks } {
 proc build_sub_diagram { gdb diagram_id state case parameters last_branch callbacks ordinal } {
     #item 528
     set message [ get_text $gdb $case ]
-    #item 529
-    if {$message == ""} {
-        #item 532
-        set name "${state}_default"
-        set default 1
-    } else {
-        #item 524
-        set name "${state}_${message}"
+    #item 884
+    if {$state == ""} {
+        #item 887
+        set name "FinalBranch"
         set default 0
+    } else {
+        #item 529
+        if {$message == ""} {
+            #item 532
+            set name "${state}_default"
+            set default 1
+        } else {
+            #item 878
+            set message2 [ string map { - _ . _ } $message ]
+            #item 524
+            set name "${state}_${message2}"
+            set default 0
+        }
     }
     #item 525
     set private { "private" }
@@ -838,6 +859,23 @@ proc is_address { gdb vertex_id } {
     } ]
     #item 714
     return [ expr { $type == "address" } ]
+}
+
+proc is_from_machine { gdb diagram_id } {
+    #item 893
+    set original [ $gdb onecolumn {
+    	select original
+    	from diagrams
+    	where diagram_id = :diagram_id
+    } ]
+    #item 894
+    if {$original == ""} {
+        #item 895
+        return 0
+    } else {
+        #item 896
+        return 1
+    }
 }
 
 proc is_last_used { } {

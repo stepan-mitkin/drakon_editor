@@ -3560,148 +3560,153 @@ proc print_function { fhandle function in_header class_name language } {
 }
 
 proc print_function_kernel { fhandle depth static virtual inline returns class name parameters const abstract body print_body empty } {
-    #item 515
-    set result {}
-    set line ""
-    #item 513
-    if {$static} {
-        #item 514
-        append line "static "
-    } else {
-        
-    }
-    #item 518
-    if {$virtual} {
-        #item 519
-        append line "virtual "
-    } else {
-        
-    }
-    #item 522
-    if {$inline} {
-        #item 523
-        append line "inline "
-    } else {
-        
-    }
-    #item 526
-    append line "$returns "
-    #item 533
-    if {$class == ""} {
+    #item 2833
+    if {[string match "*_FinalBranch" $name]} {
         
     } else {
-        #item 535
-        append line "$class\:\:"
-    }
-    #item 536
-    append line "$name\("
-    #item 588
-    set param_count [ llength $parameters ]
-    #item 527
-    if {$param_count == 0} {
-        #item 537
-        append line "$empty\)"
-    } else {
-        #item 550
-        lappend result $line
-        #item 5400001
-        set i 0
-        while { 1 } {
-            #item 5400002
-            if {$i < $param_count} {
-                
-            } else {
-                break
-            }
-            #item 543
-            set parameter_info [ lindex $parameters $i ]
-            set parameter [ lindex $parameter_info 0 ]
-            #item 541
-            set line "    $parameter"
-            #item 544
-            if {$i == $param_count - 1} {
-                
-            } else {
-                #item 545
-                append line ","
-            }
-            #item 552
-            lappend result $line
-            #item 5400003
-            incr i
+        #item 515
+        set result {}
+        set line ""
+        #item 513
+        if {$static} {
+            #item 514
+            append line "static "
+        } else {
+            
         }
-        #item 542
-        set line "\)"
-    }
-    #item 560
-    if {$const} {
-        #item 561
-        append line " const"
-    } else {
-        
-    }
-    #item 564
-    if {$abstract} {
-        #item 565
-        append line " = 0"
-    } else {
-        
-    }
-    #item 568
-    if {$print_body} {
-        #item 571
-        append line " \{"
-        #item 572
-        lappend result $line
-        #item 5830001
-        set _col583 $body
-        set _len583 [ llength $_col583 ]
-        set _ind583 0
-        while { 1 } {
-            #item 5830002
-            if {$_ind583 < $_len583} {
-                
-            } else {
-                break
-            }
-            #item 5830004
-            set line [ lindex $_col583 $_ind583 ]
-            #item 582
-            lappend result "    $line"
-            #item 5830003
-            incr _ind583
+        #item 518
+        if {$virtual} {
+            #item 519
+            append line "virtual "
+        } else {
+            
         }
-        #item 585
-        lappend result "\}"
-    } else {
-        #item 570
-        append line ";"
-        #item 573
-        lappend result $line
-    }
-    #item 1021
-    set space [ gen::make_indent $depth ]
-    #item 10200001
-    set _col1020 $result
-    set _len1020 [ llength $_col1020 ]
-    set _ind1020 0
-    while { 1 } {
-        #item 10200002
-        if {$_ind1020 < $_len1020} {
+        #item 522
+        if {$inline} {
+            #item 523
+            append line "inline "
+        } else {
+            
+        }
+        #item 526
+        append line "$returns "
+        #item 533
+        if {$class == ""} {
             
         } else {
-            break
+            #item 535
+            append line "$class\:\:"
         }
-        #item 10200004
-        set line [ lindex $_col1020 $_ind1020 ]
-        #item 1022
-        puts -nonewline $fhandle $space
-        puts $fhandle $line
-        #item 10200003
-        incr _ind1020
+        #item 536
+        append line "$name\("
+        #item 588
+        set param_count [ llength $parameters ]
+        #item 527
+        if {$param_count == 0} {
+            #item 537
+            append line "$empty\)"
+        } else {
+            #item 550
+            lappend result $line
+            #item 5400001
+            set i 0
+            while { 1 } {
+                #item 5400002
+                if {$i < $param_count} {
+                    
+                } else {
+                    break
+                }
+                #item 543
+                set parameter_info [ lindex $parameters $i ]
+                set parameter [ lindex $parameter_info 0 ]
+                #item 541
+                set line "    $parameter"
+                #item 544
+                if {$i == $param_count - 1} {
+                    
+                } else {
+                    #item 545
+                    append line ","
+                }
+                #item 552
+                lappend result $line
+                #item 5400003
+                incr i
+            }
+            #item 542
+            set line "\)"
+        }
+        #item 560
+        if {$const} {
+            #item 561
+            append line " const"
+        } else {
+            
+        }
+        #item 564
+        if {$abstract} {
+            #item 565
+            append line " = 0"
+        } else {
+            
+        }
+        #item 568
+        if {$print_body} {
+            #item 571
+            append line " \{"
+            #item 572
+            lappend result $line
+            #item 5830001
+            set _col583 $body
+            set _len583 [ llength $_col583 ]
+            set _ind583 0
+            while { 1 } {
+                #item 5830002
+                if {$_ind583 < $_len583} {
+                    
+                } else {
+                    break
+                }
+                #item 5830004
+                set line [ lindex $_col583 $_ind583 ]
+                #item 582
+                lappend result "    $line"
+                #item 5830003
+                incr _ind583
+            }
+            #item 585
+            lappend result "\}"
+        } else {
+            #item 570
+            append line ";"
+            #item 573
+            lappend result $line
+        }
+        #item 1021
+        set space [ gen::make_indent $depth ]
+        #item 10200001
+        set _col1020 $result
+        set _len1020 [ llength $_col1020 ]
+        set _ind1020 0
+        while { 1 } {
+            #item 10200002
+            if {$_ind1020 < $_len1020} {
+                
+            } else {
+                break
+            }
+            #item 10200004
+            set line [ lindex $_col1020 $_ind1020 ]
+            #item 1022
+            puts -nonewline $fhandle $space
+            puts $fhandle $line
+            #item 10200003
+            incr _ind1020
+        }
+        #item 1023
+        puts $fhandle ""
     }
-    #item 1023
-    puts $fhandle ""
 }
 
 proc print_header { filename fhandle functions ctrs dtrs methods signals slots header footer class copying class_name language structure globals } {
