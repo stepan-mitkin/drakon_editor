@@ -51,7 +51,7 @@ variable strict {
 	syntax_identifier "#000000"
 	syntax_string "#d00000"
 	syntax_keyword "#0000cB"
-	syntax_number "#808080"
+	syntax_number "#d00000"
 	syntax_comment "#228B22"
 	syntax_operator "#a000a0"
 }
@@ -61,7 +61,7 @@ variable parrot {
 	line 			"#000000"
 	text 			"#000000"
 	action	 	"#ffffff"
-	if 			"#ffffe8"
+	if 			"#ffffd8"
 	switch	 	"#ffe8e8"
 	loop			"#e8ffe8"
 	comment		"#ffff00"
@@ -69,7 +69,7 @@ variable parrot {
 	syntax_identifier "#000000"
 	syntax_string "#d00000"
 	syntax_keyword "#0000cB"
-	syntax_number "#808080"
+	syntax_number "#d00000"
 	syntax_comment "#228B22"
 	syntax_operator "#a000a0"
 }
@@ -135,7 +135,7 @@ variable colored_night {
 #	syntax_comment "#808080"
 #	syntax_operator "#ABEBCF"
 
-array set colors $strict
+array set colors $parrot
 
 proc color { name } {
   variable colors
