@@ -3,7 +3,7 @@ gen::add_generator "C#" gen_cs::generate
 namespace eval gen_cs {
 
 
-variable handler_arg_names ""
+variable invoke_cleanup ""
 variable link_to_final_found 0
 
 
@@ -182,7 +182,7 @@ proc bad_case { switch_var select_icon_number } {
 
 proc change_state { next_state machine_name } {
     #item 1744
-    variable handler_arg_names
+    variable invoke_cleanup
     variable link_to_final_found
     #item 1095
     if {$next_state == ""} {
@@ -191,7 +191,7 @@ proc change_state { next_state machine_name } {
         #item 1743
         set lines {}
         lappend lines "CurrentState = StateNames.Invalid;"
-        lappend lines "FinalBranch\($handler_arg_names\);"
+        lappend lines $invoke_cleanup
         #item 1099
         return [ join $lines "\n" ]
     } else {
@@ -361,7 +361,7 @@ proc extract_class_name { section } {
 
 proc extract_many_cs_machines { gdb callbacks } {
     #item 1762
-    variable handler_arg_names
+    variable invoke_cleanup
     variable link_to_final_found
     #item 1760
     set result {}
@@ -388,10 +388,10 @@ proc extract_many_cs_machines { gdb callbacks } {
             #item 1763
             if {[graph::is_weak_machine $diagram_id]} {
                 #item 1766
-                set handler_arg_names [weak_param_names_final]
+                set invoke_cleanup "runtime.RemoveActor\(myId\);"
             } else {
                 #item 1768
-                set handler_arg_names ""
+                set invoke_cleanup "CleanUp();"
             }
             #item 1759
             set info [ sma::build_machine $gdb $diagram_id $callbacks ]
@@ -1187,6 +1187,13 @@ proc p.print_proc { weak_signature fhandle procedure class_name depth } {
     #item 67
     set body_depth [ expr { $depth + 1 } ]
     set lines [ gen::indent $body $body_depth ]
+    #item 1800
+    if {$name == "CleanUp"} {
+        #item 1803
+        set props(access) "public"
+    } else {
+        
+    }
     #item 985
     set header ""
     #item 1074
@@ -1212,19 +1219,25 @@ proc p.print_proc { weak_signature fhandle procedure class_name depth } {
     }
     #item 1015
     append header "$name\("
-    #item 1677
-    if {$weak_signature} {
-        #item 1680
-        set params [ weak_params ]
+    #item 1796
+    if {$name == "CleanUp"} {
+        #item 1799
+        set params [ weak_params_final ]
     } else {
-        #item 1623
-        set params [ map2 $parameters gen_cs::take_first ]
-        #item 1613
-        if {[lindex $params 0 ] == "state machine"} {
-            #item 1616
-            set params [ lrange $params 1 end ]
+        #item 1677
+        if {$weak_signature} {
+            #item 1680
+            set params [ weak_params ]
         } else {
-            
+            #item 1623
+            set params [ map2 $parameters gen_cs::take_first ]
+            #item 1613
+            if {[lindex $params 0 ] == "state machine"} {
+                #item 1616
+                set params [ lrange $params 1 end ]
+            } else {
+                
+            }
         }
     }
     #item 1021
@@ -1456,19 +1469,8 @@ proc print_machine { fhandle machine } {
         set procedure [ lindex $_col1782 $_ind1782 ]
         #item 1791
         unpack $procedure _ proc_name
-        #item 1785
-        if {$proc_name == "FinalBranch"} {
-            #item 1788
-            if {$has_final} {
-                #item 1784
-                p.print_proc $weak $fhandle $procedure "" 2
-            } else {
-                
-            }
-        } else {
-            #item 1784
-            p.print_proc $weak $fhandle $procedure "" 2
-        }
+        #item 1784
+        p.print_proc $weak $fhandle $procedure "" 2
         #item 17820003
         incr _ind1782
     }
@@ -1717,7 +1719,7 @@ proc weak_param_names { } {
 
 proc weak_param_names_final { } {
     #item 1781
-    return "runtime, myId, null"
+    return "runtime, myId"
 }
 
 proc weak_params { } {
@@ -1726,6 +1728,14 @@ proc weak_params { } {
     	"IRuntime runtime"
     	"int myId"
     	"Message message"
+    }
+}
+
+proc weak_params_final { } {
+    #item 1795
+    return { 
+    	"IRuntime runtime"
+    	"int myId"
     }
 }
 

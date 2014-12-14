@@ -20,7 +20,7 @@ var Lexer_state_identifier = {};
 var Lexer_state_number = {};
 var Lexer_state_operator = {};
 
-function Lexer_FinalBranch(self, data, c) {
+function Lexer_CleanUp(self, data, c) {
     
 }
 

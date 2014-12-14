@@ -312,6 +312,10 @@ public class Lexer {
                 CurrentState = StateNames.Operator;
             }
         }
+
+        public void CleanUp(IRuntime runtime, int myId) {
+            
+        }
     }
     public partial class LexerMachineWeak
         : IActor
@@ -558,6 +562,10 @@ public class Lexer {
                 // item 413
                 CurrentState = StateNames.Operator;
             }
+        }
+
+        public void CleanUp(IRuntime runtime, int myId) {
+            
         }
     }
 

@@ -257,7 +257,7 @@ proc build_declaration { name signature } {
 }
 
 proc skip_diagram { name } {
-	if { $name == "FinalBranch" } {
+	if { $name == "CleanUp" } {
 		return 1
 	}
 	

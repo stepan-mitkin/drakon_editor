@@ -198,7 +198,7 @@ function lex.init()
     end
 end
 
-function lexer_FinalBranch(self, data, c)
+function lexer_CleanUp(self, data, c)
     
 end
 
