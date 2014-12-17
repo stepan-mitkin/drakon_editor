@@ -77,13 +77,14 @@ public class Lexer {
         // The output list of tokens.
         public List<Token> Tokens { get { return Data.Tokens; } }
         public enum StateNames {
-            Invalid,
+            Deleting,
+            Deleted,
             Idle,
             Identifier,
             Number,
             Operator
         }
-        private StateNames CurrentState = StateNames.Idle;
+        internal StateNames CurrentState = StateNames.Idle;
 
         public void Digit(char c) {
             switch (CurrentState) {
@@ -99,9 +100,8 @@ public class Lexer {
                 case StateNames.Operator:
                     Operator_Digit(c);
                     break;
-                case StateNames.Invalid:
-                    throw new System.InvalidOperationException(
-                        "Actor was in Invalid state. Message: Digit");
+                default:
+                    break;
             }
         }
 
@@ -119,9 +119,8 @@ public class Lexer {
                 case StateNames.Operator:
                     Operator_Letter(c);
                     break;
-                case StateNames.Invalid:
-                    throw new System.InvalidOperationException(
-                        "Actor was in Invalid state. Message: Letter");
+                default:
+                    break;
             }
         }
 
@@ -139,9 +138,8 @@ public class Lexer {
                 case StateNames.Operator:
                     Operator_Operator(c);
                     break;
-                case StateNames.Invalid:
-                    throw new System.InvalidOperationException(
-                        "Actor was in Invalid state. Message: Operator");
+                default:
+                    break;
             }
         }
 
@@ -159,9 +157,8 @@ public class Lexer {
                 case StateNames.Operator:
                     Operator_Whitespace(c);
                     break;
-                case StateNames.Invalid:
-                    throw new System.InvalidOperationException(
-                        "Actor was in Invalid state. Message: Whitespace");
+                default:
+                    break;
             }
         }
 
@@ -176,9 +173,8 @@ public class Lexer {
                     break;
                 case StateNames.Operator:
                     break;
-                case StateNames.Invalid:
-                    throw new System.InvalidOperationException(
-                        "Actor was in Invalid state. Message: dummy");
+                default:
+                    break;
             }
         }
 
@@ -314,6 +310,10 @@ public class Lexer {
         }
 
         public void CleanUp(IRuntime runtime, int myId) {
+            if (CurrentState == StateNames.Deleted) {
+                return;
+            }
+            CurrentState = StateNames.Deleted;
             
         }
     }
@@ -327,13 +327,14 @@ public class Lexer {
         // The output list of tokens.
         public List<Token> Tokens { get { return Data.Tokens; } }
         public enum StateNames {
-            Invalid,
+            Deleting,
+            Deleted,
             Idle,
             Identifier,
             Number,
             Operator
         }
-        private StateNames CurrentState = StateNames.Idle;
+        internal StateNames CurrentState = StateNames.Idle;
         public void OnMessage(IRuntime runtime, int myId, Message message) {
             switch (message.Code) {
                 case Digit:
@@ -350,9 +351,8 @@ public class Lexer {
                         case StateNames.Operator:
                             Operator_Digit(runtime, myId, message);
                             break;
-                        case StateNames.Invalid:
-                            throw new System.InvalidOperationException(
-                                "Actor was in Invalid state. Message: Digit");
+                        default:
+                            break;
                     }
                     break;
                 case Letter:
@@ -369,9 +369,8 @@ public class Lexer {
                         case StateNames.Operator:
                             Operator_Letter(runtime, myId, message);
                             break;
-                        case StateNames.Invalid:
-                            throw new System.InvalidOperationException(
-                                "Actor was in Invalid state. Message: Letter");
+                        default:
+                            break;
                     }
                     break;
                 case Operator:
@@ -388,9 +387,8 @@ public class Lexer {
                         case StateNames.Operator:
                             Operator_Operator(runtime, myId, message);
                             break;
-                        case StateNames.Invalid:
-                            throw new System.InvalidOperationException(
-                                "Actor was in Invalid state. Message: Operator");
+                        default:
+                            break;
                     }
                     break;
                 case Whitespace:
@@ -407,9 +405,8 @@ public class Lexer {
                         case StateNames.Operator:
                             Operator_Whitespace(runtime, myId, message);
                             break;
-                        case StateNames.Invalid:
-                            throw new System.InvalidOperationException(
-                                "Actor was in Invalid state. Message: Whitespace");
+                        default:
+                            break;
                     }
                     break;
                 case dummy:
@@ -423,9 +420,8 @@ public class Lexer {
                             break;
                         case StateNames.Operator:
                             break;
-                        case StateNames.Invalid:
-                            throw new System.InvalidOperationException(
-                                "Actor was in Invalid state. Message: dummy");
+                        default:
+                            break;
                     }
                     break;
                 default:
@@ -565,6 +561,10 @@ public class Lexer {
         }
 
         public void CleanUp(IRuntime runtime, int myId) {
+            if (CurrentState == StateNames.Deleted) {
+                return;
+            }
+            CurrentState = StateNames.Deleted;
             
         }
     }

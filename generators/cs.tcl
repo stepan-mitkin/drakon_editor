@@ -190,7 +190,7 @@ proc change_state { next_state machine_name } {
         set link_to_final_found 1
         #item 1743
         set lines {}
-        lappend lines "CurrentState = StateNames.Invalid;"
+        lappend lines "CurrentState = StateNames.Deleting;"
         lappend lines $invoke_cleanup
         #item 1099
         return [ join $lines "\n" ]
@@ -793,9 +793,8 @@ proc handle_message { fhandle ind states message names handlers } {
         incr _ind1724
     }
     #item 1726
-    puts $fhandle "$ind                case StateNames.Invalid:"
-    puts $fhandle "$ind                    throw new System.InvalidOperationException\("
-    puts $fhandle "$ind                        \"Actor was in Invalid state. Message: $message\"\);"
+    puts $fhandle "$ind                default:"
+    puts $fhandle "$ind                    break;"
     puts $fhandle "$ind            \}"
 }
 
@@ -1253,6 +1252,17 @@ proc p.print_proc { weak_signature fhandle procedure class_name depth } {
     } else {
         #item 96
         puts $fhandle "$indent$header \{"
+        #item 1804
+        if {$name == "CleanUp"} {
+            #item 1807
+            puts $fhandle "$indent    if \(CurrentState == StateNames.Deleted\) \{"
+            puts $fhandle "$indent        return;"
+            puts $fhandle "$indent    \}"
+            puts $fhandle "$indent    CurrentState = StateNames.Deleted;"
+        } else {
+            
+        }
+        #item 1808
         puts $fhandle $lines
         puts $fhandle "$indent\}"
     }
@@ -1377,7 +1387,8 @@ proc print_machine { fhandle machine } {
         puts $fhandle "        $body"
         #item 1632
         puts $fhandle "        public enum StateNames \{"
-        puts $fhandle "            Invalid,"
+        puts $fhandle "            Deleting,"
+        puts $fhandle "            Deleted,"
         #item 1635
         set enum [ join $states ",\n            " ]
         #item 1634
@@ -1387,7 +1398,7 @@ proc print_machine { fhandle machine } {
         #item 1637
         set first [ lindex $states 0 ]
         #item 1636
-        puts $fhandle "        private StateNames CurrentState = StateNames.$first;"
+        puts $fhandle "        internal StateNames CurrentState = StateNames.$first;"
         #item 1705
         if {$weak} {
             #item 1557
