@@ -627,10 +627,7 @@ proc is_header { item_id } {
 	set to_nw [ $db onecolumn { select count(*) from items
 		where diagram_id = :diagram_id
 		and item_id != :item_id
-		and type != 'vertical'
-		and type != 'horizontal'
-		and type != 'parallel'
-		and type != 'arrow'
+		and type = 'beginend'
 		and (x < :x or y < :y ) } ]
 		
 	if { $to_nw == 0 } {
