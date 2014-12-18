@@ -12,7 +12,6 @@ cp -r ../examples .
 cp -r ../generators .
 cp -r ../structure .
 cp -r ../docs .
-rm docs/DRAKON.pdf
 mkdir tmp
 cp ../drakon_editor.tcl .
 cp ../drakon_gen.tcl .

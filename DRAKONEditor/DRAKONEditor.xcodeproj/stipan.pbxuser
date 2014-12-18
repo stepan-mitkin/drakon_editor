@@ -116,8 +116,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 438899351;
-			PBXWorkspaceStateSaveDate = 438899351;
+			PBXPerProjectTemplateStateSaveDate = 440580249;
+			PBXWorkspaceStateSaveDate = 440580249;
 		};
 		perUserProjectItems = {
 			CD011C91176C5A7D00531BAE /* PBXTextBookmark */ = CD011C91176C5A7D00531BAE /* PBXTextBookmark */;
@@ -125,10 +125,10 @@
 			CD21583D1A29138300FBDC24 /* PBXTextBookmark */ = CD21583D1A29138300FBDC24 /* PBXTextBookmark */;
 			CD21586A1A2914F000FBDC24 /* PBXTextBookmark */ = CD21586A1A2914F000FBDC24 /* PBXTextBookmark */;
 			CD21586B1A2914F000FBDC24 /* PBXTextBookmark */ = CD21586B1A2914F000FBDC24 /* PBXTextBookmark */;
-			CD21586C1A2914F000FBDC24 /* PlistBookmark */ = CD21586C1A2914F000FBDC24 /* PlistBookmark */;
 			CD21586E1A2915CE00FBDC24 /* PlistBookmark */ = CD21586E1A2915CE00FBDC24 /* PlistBookmark */;
 			CD5987D3149352FC00FFCB9A /* PBXTextBookmark */ = CD5987D3149352FC00FFCB9A /* PBXTextBookmark */;
 			CD6749501794A98C00C7F70A /* PBXTextBookmark */ = CD6749501794A98C00C7F70A /* PBXTextBookmark */;
+			CD700BE51A42C61500E540FC /* PlistBookmark */ = CD700BE51A42C61500E540FC /* PlistBookmark */;
 		};
 		sourceControlManager = CD5987B21493498600FFCB9A /* Source Control */;
 		userBuildSettings = {
@@ -197,18 +197,6 @@
 		vrLen = 45;
 		vrLoc = 0;
 	};
-	CD21586C1A2914F000FBDC24 /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = 8D1107310486CEB800E47090 /* DRAKONEditor-Info.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-			CFBundleDisplayName,
-		);
-		name = "/Users/stipan/drakon_editor/DRAKONEditor/DRAKONEditor-Info.plist";
-		rLen = 13;
-		rLoc = 0;
-	};
 	CD21586E1A2915CE00FBDC24 /* PlistBookmark */ = {
 		isa = PlistBookmark;
 		fRef = 8D1107310486CEB800E47090 /* DRAKONEditor-Info.plist */;
@@ -218,7 +206,7 @@
 		);
 		name = "/Users/stipan/drakon_editor/DRAKONEditor/DRAKONEditor-Info.plist";
 		rLen = 0;
-		rLoc = 9223372036854775807;
+		rLoc = 9223372036854775808;
 	};
 	CD5987941493497200FFCB9A /* DRAKONEditor */ = {
 		isa = PBXExecutable;
@@ -292,5 +280,17 @@
 		name = stdio.h;
 		path = /Developer/SDKs/MacOSX10.6.sdk/usr/include/stdio.h;
 		sourceTree = "<absolute>";
+	};
+	CD700BE51A42C61500E540FC /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = 8D1107310486CEB800E47090 /* DRAKONEditor-Info.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+			CFBundleDisplayName,
+		);
+		name = "/Users/stipan/drakon_editor/DRAKONEditor/DRAKONEditor-Info.plist";
+		rLen = 0;
+		rLoc = 9223372036854775807;
 	};
 }
