@@ -237,6 +237,7 @@
 ::msgcat::mcset ru "Pause" "Пауза"
 ::msgcat::mcset ru "PDF font" "Шрифт PDF"
 ::msgcat::mcset ru "Please enter an item id." "Введите идентификатор элемента."
+::msgcat::mcset ru "Please, do not move or open any window or diagram while exporting to PNG." "Пожалуйста, не двигайте или открывайте окна или схемы пока идет процесс импорта в PNG."
 ::msgcat::mcset ru "Point to '\$branch'" "Указывать на '\$branch'" 
 ::msgcat::mcset ru "Portrait" "Портретная"
 ::msgcat::mcset ru "Previous" "Предыдущее"

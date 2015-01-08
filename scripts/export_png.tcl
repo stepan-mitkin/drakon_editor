@@ -15,6 +15,10 @@ proc export { } {
 	set filename [ ds::requestspath export .png . ]
 	if { $filename == "" } { return }
 	
+	if { [ ui::is_windows ] } {
+		tk_messageBox -message [ mc2 "Please, do not move or open any window or diagram while exporting to PNG." ]
+	}
+	
 	set box [ export_pdf::measure_diagram ]
 	set image_rect [ calculate_image_pos $box ]
 	lassign $image_rect left top right bottom
