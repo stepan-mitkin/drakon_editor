@@ -185,7 +185,7 @@ proc p.bad_case { switch_var select_icon_number } {
     if {[ string compare -nocase $switch_var "select" ] == 0} {
     	return "throw \"Not expected condition.\";"
     } else {	
-		return return "throw \"Unexpected switch value: \" + $switch_var;"
+		return "throw \"Unexpected switch value: \" + $switch_var;"
 	}
 	
 }
