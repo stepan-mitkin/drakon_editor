@@ -229,6 +229,10 @@ proc generate { db gdb filename } {
 
 	if { [ graph::errors_occured ] } { return }
 
+	set tree [ tab::generate_tree $gdb ]
+	if { $tree != {} } {
+		print_tree $filename $tree
+	}
 
 	set hfile [ replace_extension $filename "erl" ]
 	set module [ file tail [ string map {".drn" ""} $filename ] ]
@@ -584,6 +588,137 @@ proc inspect_tree { node name } {
 	}
 }
 
+proc print_tree { filename tree } {
+	set folder [ file dirname $filename ]
+	no_workers_supervise $tree
+	print_supervisor $folder $tree
+}
+
+proc print_supervisor { folder node } {
+	lassign $node id type header text children
+	if { $type == "action" } {
+		return
+	}
+	
+	set name [ first_line $header ]
+	
+	set path "$folder/$name.erl"
+
+	
+	set text_lines [ split $text "\n" ]
+	set down_options [ parse_ini $text_lines ]
+	check_present $down_options $name {strategy max_restart max_time}
+	
+
+
+	set child_specs {}
+	foreach child $children {
+		lassign $child _ ctype cheader ctext
+		if { $ctype == "action" } {
+			set node_type "worker"
+			set cprops $ctext
+		} else {
+			set node_type "supervisor"		
+			set cprops $cheader
+		}
+		set cname [ first_line $cprops ]
+		set all_child_lines [ split $cprops "\n" ]
+		set child_lines [ lrange $all_child_lines 1 end ]
+		set child_ops [ parse_ini $child_lines ]
+		check_present $child_ops $cname {restart shutdown}
+		lappend child_specs [ list $cname $node_type $child_ops ]
+	}
+	
+	print_super_core $path $name $down_options $child_specs
+	
+	foreach child $children {
+		print_supervisor $folder $child
+	}
+}
+
+proc print_super_core { path name specs child_specs } {
+	set strategy [ dict get $specs "strategy" ]
+	set max_restart [ dict get $specs "max_restart" ]
+	set max_time [ dict get $specs "max_time" ]
+	
+	set fh [ open $path "w" ]
+	puts $fh "-module\($name\)." 
+	puts $fh "-behaviour\(supervisor\)."
+	puts $fh ""
+	puts $fh "-export\(\[start_link/0\]\)."
+	puts $fh "-export\(\[init/1\]\)."
+	puts $fh ""
+	puts $fh "start_link() -> supervisor:start_link\(\{local, ?MODULE\}, ?MODULE, \[\]\)."
+	puts $fh ""
+	puts $fh "init\(_\) ->"	
+	puts $fh "    RestartStrategy = \{$strategy, $max_restart, $max_time\},"
+	puts $fh "    Children = \["
+	set child_lines {}
+	foreach cspec $child_specs {
+		lassign $cspec cname type cprops
+		set restart [ dict get $cprops "restart"]
+		set shutdown [ dict get $cprops "shutdown"]		
+		lappend child_lines "       \{$cname, \{$cname, start_link, \[\]\}, $restart, $shutdown, $type, \[$cname\]\}"
+	}
+	set ch [ join $child_lines ",\n" ]
+	puts $fh $ch
+	puts $fh "    \],"	
+	puts $fh "    \{ok, \{RestartStrategy, Children\}\}."
+	puts $fh ""	
+	close $fh
+}
+
+proc check_present { options name properties } {
+	foreach prop $properties {
+		if { ![dict exists $options $prop] } {
+			error "'$prop' property is missing in '$name'"
+		}
+	}
+}
+
+proc parse_ini { lines } {
+	set result {}
+	foreach line $lines {
+		set trimmed [ string trim $line ]
+		set parts [ split $trimmed "=" ]
+		if { [ llength $parts ] < 2 } {
+			continue
+		}
+		
+		set first [ lindex $parts 0 ]
+		set name [ string trim $first ]
+		if { $name == "" } {
+			continue
+		}
+		
+		set first_len [ string length $first ]
+		incr first_len
+		
+		set rest [ string range $line $first_len end ]
+		set value [ string trim $rest ]
+		lappend result $name $value
+	}
+	return $result
+}
+
+proc first_line { text } {
+	set lines [ split $text "\n" ]
+	return [ string trim [ lindex $lines 0 ]]
+}
+
+proc no_workers_supervise { node } {
+	lassign $node id type header text children
+	if { $type == "action" } {
+		if { $children != {} } {
+			set name [ first_line $text ]
+			error "Worker '$name' has children."
+		}
+	} else {
+		foreach child $children {
+			no_workers_supervise $child
+		}
+	}
+}
 
 }
 
