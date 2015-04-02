@@ -67,6 +67,11 @@ source highlight_test.tcl
 set script_path "../"
 set use_log 0
 
+namespace eval mwf {
+	proc reset {} {
+	}
+}
+
 load_sqlite
 
 if { [ llength $argv ] == 1 } {
@@ -75,6 +80,8 @@ if { [ llength $argv ] == 1 } {
 } else {
   testmain
 }
+
+
 
 puts ""
 puts "success"
