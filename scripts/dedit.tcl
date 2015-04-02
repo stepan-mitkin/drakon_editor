@@ -262,6 +262,8 @@ proc adjust_sizes { } {
 	set diagram_id [ editor_state $db current_dia ]
 	if { [ is_drakon $diagram_id ] } {
 		adjust_icon_sizes_current
+	} else {
+		mv::fill $diagram_id
 	}
 }
 
