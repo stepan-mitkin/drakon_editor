@@ -192,6 +192,10 @@ proc process_shelf { gdb item_id shelf_proc } {
 }
 
 proc fix_graph_stage_1 { gdb callbacks append_semicolon diagram_id } {
+	fix_graph_stage_1_core $gdb $callbacks $append_semicolon $diagram_id 1
+}
+
+proc fix_graph_stage_1_core { gdb callbacks append_semicolon diagram_id do_selects } {
 
 	set shelf_proc [ get_callback $callbacks shelf ]
 	
@@ -206,26 +210,29 @@ proc fix_graph_stage_1 { gdb callbacks append_semicolon diagram_id } {
 		process_shelf $gdb $shelv $shelf_proc
 	}
 
-	set starts [ $gdb eval {
-		select vertex_id
-		from vertices
-		where type = 'loopstart' 
-			and diagram_id = :diagram_id } ]
+	if { $do_selects } {
+		set starts [ $gdb eval {
+			select vertex_id
+			from vertices
+			where type = 'loopstart' 
+				and diagram_id = :diagram_id } ]
 
-	foreach start $starts {
-		p.rewire_loop $gdb $start $callbacks $append_semicolon
+		foreach start $starts {
+			p.rewire_loop $gdb $start $callbacks $append_semicolon
+		}
+
+
+		set selects [ $gdb eval {
+			select vertex_id
+			from vertices
+			where type = 'select' 
+				and diagram_id = :diagram_id } ]
+
+		foreach select $selects {
+			p.rewire_select $gdb $select $callbacks
+		}
 	}
-
-	set selects [ $gdb eval {
-		select vertex_id
-		from vertices
-		where type = 'select' 
-			and diagram_id = :diagram_id } ]
-
-	foreach select $selects {
-		p.rewire_select $gdb $select $callbacks
-	}
-	
+		
 	set ifs [ $gdb eval {
 		select vertex_id
 		from vertices
@@ -253,6 +260,23 @@ proc fix_graph_for_diagram { gdb callbacks append_semicolon diagram_id } {
 	while { [ p.short_circuit $gdb $callbacks $diagram_id ] } { }
 
 }
+
+proc fix_graph_for_diagram_to { gdb callbacks append_semicolon diagram_id } {
+
+
+	fix_graph_stage_1_core $gdb $callbacks $append_semicolon $diagram_id 0
+
+	p.remove_branch_icons $gdb $diagram_id
+
+	p.glue_actions $gdb $callbacks $diagram_id
+
+	append_condition_lines $gdb $diagram_id $callbacks
+	
+	while { [ p.short_circuit $gdb $callbacks $diagram_id ] } { }
+
+}
+
+
 
 proc append_condition_lines { gdb diagram_id callbacks } {
 	set if_cond [ get_optional_callback $callbacks if_cond ]
@@ -1341,7 +1365,7 @@ proc get_diagram_start { gdb diagram_id } {
 	} ]
 }
 
-proc generate_function { gdb diagram_id callbacks nogoto } {
+proc generate_function { gdb diagram_id callbacks nogoto to } {
 
 	set extract_signature [ get_callback $callbacks signature ]
 	set generate_body [ get_callback $callbacks body ]
@@ -1377,23 +1401,185 @@ proc generate_function { gdb diagram_id callbacks nogoto } {
 	set tree ""
 	
 	set body ""
-	if { $nogoto } {
-		set body [ try_nogoto $gdb $diagram_id $callbacks $name ]
-		if { $body == "" && $enforce_nogoto != "" } {
-			$enforce_nogoto $name
-		}
-	}
 	
-	if { $body == "" } {
-		set node_list [ generate_nodes $gdb $diagram_id $commentator ]
-		lassign [ sort_items $node_list $start_item ] sorted incoming
-		set body [ $generate_body $gdb $diagram_id $start_item $node_list $sorted $incoming]
+	if { $to } {
+		set body [ tree_nogoto $gdb $diagram_id $callbacks $name ]
+	} else {
+		if { $nogoto } {
+			set body [ try_nogoto $gdb $diagram_id $callbacks $name ]
+			if { $body == "" && $enforce_nogoto != "" } {
+				$enforce_nogoto $name
+			}
+		}
+	
+		if { $body == "" } {
+			set node_list [ generate_nodes $gdb $diagram_id $commentator ]
+			lassign [ sort_items $node_list $start_item ] sorted incoming
+			set body [ $generate_body $gdb $diagram_id $start_item $node_list $sorted $incoming]
+		}
 	}
 	
 	set declares [ p.get_declares $gdb $diagram_id ]
 	set body [ concat $declares $body ]
 
 	return [ list $diagram_id $name $real_sign $body ]
+}
+
+proc tree_nogoto { gdb diagram_id callbacks name } {
+	puts "solving as tree: $name"
+	set start_vertex [ find_start_vertex $gdb $diagram_id ]
+	set start_item [ p.vertex_item $gdb $start_vertex ]
+	set roots [ list $start_vertex ]
+	
+	set texts {}
+	
+	set select_to_vertex { }
+	set case_to_root { }
+		
+	$gdb eval {
+		select item_id, vertex_id, text
+		from vertices
+		where type = 'select'
+		and diagram_id = :diagram_id		
+	} {
+		lappend texts $item_id $text
+		lappend select_to_vertex $item_id $vertex_id
+	}
+	
+	gdb eval {
+		select item_id, vertex_id, text
+		from vertices
+		where type = 'case'
+		and diagram_id = :diagram_id
+	} {
+		lappend texts $item_id $text
+		set dst [ p.link_dst $gdb $vertex_id 1 ]
+		set dst_item_id [ p.vertex_item $gdb $dst ]		
+		lappend roots $dst
+		lappend case_to_root $vertex_id $dst_item_id
+	}
+	
+	
+	set item_to_tree { }
+	
+	set inspector [ get_optional_callback $callbacks inspect_tree ]	
+	
+
+	
+	foreach vertex_id $roots {
+		set item_id [ p.vertex_item $gdb $vertex_id ]	
+		set tree [ build_to_subgraph $gdb $name $vertex_id $item_id texts ]
+		if { $tree == "" } {
+			error "could not solve $name, giving up. Loop maybe?"
+		}
+		
+		if { $inspector != "" } {
+			$inspector $tree $name
+		}
+		
+		lappend item_to_tree $item_id $tree
+	}
+	
+	
+	
+
+	set start_tree [ dict get $item_to_tree $start_item ]
+	set big_tree [ merge_trees $gdb $start_tree $case_to_root $item_to_tree $select_to_vertex ]
+	
+	
+	set result [ print_node $texts $big_tree $callbacks 0 ]
+	
+	return $result
+}
+
+proc merge_trees { gdb node case_to_root item_to_tree select_to_vertex } {
+	set length [ llength $node ]
+	set first [ lindex $node 0 ]
+	set result [ list $first ]
+
+	
+	for { set i 1 } { $i < $length } { incr i } {
+		set current [ lindex $node $i ]
+		if { [ string is integer $current ] } {
+			if { [ dict exists $select_to_vertex $current ] } {
+				set select_tree [ build_select_tree $gdb $current $case_to_root $item_to_tree $select_to_vertex ]
+				lappend result $select_tree
+			} else {
+				lappend result $current
+			}
+		} elseif { $current == "break" } {
+			lappend result $current		
+		} elseif { [ lindex $current 0 ] == "if" } {
+
+			set cond_item [ lindex $current 1 ]
+			set then_node [ lindex $current 3 ]
+			set else_node [ lindex $current 2 ]
+			
+			set then [ merge_trees $gdb $then_node $case_to_root $item_to_tree $select_to_vertex]
+			set else [ merge_trees $gdb $else_node $case_to_root $item_to_tree $select_to_vertex]
+			
+			set new_if [ list "if" $cond_item $else $then ]
+			
+			lappend result $new_if
+			
+		} else {
+			error "unexpected: $current"
+		}
+	}
+	
+	return $result
+}
+
+proc build_select_tree { gdb sel_item case_to_root item_to_tree select_to_vertex } {
+	set sel_vertex [ dict get $select_to_vertex $sel_item ]
+	set cases [ $gdb eval {
+		select dst
+		from links
+		where src = :sel_vertex
+		order by ordinal
+	} ]
+	
+	set result [ list "sel" $sel_item ]
+	
+	foreach case_vertex $cases {
+		set case_item [ p.vertex_item $gdb $case_vertex ]
+		set item_id [ dict get $case_to_root $case_vertex ]
+		set subtree [ dict get $item_to_tree $item_id ]
+		lappend result $case_item $subtree
+	}
+	
+	return $result
+}
+
+proc build_to_subgraph { gdb name vertex_id item_id texts_name } {
+	upvar 1 $texts_name texts
+	set db "gen-body"
+
+	nogoto::create_db $db
+	
+	set log [ expr { $name == "xxxx" } ]
+	add_to_graph $gdb $db $vertex_id 0
+	
+	set tree [ nogoto::generate $db $item_id ]
+
+	set this_texts [ extract_texts $db ]
+	set texts [ concat $texts $this_texts ]
+	
+	
+	return $tree
+}
+
+proc extract_texts { db } {
+	set result {}
+	
+	$db eval {
+		select item_id, text_lines
+		from nodes
+	} {
+		lappend result $item_id $text_lines
+	}
+	
+	return $result
 }
 
 
@@ -1420,17 +1606,15 @@ proc try_nogoto { gdb diagram_id callbacks name } {
 		$inspector $tree $name
 	}
 	
-	set result [ print_node $db $tree $callbacks 0 ]
+	set texts [ extract_texts $db ]
+	set result [ print_node $texts $tree $callbacks 0 ]
 	
 	return $result
 }
 
 
-proc get_text_lines { db item_id } {
-	return [ $db onecolumn {
-		select text_lines
-		from nodes
-		where item_id = :item_id } ]
+proc get_text_lines { texts item_id } {
+	return [ dict get $texts $item_id ]
 }
 
 proc condition_line { callback cond_text } {
@@ -1441,7 +1625,50 @@ proc condition_line { callback cond_text } {
 	return $cond
 }
 
-proc print_node { db node callback depth } {
+proc print_select { texts node callback depth } {
+	set select [ get_callback $callback select ]
+	set case_value [ get_callback $callback case_value ]
+	set case_else [ get_callback $callback case_else ]
+	set case_end [ get_callback $callback case_end ]	
+	set select_end [ get_callback $callback select_end ]
+	set bad_case [ get_callback $callback bad_case ]	
+	
+			
+	set result {}
+	set indent [ make_indent $depth ]
+	set next_depth [ expr { $depth + 2 } ]	
+	set header_item [ lindex $node 1 ]
+	set header_text [ get_text_lines $texts $header_item ]
+	lappend result "${indent}[ $select $header_text ]"
+	set length [ llength $node ]
+	set last [ expr { $length - 2 } ]
+	set had_default 0
+	for { set i 2 } { $i < $length } { incr i 2 } {
+		set value_id [ expr { $i + 1 } ]
+		set key [ lindex $node $i ]
+		set value [ lindex $node $value_id ]
+		set key_text [ get_text_lines $texts $key ]
+		if { [ string trim $key_text ] == "" } {
+			lappend result "${indent}   [ $case_else ]"
+			set had_default 1
+		} else {
+			lappend result "${indent}    [ $case_value $key_text ]"
+		}
+		set clause [ print_node $texts $value $callback $next_depth ]
+		set result [ concat $result $clause ]
+		if { $i != $last || !$had_default} {
+			lappend result "${indent}    [$case_end]"
+		}		
+	}
+	if { !$had_default } {
+		lappend result "${indent}    [ $case_else ]"
+		lappend result "${indent}    [ $bad_case {} $header_item ]"
+	}
+	lappend result "${indent}[ $select_end ]"
+	return $result
+}
+
+proc print_node { texts node callback depth } {
 	set line_end [ get_optional_callback $callback line_end ]
 	set commentator [ get_callback $callback comment ]
 	set break_str [ get_callback $callback break ]
@@ -1462,7 +1689,7 @@ proc print_node { db node callback depth } {
 	for { set i 1 } { $i < $length } { incr i } {
 		set current [ lindex $node $i ]
 		if { [ string is integer $current ] } {
-			set text [ get_text_lines $db $current ]
+			set text [ get_text_lines $texts $current ]
 			set parts [ split $text "\n" ]
 			if { [ llength $parts ] != 0 } {
 				append_line_end result $i $line_end			
@@ -1489,7 +1716,7 @@ proc print_node { db node callback depth } {
 			append_line_end result $i $line_end
 			
 			set cond_item [ lindex $current 1 ]
-			set cond_text [ get_text_lines $db $cond_item ]
+			set cond_text [ get_text_lines $texts $cond_item ]
 			set comment [ $commentator "item $cond_item" ]
 			lappend result $indent$comment
 
@@ -1498,20 +1725,26 @@ proc print_node { db node callback depth } {
 			
 			set then_node [ lindex $current 3 ]
 			set else_node [ lindex $current 2 ]
-			set then [ print_node $db $then_node $callback $next_depth ]
+			set then [ print_node $texts $then_node $callback $next_depth ]
 			set result [ concat $result $then ]
 			
 			lappend result "$indent[ $else_start ]"
-			set else [ print_node $db $else_node $callback $next_depth ]
+			set else [ print_node $texts $else_node $callback $next_depth ]
 			set result [ concat $result $else ]
 			$block_close result $depth
 
 			set was_return 0
 		} elseif { [ lindex $current 0 ] == "loop" } {
 			lappend result "$indent[ $while_start ]"
-			set body [ print_node $db $current $callback $next_depth ]
+			set body [ print_node $texts $current $callback $next_depth ]
 			set result [ concat $result $body ]
 			$block_close result $depth
+			set was_return 0
+		} elseif { [ lindex $current 0 ] == "sel" } {
+			append_line_end result $i $line_end		
+			set sel_lines [ print_select $texts $current $callback $depth ]
+			set result [ concat $result $sel_lines ]
+			
 			set was_return 0
 		} else {
 			error "unexpected: $current"
@@ -1540,6 +1773,29 @@ proc append_line_end { result_list i line_end } {
 	set result [ lreplace $result $end_index $end_index $end_item ]
 }
 
+proc link_to_end { gdb ndb vertex_id } {
+	set item_id [ p.vertex_item $gdb $vertex_id ]
+	set end_vertex [ $gdb onecolumn {
+		select vertex_id
+		from vertices v
+		inner join links l on v.vertex_id = l.dst
+		where v.type = 'beginend'
+	} ]
+	
+
+	if { $end_vertex == {} } {
+		error "end not found"
+	}
+
+	set end_item [ p.vertex_item $gdb $end_vertex ]	
+	
+	if { ![ nogoto::node_exists $ndb $end_item ] } {
+		nogoto::insert_node $ndb $end_item "action" ""
+	}
+	
+	nogoto::insert_link $ndb $item_id 0 $end_item normal
+}
+
 proc add_to_graph { gdb ndb vertex_id log } {
 
 	set item_id [ p.vertex_item $gdb $vertex_id ]
@@ -1547,14 +1803,24 @@ proc add_to_graph { gdb ndb vertex_id log } {
 	set text [ p.vertex_text $gdb $vertex_id ]
 	set type [ p.vertex_type $gdb $vertex_id ]
 
+
+	set is_select 0
 	if { $type == "beginend" } {
 		set type "action"
 		set text ""
+	} elseif { $type == "select" } {
+		set type "action"
+		set is_select 1
 	}
 
 	nogoto::insert_node $ndb $item_id $type $text
 	if { $log } {
-		puts "nogoto::insert_node \$db $item_id $type \{\}"
+		puts "nogoto::insert_node \$db $item_id $type $text"
+	}
+	
+	if { $is_select } {
+		link_to_end $gdb $ndb $vertex_id
+		return
 	}
 	
 	set ordinals [ $gdb eval {
@@ -1616,6 +1882,11 @@ proc sort_items { node_list start_item } {
 
 proc generate_functions { db gdb callbacks nogoto } {
 
+	generate_functions_core $db $gdb $callbacks $nogoto 0
+}
+
+proc generate_functions_core { db gdb callbacks nogoto to } {
+
 	set result {}
 	$gdb eval {
 		select diagram_id
@@ -1624,12 +1895,13 @@ proc generate_functions { db gdb callbacks nogoto } {
 	} {
 		if { [ mwc::is_drakon $diagram_id ] && [ has_branches $gdb $diagram_id ] } {
 			lappend result [ generate_function $gdb $diagram_id  \
-				$callbacks $nogoto ]
+				$callbacks $nogoto $to ]
 		}
 	}
 
 	return $result
 }
+
 
 proc p.keywords { } {
 	return {
@@ -1668,6 +1940,12 @@ proc p.keywords { } {
 		if_cond
 		change_state
 		fsm_merge
+		select
+		case_value
+		case_else
+		case_end
+		select_end
+		bad_case
 	}
 }
 

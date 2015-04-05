@@ -85,6 +85,12 @@ proc make_callbacks { } {
 	gen::put_callback callbacks change_state	gen_erl::change_state
 	gen::put_callback callbacks fsm_merge   1
 	
+	gen::put_callback callbacks select				gen_erl::select
+	gen::put_callback callbacks case_value			gen_erl::case_value
+	gen::put_callback callbacks case_else			gen_erl::case_else
+	gen::put_callback callbacks case_end			gen_erl::case_end
+	gen::put_callback callbacks select_end			gen_erl::select_end
+	
 	return $callbacks
 }
 
@@ -121,6 +127,27 @@ proc p.compare { variable value } {
 proc p.compare2 { variable value } {
 	return "$variable =:= $value"
 }
+
+proc select { text } {
+	return "case $text of"
+}
+
+proc case_value { text } {
+	return "$text ->"
+}
+
+proc case_else { } {
+	return "_ ->"
+}
+
+proc case_end { } {
+	return ";"
+}
+
+proc select_end { } {
+	return "end"
+}
+
 
 
 proc p.while_start { } {
@@ -220,12 +247,12 @@ proc generate { db gdb filename } {
 
 	foreach diagram_id $diagrams {
         if {[mwc::is_drakon $diagram_id]} {
-            gen::fix_graph_for_diagram $gdb $callbacks 1 $diagram_id
+            gen::fix_graph_for_diagram_to $gdb $callbacks 1 $diagram_id
         }
 	}
 
 	set use_nogoto 1
-	set functions [ gen::generate_functions $db $gdb $callbacks $use_nogoto ]
+	set functions [ gen::generate_functions_core $db $gdb $callbacks $use_nogoto 1 ]
 
 	if { [ graph::errors_occured ] } { return }
 
