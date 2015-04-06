@@ -1774,12 +1774,19 @@ proc append_line_end { result_list i line_end } {
 }
 
 proc link_to_end { gdb ndb vertex_id } {
-	set item_id [ p.vertex_item $gdb $vertex_id ]
+
+	lassign [ $gdb eval {
+		select diagram_id, item_id
+		from vertices
+		where vertex_id = :vertex_id
+	} ] diagram_id item_id
+	
 	set end_vertex [ $gdb onecolumn {
 		select vertex_id
 		from vertices v
 		inner join links l on v.vertex_id = l.dst
 		where v.type = 'beginend'
+		and v.diagram_id = :diagram_id
 	} ]
 	
 
