@@ -285,7 +285,7 @@ proc add_link_to_class { class_id link_id } {
     set_class_links $class_id $class_links
 }
 
-proc assemble_tree { nodes edges } {
+proc assemble_trees { nodes edges } {
     #item 2892
     set node_ids [ dict keys $nodes ]
     #item 28930001
@@ -298,7 +298,7 @@ proc assemble_tree { nodes edges } {
             
         } else {
             #item 2923
-            set root {}
+            set roots {}
             #item 29540001
             set _col2954 $node_ids
             set _len2954 [ llength $_col2954 ]
@@ -317,18 +317,8 @@ proc assemble_tree { nodes edges } {
                 [get_tnode_incoming $node_id $edges]
                 #item 2956
                 if {$incoming == {}} {
-                    #item 2959
-                    if {$root == {}} {
-                        
-                    } else {
-                        #item 2963
-                        set node [ dict get $nodes $node_id ]
-                        set text [ get_tnode_text $node ]
-                        error "Several roots found: $text"
-                        break
-                    }
-                    #item 2962
-                    set root $node_id
+                    #item 2983
+                    lappend roots $node_id
                 } else {
                     
                 }
@@ -353,8 +343,29 @@ proc assemble_tree { nodes edges } {
         #item 28930003
         incr _ind2893
     }
-    #item 2964
-    return [ build_traverse $nodes $edges $root ]
+    #item 2984
+    set trees {}
+    #item 29860001
+    set _col2986 $roots
+    set _len2986 [ llength $_col2986 ]
+    set _ind2986 0
+    while { 1 } {
+        #item 29860002
+        if {$_ind2986 < $_len2986} {
+            
+        } else {
+            break
+        }
+        #item 29860004
+        set root [ lindex $_col2986 $_ind2986 ]
+        #item 2964
+        lappend trees \
+          [ build_traverse $nodes $edges $root ]
+        #item 29860003
+        incr _ind2986
+    }
+    #item 2985
+    return $trees
 }
 
 proc base_classes { class } {
@@ -3335,7 +3346,7 @@ proc generate_tables { dbase callbacks after_connections } {
     #print_link
 }
 
-proc generate_tree { dbase } {
+proc generate_trees { dbase } {
     #item 2742
     reset_db
     #item 2747
@@ -3400,9 +3411,9 @@ proc generate_tree { dbase } {
     set edges \
     [get_tree_edges]
     #item 2877
-    set tree [ assemble_tree $nodes $edges ]
+    set trees [ assemble_trees $nodes $edges ]
     #item 2760
-    return $tree
+    return $trees
 }
 
 proc get_collection_target { field link } {

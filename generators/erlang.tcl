@@ -256,8 +256,8 @@ proc generate { db gdb filename } {
 
 	if { [ graph::errors_occured ] } { return }
 
-	set tree [ tab::generate_tree $gdb ]
-	if { $tree != {} } {
+	set trees [ tab::generate_trees $gdb ]
+	foreach tree $trees {
 		print_tree $filename $tree
 	}
 
