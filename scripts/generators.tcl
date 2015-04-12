@@ -1496,7 +1496,6 @@ proc merge_trees { gdb node case_to_root item_to_tree select_to_vertex } {
 	set length [ llength $node ]
 	set first [ lindex $node 0 ]
 	set result [ list $first ]
-
 	
 	for { set i 1 } { $i < $length } { incr i } {
 		set current [ lindex $node $i ]
@@ -1545,7 +1544,8 @@ proc build_select_tree { gdb sel_item case_to_root item_to_tree select_to_vertex
 		set case_item [ p.vertex_item $gdb $case_vertex ]
 		set item_id [ dict get $case_to_root $case_vertex ]
 		set subtree [ dict get $item_to_tree $item_id ]
-		lappend result $case_item $subtree
+		set expanded [ merge_trees $gdb $subtree $case_to_root $item_to_tree $select_to_vertex]
+		lappend result $case_item $expanded
 	}
 	
 	return $result
