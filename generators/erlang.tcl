@@ -129,7 +129,11 @@ proc p.compare2 { variable value } {
 }
 
 proc select { text } {
-	return "case $text of"
+	if { $text == "receive" } {
+		return "receive"
+	} else {
+		return "case $text of"
+	}
 }
 
 proc case_value { text } {
