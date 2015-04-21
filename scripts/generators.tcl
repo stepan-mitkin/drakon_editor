@@ -1657,7 +1657,18 @@ proc print_select { texts node callback depth } {
 		set clause [ print_node $texts $value $callback $next_depth ]
 		set result [ concat $result $clause ]
 		if { $i != $last || !$had_default} {
-			lappend result "${indent}    [$case_end]"
+			set next_key_id [ expr { $i + 2 } ]
+			set next_key [ lindex $node $next_key_id ]
+			if { $next_key == "" } {
+				set next_key_text ""
+			} else {
+				set next_key_text [ get_text_lines $texts $next_key ]
+			}
+			set cend [$case_end $next_key_text]
+			if {$cend == "" } {
+				set had_default 1			
+			}
+			lappend result "${indent}    $cend"
 		}		
 	}
 	if { !$had_default } {

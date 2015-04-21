@@ -144,8 +144,12 @@ proc case_else { } {
 	return "_ ->"
 }
 
-proc case_end { } {
-	return ";"
+proc case_end { next_text } {
+	if { [string match "after *" $next_text] } {
+		return ""
+	} else {
+		return ";"
+	}
 }
 
 proc select_end { } {
