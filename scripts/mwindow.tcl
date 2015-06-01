@@ -1285,6 +1285,10 @@ proc dia_popup { window x_world y_world } {
 		.diapop add command -label [ mc2 "Export to PNG..." ] -command export_png::export
 	}
 	
+	if { $has_selection } {
+		.diapop add command -label [ mc2 "Copy diagram names" ] -command mwc::copy_dia_names
+	}
+	
 	tk_popup .diapop $x_world $y_world
 }
 
@@ -1483,6 +1487,11 @@ proc put_to_clipboard { items_data type } {
 	clipboard append -type STRING -format [ clipboard_type ] -- $content
 }
 
+proc put_text_to_clipboard { text } {
+	set content "$text"
+	clipboard clear
+	clipboard append -type STRING -format [ clipboard_type ] -- $content
+}
 
 proc take_from_clipboard { type } {
 	if {[catch {

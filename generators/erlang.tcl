@@ -641,7 +641,10 @@ proc print_supervisor { folder node } {
 
 	
 	set text_lines [ split $text "\n" ]
+	
 	set down_options [ parse_ini $text_lines ]
+	if { $down_options == {} } { return }
+		
 	check_present $down_options $name {strategy max_restart max_time}
 	
 

@@ -2302,6 +2302,31 @@ proc get_sorted_nodes { } {
 	return $sorted
 }
 
+proc get_diagram_name_from_node { node_id } {
+	variable db
+	set diagram_id [ $db onecolumn {
+		select diagram_id
+		from tree_nodes
+		where node_id = :node_id
+	} ]
+	
+	set name [ $db onecolumn { select name from diagrams where diagram_id = :diagram_id } ]
+	
+	return [ string trim $name ]
+}
+
+proc copy_dia_names { } {
+	set sorted [ get_sorted_nodes ]
+	if { [ llength $sorted ] == 0 } { return }
+	set lines {}
+	foreach node_id $sorted {
+		set name [ get_diagram_name_from_node $node_id ]
+		lappend lines $name
+	}
+	set content [ join $lines "\n" ]
+	mw::put_text_to_clipboard $content
+}
+
 proc take_from_tree { delete copy } {
 	set sorted [ get_sorted_nodes ]
 	if { [ llength $sorted ] == 0 } { return }

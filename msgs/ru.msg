@@ -331,6 +331,7 @@
 ::msgcat::mcset ru "Call hierarchy..." "Иерархия вызовов..."
 ::msgcat::mcset ru "Regenerate" "Построить заново"
 ::msgcat::mcset ru "Inversed" "Обратить"
+::msgcat::mcset ru "Copy diagram names" "Копировать имена диаграмм"
 
 
 ::msgcat::mcset ru "Change colors..." "Изменить цвета..."
