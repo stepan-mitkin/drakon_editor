@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>E3A37D21-BB7D-43F7-8A7E-8F693251E3AC</string>
+	<key>IDESourceControlProjectName</key>
+	<string>DRAKONEditor</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>BEA571F181DF356B19B140BEBC78E4931AE2B9DE</key>
+		<string>https://github.com/stepan-mitkin/drakon_editor.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>DRAKONEditor/DRAKONEditor.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>BEA571F181DF356B19B140BEBC78E4931AE2B9DE</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/stepan-mitkin/drakon_editor.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>BEA571F181DF356B19B140BEBC78E4931AE2B9DE</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>BEA571F181DF356B19B140BEBC78E4931AE2B9DE</string>
+			<key>IDESourceControlWCCName</key>
+			<string>drakon_editor</string>
+		</dict>
+	</array>
+</dict>
+</plist>

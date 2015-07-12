@@ -8,3 +8,5 @@ tmp/fail
 tmp/good
 
 tmp/no_version
+
+*.beam
