@@ -83,7 +83,7 @@ Installing and running DRAKON Editor:
 
 *Warning! Development version of DRAKON Editor is not as stable as release version and is only for testing purposes.*
 
-See notes about Tcl instalation in "How to use release version of DRAKON Editor" section and after follow these steps:
+See notes about Tcl instalation in [How to use release version of DRAKON Editor](#how-to-use-release-version-of-drakon-editor) section and after follow these steps:
 
 1. Click "Download ZIP" at current page.
 
