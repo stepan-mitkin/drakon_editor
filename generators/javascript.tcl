@@ -37,7 +37,12 @@ proc foreach_init { item_id first second } {
 	set keys_var "_keys$item_id"
 	set coll_var "_col$item_id"
 	set length_var "_len$item_id"
-	return "var $index_var = 0;\nvar $coll_var = $second;\nvar $keys_var = Object.keys\($coll_var\); \nvar $length_var = $keys_var.length;"
+	lassign [ parse_key_value $first ] key value
+	if { $key == "" } {
+		return "var $index_var = 0;\nvar $coll_var = $second;\nvar $length_var = $coll_var.length;"
+	} else {
+		return "var $index_var = 0;\nvar $coll_var = $second;\nvar $keys_var = Object.keys\($coll_var\); \nvar $length_var = $keys_var.length;"
+	}
 }
 
 proc foreach_check { item_id first second } {
@@ -52,7 +57,7 @@ proc foreach_current { item_id first second } {
 	set keys_var "_keys$item_id"
 	lassign [ parse_key_value $first ] key value
 	if { $key == "" } {
-        return "var $first = $coll_var\[$keys_var\[$index_var\]\];"
+        return "var $first = $coll_var\[$index_var\];"
     } else {
         return "var $key = $keys_var\[$index_var\]; var $value = $coll_var\[$key\];"
     }

@@ -10,3 +10,5 @@ tmp/good
 tmp/no_version
 
 *.beam
+
+*~
