@@ -90,6 +90,8 @@ proc make_callbacks { } {
 	gen::put_callback callbacks case_else			gen_erl::case_else
 	gen::put_callback callbacks case_end			gen_erl::case_end
 	gen::put_callback callbacks select_end			gen_erl::select_end
+
+	gen::put_callback callbacks select_gen_default	0
 	
 	return $callbacks
 }

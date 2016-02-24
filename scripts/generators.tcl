@@ -1631,8 +1631,11 @@ proc print_select { texts node callback depth } {
 	set case_else [ get_callback $callback case_else ]
 	set case_end [ get_callback $callback case_end ]	
 	set select_end [ get_callback $callback select_end ]
-	set bad_case [ get_callback $callback bad_case ]	
-	
+	set bad_case [ get_callback $callback bad_case ]
+	set put_default [ get_optional_callback $callback select_gen_default ]	
+	if { $put_default == "" } {
+		set put_default 1
+	}
 			
 	set result {}
 	set indent [ make_indent $depth ]
@@ -1656,7 +1659,7 @@ proc print_select { texts node callback depth } {
 		}
 		set clause [ print_node $texts $value $callback $next_depth ]
 		set result [ concat $result $clause ]
-		if { $i != $last || !$had_default} {
+		if { $i != $last || !$had_default && $put_default } {
 			set next_key_id [ expr { $i + 2 } ]
 			set next_key [ lindex $node $next_key_id ]
 			if { $next_key == "" } {
@@ -1671,7 +1674,7 @@ proc print_select { texts node callback depth } {
 			lappend result "${indent}    $cend"
 		}		
 	}
-	if { !$had_default } {
+	if { !$had_default && $put_default } {
 		lappend result "${indent}    [ $case_else ]"
 		lappend result "${indent}    [ $bad_case {} $header_item ]"
 	}
@@ -1964,6 +1967,7 @@ proc p.keywords { } {
 		case_end
 		select_end
 		bad_case
+		select_gen_default
 	}
 }
 
