@@ -718,7 +718,7 @@ proc p.replace_select_ifs { gdb select ordinals callbacks } {
 	set compare [ get_callback $callbacks compare ]
 	
 	
-	if {[string match -nocase "Select*" $select_text]} {
+	if {[string match -nocase "Select" $select_text]} {
 		set select_mode_var 2
 	} else {
 		set select_mode_var 1
