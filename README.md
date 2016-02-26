@@ -60,6 +60,7 @@ Installing Tcl and required packages:
 
 DRAKON Editor needs Tcl 8.6 or higher to run:
 - Windows, Linux and Mac users can download Active Tcl here: http://www.activestate.com/activetcl/downloads
+- For OS X users: If you are having problems with sqlite while using DRAKON Edidor read this: https://github.com/stepan-mitkin/drakon_editor/issues/6#issuecomment-188855963
 - Or Linux users can install the following packages:
  - tcl8.6
  - tk8.6
