@@ -303,6 +303,7 @@ proc p.one_exit { links item_id } {
         } else {
             #item 204
             return $found
+            break
         }
         #item 1910004
         set link [ lindex $_col191 $_ind191 ]
@@ -321,6 +322,7 @@ proc p.one_exit { links item_id } {
             } else {
                 #item 205
                 return 0
+                break
             }
         }
         #item 1910003

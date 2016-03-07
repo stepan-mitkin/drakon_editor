@@ -84,6 +84,7 @@ proc contains_exit { links item_id } {
         } else {
             #item 546
             return 0
+            break
         }
         #item 5330004
         set link [ lindex $_col533 $_ind533 ]
@@ -93,6 +94,7 @@ proc contains_exit { links item_id } {
         if {$linked_item == $item_id} {
             #item 548
             return 1
+            break
         } else {
             
         }

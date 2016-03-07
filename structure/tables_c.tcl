@@ -2241,6 +2241,7 @@ proc has_paw { class exp_own for_m2m } {
         } else {
             #item 2343
             return 0
+            break
         }
         #item 23410004
         set field [ lindex $_col2341 $_ind2341 ]
@@ -2254,6 +2255,7 @@ proc has_paw { class exp_own for_m2m } {
         if {(($own == $exp_own) && ($link_type == "paw")) && ($type2 == "collection")} {
             #item 2353
             return 1
+            break
         } else {
             
         }
@@ -2370,6 +2372,7 @@ proc is_ptr { type } {
         } else {
             #item 1654
             return 0
+            break
         }
         #item 16490004
         set char [ lindex $_col1649 $_ind1649 ]
@@ -2377,6 +2380,7 @@ proc is_ptr { type } {
         if {$char == "*"} {
             #item 1655
             return 1
+            break
         } else {
             
         }

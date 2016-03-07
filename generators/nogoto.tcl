@@ -20,6 +20,7 @@ proc after_others { order nodes current } {
         } else {
             #item 3983
             return 1
+            break
         }
         #item 39730004
         set node [ lindex $_col3973 $_ind3973 ]
@@ -35,6 +36,7 @@ proc after_others { order nodes current } {
             } else {
                 #item 3982
                 return 0
+                break
             }
         }
         #item 39730003
@@ -89,6 +91,7 @@ proc choose_latest { order nodes } {
              "nodes=/$nodes/" ]
             #item 3966
             return {}
+            break
         }
         #item 39600004
         set current [ lindex $_col3960 $_ind3960 ]
@@ -96,6 +99,7 @@ proc choose_latest { order nodes } {
         if {[ after_others $order $nodes $current ]} {
             #item 3967
             return $current
+            break
         } else {
             
         }
@@ -304,6 +308,7 @@ proc find_common_point { paths } {
             } else {
                 #item 3619
                 return {}
+                break
             }
             #item 36100004
             set current [ lindex $_col3610 $_ind3610 ]
@@ -314,6 +319,7 @@ proc find_common_point { paths } {
             if {$found_in_all} {
                 #item 3618
                 return $current
+                break
             } else {
                 
             }
@@ -635,6 +641,7 @@ proc gen_loop { db item_id ignored } {
         if {[ is_link_up $db $current 0 ]} {
             #item 3886
             return [ list $result $loop_break ]
+            break
         } else {
             
         }
@@ -646,6 +653,7 @@ proc gen_loop { db item_id ignored } {
         if {$subtree == {}} {
             #item 4220
             return {}
+            break
         } else {
             
         }
@@ -701,6 +709,7 @@ proc generate3 { db start_item } {
         if {$current == ""} {
             #item 3770
             return $result
+            break
         } else {
             
         }
@@ -712,6 +721,7 @@ proc generate3 { db start_item } {
         if {$subtree == {}} {
             #item 4201
             return {}
+            break
         } else {
             
         }
@@ -735,6 +745,7 @@ proc generate_if_seq { db start_item if_stop break_loop parent_loop } {
             set current ""
             #item 3821
             return [ list $result $current ]
+            break
         } else {
             
         }
@@ -742,6 +753,7 @@ proc generate_if_seq { db start_item if_stop break_loop parent_loop } {
         if {$current == $if_stop} {
             #item 3821
             return [ list $result $current ]
+            break
         } else {
             
         }
@@ -753,6 +765,7 @@ proc generate_if_seq { db start_item if_stop break_loop parent_loop } {
         if {$subtree == {}} {
             #item 4216
             return {}
+            break
         } else {
             
         }

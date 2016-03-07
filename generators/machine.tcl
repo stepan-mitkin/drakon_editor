@@ -508,6 +508,7 @@ proc extract_machine { gdb callbacks } {
         } else {
             #item 138
             return {}
+            break
         }
         #item 1330004
         set diagram_id [ lindex $_col133 $_ind133 ]
@@ -519,6 +520,7 @@ proc extract_machine { gdb callbacks } {
             delete_diagram $gdb $diagram_id
             #item 139
             return $info
+            break
         } else {
             
         }
@@ -1049,6 +1051,7 @@ proc receives_are_first { gdb receives } {
         } else {
             #item 307
             return 1
+            break
         }
         #item 2320004
         set receive [ lindex $_col232 $_ind232 ]
@@ -1061,6 +1064,7 @@ proc receives_are_first { gdb receives } {
              "A 'receive' icon must be first in the branch."
             #item 308
             return 0
+            break
         }
         #item 2320003
         incr _ind232

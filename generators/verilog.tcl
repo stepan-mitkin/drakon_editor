@@ -2008,7 +2008,6 @@ proc monkey_patch { direction fnames } {
         set fname [ lindex $_col2091 $_ind2091 ]
         #item 2084
         if {$direction == "reverse"} {
-            #item 2088
             #item 2087
             rename "$fname" \
                    "${fname}_vlog"
@@ -2016,7 +2015,6 @@ proc monkey_patch { direction fnames } {
             rename "${fname}_backup" \
                    "$fname"
         } else {
-            #item 2090
             #item 2089
             rename "$fname" \
                    "${fname}_backup"

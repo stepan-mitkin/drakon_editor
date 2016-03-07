@@ -266,7 +266,9 @@ proc ExitToAbove { } {
     while { 1 } {
         if {$_next_item_ == 362} {
             incr variable 4
-            #item 3600001
+            set _next_item_ 3600001
+    
+        } elseif {$_next_item_ == 3600001} {
             set _col360 { a a a }
             set _len360 [ llength $_col360 ]
             set _ind360 0
@@ -276,13 +278,15 @@ proc ExitToAbove { } {
             if {$_ind360 < $_len360} {
                 #item 3600004
                 set i [ lindex $_col360 $_ind360 ]
-                #item 364
-                incr counter
-                set _next_item_ 363
+                set _next_item_ 364
             } else {
                 #item 359
                 return $counter
             }
+    
+        } elseif {$_next_item_ == 364} {
+            incr counter
+            set _next_item_ 363
     
         } elseif {$_next_item_ == 363} {
             if {$variable < 15} {
@@ -427,7 +431,9 @@ proc JumpToThen { condition condition2 } {
     
         } elseif {$_next_item_ == 341} {
             incr variable -1
-            #item 343
+            set _next_item_ 343
+    
+        } elseif {$_next_item_ == 343} {
             incr counter
             set _next_item_ 347
     
@@ -447,12 +453,14 @@ proc JumpToThen { condition condition2 } {
 
 proc JumpToThenWorse { condition condition2 } {
     set result ""
-    #item 5350001
-    set ii 0
     
-    set _next_item_ 5350002
+    set _next_item_ 5350001
     while { 1 } {
-        if {$_next_item_ == 5350002} {
+        if {$_next_item_ == 5350001} {
+            set ii 0
+            set _next_item_ 5350002
+    
+        } elseif {$_next_item_ == 5350002} {
             if {$ii < 10} {
                 #item 522
                 set variable 10
@@ -479,7 +487,9 @@ proc JumpToThenWorse { condition condition2 } {
     
         } elseif {$_next_item_ == 519} {
             incr variable -1
-            #item 521
+            set _next_item_ 521
+    
+        } elseif {$_next_item_ == 521} {
             incr counter
             set _next_item_ 525
     
@@ -492,7 +502,9 @@ proc JumpToThenWorse { condition condition2 } {
     
         } elseif {$_next_item_ == 533} {
             append result $counter
-            #item 5350003
+            set _next_item_ 5350003
+    
+        } elseif {$_next_item_ == 5350003} {
             incr ii
             set _next_item_ 5350002
     

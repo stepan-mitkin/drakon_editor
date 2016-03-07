@@ -831,6 +831,7 @@ proc chain_ref_count { chain } {
         } else {
             #item 2332
             return 0
+            break
         }
         #item 23260004
         set $class [ lindex $_col2326 $_ind2326 ]
@@ -838,6 +839,7 @@ proc chain_ref_count { chain } {
         if {[get_class2_has_ref_count $class]} {
             #item 2331
             return 1
+            break
         } else {
             
         }
@@ -2723,6 +2725,7 @@ proc find_base { class } {
         } else {
             #item 1465
             return {}
+            break
         }
         #item 14570004
         set link [ lindex $_col1457 $_ind1457 ]
@@ -2735,6 +2738,7 @@ proc find_base { class } {
             set dst [ get_link_dst_table $link ]
             #item 1464
             return $dst
+            break
         } else {
             
         }
@@ -3374,6 +3378,7 @@ proc get_tree_nodes { } {
         } else {
             #item 2848
             return $result
+            break
         }
         #item 28500004
         set vertex_id [ lindex $_col2850 $_ind2850 ]
@@ -3539,6 +3544,7 @@ proc indexes_contain_field { indexes field } {
         } else {
             #item 2572
             return 0
+            break
         }
         #item 25660004
         set index [ lindex $_col2566 $_ind2566 ]
@@ -3548,6 +3554,7 @@ proc indexes_contain_field { indexes field } {
         if {[contains $ifields $field]} {
             #item 2573
             return 1
+            break
         } else {
             
         }
@@ -3594,6 +3601,7 @@ proc is_collection { field_id } {
         } else {
             #item 1369
             return 0
+            break
         }
         #item 13600004
         set link [ lindex $_col1360 $_ind1360 ]
@@ -3605,6 +3613,7 @@ proc is_collection { field_id } {
         if {(($type == "paw") && ($src == $class_id)) && ($src_field == $name)} {
             #item 1370
             return 1
+            break
         } else {
             
         }

@@ -410,6 +410,7 @@ proc connected.check { } {
         } else {
             #item 1258
             return 1
+            break
         }
         #item 12590004
         set icon_id [ lindex $_col1259 $_ind1259 ]
@@ -424,6 +425,7 @@ proc connected.check { } {
             report.error {} $message
             #item 1278
             return 0
+            break
         }
         #item 12590003
         incr _ind1259
@@ -760,6 +762,7 @@ proc first.not.comment { icon_ids } {
         } else {
             #item 1337
             return -1
+            break
         }
         #item 13300004
         set icon_id [ lindex $_col1330 $_ind1330 ]
@@ -769,6 +772,7 @@ proc first.not.comment { icon_ids } {
         } else {
             #item 1336
             return $icon_id
+            break
         }
         #item 1335
         set left [ man.icon.left $icon_id ]
@@ -781,6 +785,7 @@ proc first.not.comment { icon_ids } {
         } else {
             #item 1336
             return $icon_id
+            break
         }
         #item 13300003
         incr _ind1330
@@ -1786,7 +1791,6 @@ proc merge.lines { } {
 }
 
 proc merge.on.1.line { items } {
-    #item 179
     #item 178
     set sorted [ lsort -integer -index 2 $items ]
     #item 180
@@ -1841,7 +1845,6 @@ proc merge.segments { current next } {
     lassign $next _ _ next_y1 next_y2 next_a
     #item 210
     if {$next_y1 > $y2} {
-        #item 213
         #item 214
         set to_add $current
         set next_current $next
