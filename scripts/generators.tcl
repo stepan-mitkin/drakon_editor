@@ -440,7 +440,7 @@ proc p.clean_tech_vertices { gdb diagram_id } {
 	set vertices [ $gdb eval {
 		select vertex_id
 		from vertices
-		where type is null
+		where type is null or type == ''
 			and diagram_id = :diagram_id
 	} ]
 	foreach vertex_id $vertices {
