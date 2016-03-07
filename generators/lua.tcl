@@ -610,6 +610,7 @@ proc make_callbacks { } {
     #item 1826
     gen::put_callback callbacks change_state 	gen_lua::change_state
     gen::put_callback callbacks fsm_merge   0
+    gen::put_callback callbacks native_foreach gen_lua::native_foreach
     #item 1193
     return $callbacks
 }
@@ -773,6 +774,11 @@ proc make_machine_declares { machines } {
     }
     #item 1915
     return [ join $lines "\n" ]
+}
+
+proc native_foreach { for_it for_var } {
+    #item 2093
+    return "for $for_it in $for_var do"
 }
 
 proc normalize_for { var start end } {
@@ -1039,7 +1045,7 @@ proc rewire_lua_for { gdb diagram_id } {
         #item 1756
         set declaration "local $vars_comma"
         #item 1757
-        gen::p.save_declare_kernel $gdb $diagram_id $declaration
+        gen::p.save_declare_kernel $gdb $diagram_id $declaration 1
     }
 }
 

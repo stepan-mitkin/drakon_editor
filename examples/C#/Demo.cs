@@ -74,19 +74,7 @@ public class Demo {
     }
 
     private static void Print(Object[] collection) {
-        IEnumerator<Object> _it96 = null;
-        Object item = default(Object);
-        // item 960001
-        _it96 = ((IEnumerable<Object>)collection).GetEnumerator();
-        while (true) {
-            // item 960002
-            if (_it96.MoveNext()) {
-                
-            } else {
-                break;
-            }
-            // item 960004
-            item = _it96.Current;
+        foreach (Object item in collection) {
             // item 98
             Write(item);
         }
@@ -141,21 +129,9 @@ public class Demo {
     }
 
     private static void PrintListForeach(IEnumerable<int> collection) {
-        IEnumerator<int> _it115 = null;
-        int item = default(int);
         // item 119
         Console.WriteLine("using foreach:");
-        // item 1150001
-        _it115 = ((IEnumerable<int>)collection).GetEnumerator();
-        while (true) {
-            // item 1150002
-            if (_it115.MoveNext()) {
-                
-            } else {
-                break;
-            }
-            // item 1150004
-            item = _it115.Current;
+        foreach (int item in collection) {
             // item 116
             Write(item);
         }
@@ -202,38 +178,51 @@ public class Demo {
     }
 
     private static void StringsAreSorted(Object[] array) {
+        IEnumerator<object> _it71 = null;
+        object obj = default(object);
         int _sw810000_ = 0;
-        String current = null;
-        int i, j = 0;
+        int i = 0, j = 0;
         int length = array.Length;
-        // item 710001
-        i = 0;
+        string after = null;
+        string current = null;
         int _next_item_ = 0;
-        _next_item_ = 710002;
+        _next_item_ = 710001;
         while (true) {
-            if (_next_item_ == 710002) {
-                if (i < length) {
-                    // item 73
-                    current = (String)array[i];
-                    // item 740001
-                    j = i + 1;
-                    _next_item_ = 740002;
+            if (_next_item_ == 710001) {
+                _it71 = ((IEnumerable<object>)array).GetEnumerator();
+                _next_item_ = 710002;
+        
+            } else if (_next_item_ == 710002) {
+                if (_it71.MoveNext()) {
+                    // item 710004
+                    obj = _it71.Current;
+                    _next_item_ = 249;
                 } else {
                     return;
                 }
         
+            } else if (_next_item_ == 249) {
+                current = (string)obj;
+                _next_item_ = 740001;
+        
+            } else if (_next_item_ == 740001) {
+                j = i + 1;
+                _next_item_ = 740002;
+        
             } else if (_next_item_ == 740002) {
                 if (j < length) {
                     // item 76
-                    String after = (String)array[j];
-                    // item 810000
-                    _sw810000_ = current.CompareTo(after);
-                    _next_item_ = 810001;
+                    after = (String)array[j];
+                    _next_item_ = 810000;
                 } else {
-                    // item 710003
+                    // item 248
                     i++;
                     _next_item_ = 710002;
                 }
+        
+            } else if (_next_item_ == 810000) {
+                _sw810000_ = current.CompareTo(after);
+                _next_item_ = 810001;
         
             } else if (_next_item_ == 810001) {
                 if (_sw810000_ == 1) {
@@ -264,7 +253,9 @@ public class Demo {
                 }
         
             } else if (_next_item_ == 88) {
-                // item 77
+                _next_item_ = 77;
+        
+            } else if (_next_item_ == 77) {
                 throw new InvalidOperationException("Collection is not sorted.");
         
             }

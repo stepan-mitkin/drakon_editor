@@ -123,14 +123,13 @@ static void Fill(
     if (*current == 0) {
         return;
     } else {
+        /* item 558 */
+        Put(output, i, *current);
+        /* item 560 */
+        i++;
+        current++;
+        goto item_559;
     }
-    
-    // item 558
-    Put(output, i, *current);
-    /* item 560 */
-    i++;
-    current++;
-    goto item_559;
     
 }
 
@@ -203,18 +202,17 @@ static void PrintIntsArrow(
     
     item_480 :
     if (i < length) {
+        /* item 478 */
+        item = IntArray_Get(collection, i);
+        printf("%d ", item);
+        /* item 482 */
+        i++;
+        goto item_480;
     } else {
         /* item 485 */
         printf("\n");
         return;
     }
-    
-    // item 478
-    item = IntArray_Get(collection, i);
-    printf("%d ", item);
-    /* item 482 */
-    i++;
-    goto item_480;
     
 }
 
@@ -224,17 +222,16 @@ static void PrintIntsBackward(
 ) {
     item_522 :
     if (n >= 0) {
+        /* item 520 */
+        printf("%d ", IntArray_Get(collection, n));
+        /* item 524 */
+        n--;
+        goto item_522;
     } else {
         /* item 528 */
         printf("\n");
         return;
     }
-    
-    // item 520
-    printf("%d ", IntArray_Get(collection, n));
-    /* item 524 */
-    n--;
-    goto item_522;
     
 }
 
@@ -471,16 +468,14 @@ static void alternative_select(
     
     item_748 :
     if (actual == expected) {
-        goto item_7580001;
     } else {
+        /* item 754 */
+        printf("alt select failure!\n");
+        /* item 774 */
+        abort();
     }
     
-    // item 754
-    printf("alt select failure!\n");
-    /* item 774 */
-    abort();
-    
-    item_7580001 :
+    // item 7580001
     if (value < 0) {
         /* item 766 */
         actual = -1;
@@ -510,13 +505,12 @@ static void alternative_select(
     if (actual == expected) {
         return;
     } else {
+        /* item 771 */
+        printf("alt select failure!\n");
+        /* item 775 */
+        abort();
+        return;
     }
-    
-    // item 771
-    printf("alt select failure!\n");
-    /* item 775 */
-    abort();
-    return;
     
 }
 
@@ -578,15 +572,13 @@ int IntArray_Count(
 ) {
     // item 337
     if (object == 0) {
+        /* item 338 */
+        printf("IntArray_Count: object is null.\n");
+        abort();
     } else {
-        goto item_341;
     }
     
-    // item 338
-    printf("IntArray_Count: object is null.\n");
-    abort();
-    
-    item_341 :
+    // item 341
     return object->Count;
     
 }
@@ -601,30 +593,26 @@ struct IntArray* IntArray_Create(
     
     // item 282
     if (size < 0) {
+        /* item 283 */
+        printf("IntArray_Create: size is negative.\n");
+        abort();
     } else {
-        goto item_286;
     }
     
-    // item 283
-    printf("IntArray_Create: size is negative.\n");
-    abort();
-    
-    item_286 :
+    // item 286
     object = Memory_Allocate(1, sizeof(struct IntArray));
     object->Count = size;
     
     // item 288
     if (size == 0) {
+        /* item 290 */
+        object->Buffer = 0;
     } else {
         /* item 289 */
         object->Buffer = Memory_Allocate(size, sizeof(int));
-        goto item_287;
     }
     
-    // item 290
-    object->Buffer = 0;
-    
-    item_287 :
+    // item 287
     return object;
     
 }
@@ -650,25 +638,21 @@ int IntArray_Get(
 ) {
     // item 307
     if (object == 0) {
+        /* item 308 */
+        printf("IntArray_Get: object is null.\n");
+        abort();
     } else {
-        goto item_311;
     }
     
-    // item 308
-    printf("IntArray_Get: object is null.\n");
-    abort();
-    
-    item_311 :
+    // item 311
     if ((index < 0) || (index >= object->Count)) {
+        /* item 316 */
+        printf("IntArray_Get: index out of range. Index=%d\n", index);
+        abort();
     } else {
-        goto item_315;
     }
     
-    // item 316
-    printf("IntArray_Get: index out of range. Index=%d\n", index);
-    abort();
-    
-    item_315 :
+    // item 315
     return object->Buffer[index];
     
 }
@@ -680,25 +664,21 @@ void IntArray_Put(
 ) {
     // item 322
     if (object == 0) {
+        /* item 323 */
+        printf("IntArray_Put: object is null.\n");
+        abort();
     } else {
-        goto item_326;
     }
     
-    // item 323
-    printf("IntArray_Put: object is null.\n");
-    abort();
-    
-    item_326 :
+    // item 326
     if ((index < 0) || (index >= object->Count)) {
+        /* item 331 */
+        printf("IntArray_Put: index out of range. Index=%d\n", index);
+        abort();
     } else {
-        goto item_330;
     }
     
-    // item 331
-    printf("IntArray_Put: index out of range. Index=%d\n", index);
-    abort();
-    
-    item_330 :
+    // item 330
     object->Buffer[index] = value;
     return;
     
@@ -714,42 +694,36 @@ void* Memory_Allocate(
     
     // item 350
     if (objectSize <= 0) {
+        /* item 349 */
+        printf("Memory_Allocated: non-positive objectSize: %d\n", objectSize);
+        abort();
     } else {
-        goto item_354;
     }
     
-    // item 349
-    printf("Memory_Allocated: non-positive objectSize: %d\n", objectSize);
-    abort();
-    
-    item_354 :
+    // item 354
     if (numOfObjects <= 0) {
+        /* item 351 */
+        printf("Memory_Allocated: non-positive numOfObjects: %d\n", numOfObjects);
+        abort();
     } else {
-        goto item_357;
     }
     
-    // item 351
-    printf("Memory_Allocated: non-positive numOfObjects: %d\n", numOfObjects);
-    abort();
-    
-    item_357 :
+    // item 357
     buffer = calloc(
     	(size_t)numOfObjects,
     	(size_t)objectSize);
     
     // item 358
     if (buffer == 0) {
+        /* item 359 */
+        printf(
+        "Memory_Allocated: could not allocate memory: numOfObjects=%d, objectSize=%d\n", 
+        numOfObjects, objectSize);
+        abort();
     } else {
-        goto item_346;
     }
     
-    // item 359
-    printf(
-    "Memory_Allocated: could not allocate memory: numOfObjects=%d, objectSize=%d\n", 
-    numOfObjects, objectSize);
-    abort();
-    
-    item_346 :
+    // item 346
     return buffer;
     
 }
@@ -773,15 +747,13 @@ int ObjectArray_Count(
 ) {
     // item 432
     if (object == 0) {
+        /* item 433 */
+        printf("ObjectArray_Count: object is null.\n");
+        abort();
     } else {
-        goto item_436;
     }
     
-    // item 433
-    printf("ObjectArray_Count: object is null.\n");
-    abort();
-    
-    item_436 :
+    // item 436
     return object->Count;
     
 }
@@ -797,31 +769,27 @@ struct ObjectArray* ObjectArray_Create(
     
     // item 377
     if (size < 0) {
+        /* item 378 */
+        printf("ObjectArray_Create: size is negative.\n");
+        abort();
     } else {
-        goto item_381;
     }
     
-    // item 378
-    printf("ObjectArray_Create: size is negative.\n");
-    abort();
-    
-    item_381 :
+    // item 381
     object = Memory_Allocate(1, sizeof(struct ObjectArray));
     object->Count = size;
     object->ElementDestructor = elementDestructor;
     
     // item 383
     if (size == 0) {
+        /* item 385 */
+        object->Buffer = 0;
     } else {
         /* item 384 */
         object->Buffer = Memory_Allocate(size, sizeof(void*));
-        goto item_382;
     }
     
-    // item 385
-    object->Buffer = 0;
-    
-    item_382 :
+    // item 382
     return object;
     
 }
@@ -869,25 +837,21 @@ void* ObjectArray_Get(
 ) {
     // item 402
     if (object == 0) {
+        /* item 403 */
+        printf("ObjectArray_Get: object is null.\n");
+        abort();
     } else {
-        goto item_406;
     }
     
-    // item 403
-    printf("ObjectArray_Get: object is null.\n");
-    abort();
-    
-    item_406 :
+    // item 406
     if ((index < 0) || (index >= object->Count)) {
+        /* item 411 */
+        printf("ObjectArray_Get: index out of range. Index=%d\n", index);
+        abort();
     } else {
-        goto item_410;
     }
     
-    // item 411
-    printf("ObjectArray_Get: index out of range. Index=%d\n", index);
-    abort();
-    
-    item_410 :
+    // item 410
     return object->Buffer[index];
     
 }
@@ -899,25 +863,21 @@ void ObjectArray_Put(
 ) {
     // item 417
     if (object == 0) {
+        /* item 418 */
+        printf("ObjectArray_Put: object is null.\n");
+        abort();
     } else {
-        goto item_421;
     }
     
-    // item 418
-    printf("ObjectArray_Put: object is null.\n");
-    abort();
-    
-    item_421 :
+    // item 421
     if ((index < 0) || (index >= object->Count)) {
+        /* item 426 */
+        printf("ObjectArray_Put: index out of range. Index=%d\n", index);
+        abort();
     } else {
-        goto item_425;
     }
     
-    // item 426
-    printf("ObjectArray_Put: index out of range. Index=%d\n", index);
-    abort();
-    
-    item_425 :
+    // item 425
     object->Buffer[index] = value;
     return;
     
@@ -960,11 +920,10 @@ void QuickSort(
     if (Compare(collection, begin, last, comparer) <= 0) {
         return;
     } else {
+        /* item 611 */
+        Swap(collection, begin, last);
+        return;
     }
-    
-    // item 611
-    Swap(collection, begin, last);
-    return;
     
     item_6150002 :
     if (i < last) {
@@ -1003,51 +962,39 @@ int String_Compare(
     
     // item 229
     if (left == 0) {
+        /* item 230 */
+        printf("String_Compare: left is null.\n");
+        abort();
     } else {
-        goto item_233;
     }
     
-    // item 230
-    printf("String_Compare: left is null.\n");
-    abort();
-    
-    item_233 :
+    // item 233
     if (right == 0) {
+        /* item 234 */
+        printf("String_Compare: right is null.\n");
+        abort();
     } else {
-        goto item_665;
     }
     
-    // item 234
-    printf("String_Compare: right is null.\n");
-    abort();
-    
-    item_665 :
+    // item 665
     if (left == right) {
+        /* item 666 */
+        result = 0;
+        goto item_677;
     } else {
         /* item 238 */
         i = 0;
-        goto item_239;
     }
-    
-    // item 666
-    result = 0;
-    goto item_677;
     
     item_239 :
-    if (i < left->Length) {
+    if ((i < left->Length) && (i < right->Length)) {
+        /* item 244 */
+        leftChar = left->Buffer[i];
+        rightChar = right->Buffer[i];
     } else {
-        goto item_259;
+        /* item 259 */
+        goto item_253;
     }
-    
-    // item 240
-    if (i < right->Length) {
-    } else {
-        goto item_259;
-    }
-    
-    // item 244
-    leftChar = left->Buffer[i];
-    rightChar = right->Buffer[i];
     
     // item 245
     if (leftChar < rightChar) {
@@ -1061,15 +1008,12 @@ int String_Compare(
         result = 1;
         goto item_677;
     } else {
+        /* item 251 */
+        i++;
+        goto item_239;
     }
     
-    // item 251
-    i++;
-    goto item_239;
-    
-    item_259 :
-    
-    // item 253
+    item_253 :
     if (left->Length < right->Length) {
     } else {
         goto item_254;
@@ -1081,14 +1025,12 @@ int String_Compare(
     
     item_254 :
     if (left->Length > right->Length) {
+        /* item 256 */
+        result = 1;
     } else {
         /* item 257 */
         result = 0;
-        goto item_677;
     }
-    
-    // item 256
-    result = 1;
     
     item_677 :
     return result;
@@ -1122,15 +1064,13 @@ struct String* String_FromCString(
     
     // item 207
     if (text == 0) {
+        /* item 208 */
+        printf("String_FromCString: text argument is null.\n");
+        abort();
     } else {
-        goto item_204;
     }
     
-    // item 208
-    printf("String_FromCString: text argument is null.\n");
-    abort();
-    
-    item_204 :
+    // item 204
     length = (int)strlen(text);
     /* item 212 */
     string = Memory_Allocate(1, sizeof(struct String));
@@ -1148,15 +1088,13 @@ const char* String_GetBuffer(
 ) {
     // item 271
     if (object == 0) {
+        /* item 272 */
+        printf("String_Buffer: object is null.\n");
+        abort();
     } else {
-        goto item_275;
     }
     
-    // item 272
-    printf("String_Buffer: object is null.\n");
-    abort();
-    
-    item_275 :
+    // item 275
     return object->Buffer;
     
 }

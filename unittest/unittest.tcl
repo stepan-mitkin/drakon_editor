@@ -29,6 +29,7 @@ source ../scripts/colors.tcl
 source ../scripts/graph2.tcl
 source ../scripts/hie_engine.tcl
 source ../scripts/highlight.tcl
+source ../scripts/newfor.tcl
 source ../structure/tables.tcl
 source ../generators/c.tcl
 source ../generators/tcl.tcl
@@ -39,6 +40,7 @@ source ../generators/java.tcl
 source ../generators/cs.tcl
 source ../generators/machine.tcl
 source ../structure/struct.tcl
+
 
 # Test utilities and mocks
 source utest_utils.tcl

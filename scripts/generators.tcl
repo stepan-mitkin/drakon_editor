@@ -302,6 +302,7 @@ proc fix_graph { gdb callbacks append_semicolon } {
 	set diagrams [ $gdb eval {
 		select diagram_id from diagrams } ]
 
+	newfor::clear
 	foreach diagram_id $diagrams {
 		if { [ mwc::is_drakon $diagram_id ] } {
 			fix_graph_for_diagram $gdb $callbacks $append_semicolon $diagram_id
@@ -523,21 +524,26 @@ proc p.merge_vertices { gdb vertex_id next commentator line_end } {
 }
 
 proc p.glue_actions { gdb callbacks diagram_id } {
-	set commentator [ get_callback $callbacks comment ]
-	set line_end [ get_optional_callback $callbacks line_end ]
-	set vertices [ $gdb eval {
-		select vertex_id
-		from vertices
-		where type != 'beginend'
-			and diagram_id = :diagram_id
-	} ]
-	foreach vertex_id $vertices {
-		if { ![ p.vertex_exists $gdb $vertex_id ] } { continue }
-		set next [ p.get_single_next $gdb $vertex_id ]
-		while { $next != "" && [ p.same_type $gdb $vertex_id $next ] } {
-			p.merge_vertices $gdb $vertex_id $next $commentator $line_end
+
+	set can_glue [ get_optional_callback $callbacks can_glue ]
+	if { $can_glue != "" } {
+
+		set commentator [ get_callback $callbacks comment ]
+		set line_end [ get_optional_callback $callbacks line_end ]
+		set vertices [ $gdb eval {
+			select vertex_id
+			from vertices
+			where type != 'beginend'
+				and diagram_id = :diagram_id
+		} ]
+		foreach vertex_id $vertices {
+			if { ![ p.vertex_exists $gdb $vertex_id ] } { continue }
 			set next [ p.get_single_next $gdb $vertex_id ]
-		}		
+			while { $next != "" && [ p.same_type $gdb $vertex_id $next ] } {
+				p.merge_vertices $gdb $vertex_id $next $commentator $line_end
+				set next [ p.get_single_next $gdb $vertex_id ]
+			}		
+		}
 	}
 }
 
@@ -685,24 +691,31 @@ proc p.switch_var { item_id } {
 proc p.save_declare { gdb diagram_id type name value callbacks } {
 	set declarer [ get_callback $callbacks declare ]
 	set line [ $declarer $type $name $value ]
-	p.save_declare_kernel $gdb $diagram_id $line
+	p.save_declare_kernel $gdb $diagram_id $line 0
 }
 
-proc p.save_declare_kernel { gdb diagram_id lines } {
+proc p.save_declare_kernel { gdb diagram_id lines loop} {
 	set lines_list [ split $lines "\n" ]
 	foreach line $lines_list {
 		$gdb eval {
-			insert into declares (diagram_id, line)
-			values (:diagram_id, :line)
+			insert into declares (diagram_id, line, loop)
+			values (:diagram_id, :line, :loop)
 		}
 	}
 }
 
-proc p.get_declares { gdb diagram_id } {
-	return [ $gdb eval {
-		select line
-		from declares 
-		where diagram_id = :diagram_id } ]
+proc p.get_declares { gdb diagram_id has_iterators } {
+	if { $has_iterators } {
+		return [ $gdb eval {
+			select line
+			from declares 
+			where diagram_id = :diagram_id } ]
+	} else {
+		return [ $gdb eval {
+			select line
+			from declares 
+			where diagram_id = :diagram_id and loop = 0 } ]
+	}
 }
 
 proc p.replace_select_ifs { gdb select ordinals callbacks } {
@@ -861,6 +874,8 @@ proc has_branches { gdb diagram_id } {
 proc p.rewire_loop { gdb start callbacks append_semicolon } {
 	set diagram_id [ p.vertex_diagram $gdb $start ]
 
+	
+
 	set end [ p.find_end $gdb $diagram_id $start ]
 	set text [ p.vertex_text $gdb $start ]
 	set item_id [ p.vertex_item $gdb $start ]
@@ -928,6 +943,7 @@ proc p.rewire_foreach { gdb diagram_id start end parts callbacks } {
 	set ccurrent [ get_callback $callbacks for_current ]
 	set cincr [ get_callback $callbacks for_incr ]
 	set declare [ get_callback $callbacks for_declare ]
+	set native_foreach [ get_optional_callback $callbacks native_foreach ]
 	
 	lassign $parts first second
 
@@ -939,26 +955,39 @@ proc p.rewire_foreach { gdb diagram_id start end parts callbacks } {
 	set tcurrent [ $ccurrent $item_id $first $second ]
 	set tincr [ $cincr $item_id $first $second ]
 	set for_declare [ $declare $item_id $first $second ]
-	
-	p.save_declare_kernel $gdb $diagram_id $for_declare
+	set loop [ expr { $native_foreach != "" } ]
+	p.save_declare_kernel $gdb $diagram_id $for_declare $loop
 
 	# check must always be present
-	set check_id [ p.insert_vertex $gdb $diagram_id [ append_digits $item_id 0002 ] "if" $tcheck "" 0 ]
+	set vid [ append_digits $item_id 0002 ]
+	set check_id [ p.insert_vertex $gdb $diagram_id $vid "if" $tcheck "" 0 ]
+	if { $loop } {
+		newfor::put $vid [ list $item_id $parts ]
+	}
 
 	if { $tinit == "" } {
 		p.relink $gdb $start $check_id
 	} else {
-		set init_id [ p.insert_vertex $gdb $diagram_id [ append_digits $item_id 0001 ] "action" $tinit "" 0 ]
+		set vid [ append_digits $item_id 0001 ]
+		set init_id [ p.insert_vertex $gdb $diagram_id $vid "action" $tinit "" 0 ]
 		p.relink $gdb $start $init_id
 		p.link $gdb $init_id 1 $check_id
+
+		if { $loop } {
+			newfor::put $vid 1
+		}
 	}
 
 	if { $tincr == "" } {
 		p.relink $gdb $end $check_id
 	} else {
-		set advance_id [ p.insert_vertex $gdb $diagram_id [ append_digits $item_id 0003 ] "action" $tincr "" 0 ]
+		set vid [ append_digits $item_id 0003 ]
+		set advance_id [ p.insert_vertex $gdb $diagram_id $vid "action" $tincr "" 0 ]
 		p.relink $gdb $end $advance_id
 		p.link $gdb $advance_id 1 $check_id
+		if { $loop } {
+			newfor::put $vid 1
+		}
 	}
 
 	set first_loop [ p.get_next $gdb $start 2 ]
@@ -968,9 +997,13 @@ proc p.rewire_foreach { gdb diagram_id start end parts callbacks } {
 	if { $tcurrent == "" } {
 		p.link $gdb $check_id 2 $first_loop
 	} else {
-		set current_id [ p.insert_vertex $gdb $diagram_id [ append_digits $item_id 0004 ] "action" $tcurrent "" 0 ]
+		set vid [ append_digits $item_id 0004 ]
+		set current_id [ p.insert_vertex $gdb $diagram_id $vid "action" $tcurrent "" 0 ]
 		p.link $gdb $check_id 2 $current_id
 		p.link $gdb $current_id 1 $first_loop
+		if { $loop } {
+			newfor::put $vid 1
+		}
 	}
 
 	
@@ -1155,7 +1188,7 @@ proc p.has_connections { gdb vertex_id } {
 
 proc p.check_links { gdb } {
 	$gdb eval { select src from links } {
-		puts "----->src is '$src'"
+
 		if { [ string trim $src ] == "" } {
 			error "links without src"
 		}
@@ -1401,7 +1434,7 @@ proc generate_function { gdb diagram_id callbacks nogoto to } {
 	set tree ""
 	
 	set body ""
-	
+	set has_iterators 0
 	if { $to } {
 		set body [ tree_nogoto $gdb $diagram_id $callbacks $name ]
 	} else {
@@ -1416,10 +1449,11 @@ proc generate_function { gdb diagram_id callbacks nogoto to } {
 			set node_list [ generate_nodes $gdb $diagram_id $commentator ]
 			lassign [ sort_items $node_list $start_item ] sorted incoming
 			set body [ $generate_body $gdb $diagram_id $start_item $node_list $sorted $incoming]
+			set has_iterators 1
 		}
 	}
 	
-	set declares [ p.get_declares $gdb $diagram_id ]
+	set declares [ p.get_declares $gdb $diagram_id $has_iterators ]
 	set body [ concat $declares $body ]
 
 	return [ list $diagram_id $name $real_sign $body ]
@@ -1682,10 +1716,28 @@ proc print_select { texts node callback depth } {
 	return $result
 }
 
+proc get_foreach_exit { node } {
+	set length [ llength $node ]
+	for { set i 1 } { $i < $length } { incr i } {
+		set current [ lindex $node $i ]
+
+		if { [ lindex $current 0 ] == "if" } {
+			set cond_item [ lindex $current 1 ]
+			set start_item_info [ newfor::get $cond_item ]
+
+			if { $start_item_info != "" } {
+				return $start_item_info
+			}
+		}
+	}
+	return ""
+}
+
 proc print_node { texts node callback depth } {
 	set line_end [ get_optional_callback $callback line_end ]
 	set commentator [ get_callback $callback comment ]
 	set break_str [ get_callback $callback break ]
+	set native_foreach [ get_optional_callback $callback native_foreach ]
 	#set continue_cb [ get_callback $callback continue ]
 	#set continue_str [ $continue_cb ]
 	
@@ -1703,21 +1755,27 @@ proc print_node { texts node callback depth } {
 	for { set i 1 } { $i < $length } { incr i } {
 		set current [ lindex $node $i ]
 		if { [ string is integer $current ] } {
+
+			set iteration [ newfor::get $current ]
+
 			set text [ get_text_lines $texts $current ]
-			set parts [ split $text "\n" ]
-			if { [ llength $parts ] != 0 } {
-				append_line_end result $i $line_end			
-				set comment [ $commentator "item $current" ]
-				lappend result $indent$comment
+			if { $iteration == "" } {
+				set parts [ split $text "\n" ]
+				if { [ llength $parts ] != 0 } {
+					append_line_end result $i $line_end			
+					set comment [ $commentator "item $current" ]
+					lappend result $indent$comment
+				}
+
+				foreach part $parts {
+					if { [ p.contains_return $part ] } {
+						set was_return 1
+					}
+					set line $indent$part
+					lappend result $line
+				}
 			}
 			set was_return 0
-			foreach part $parts {
-				if { [ p.contains_return $part ] } {
-					set was_return 1
-				}
-				set line $indent$part
-				lappend result $line
-			}
 		} elseif { $current == "break" } {
 			if { !$was_return } {
 				lappend result $indent$break_str
@@ -1730,26 +1788,36 @@ proc print_node { texts node callback depth } {
 			append_line_end result $i $line_end
 			
 			set cond_item [ lindex $current 1 ]
-			set cond_text [ get_text_lines $texts $cond_item ]
-			set comment [ $commentator "item $cond_item" ]
-			lappend result $indent$comment
+			set start_item_info [ newfor::get $cond_item ]
 
-			set cond [ condition_line $callback $cond_text ]
-			lappend result $indent$cond
-			
-			set then_node [ lindex $current 3 ]
-			set else_node [ lindex $current 2 ]
-			set then [ print_node $texts $then_node $callback $next_depth ]
-			set result [ concat $result $then ]
-			
-			lappend result "$indent[ $else_start ]"
-			set else [ print_node $texts $else_node $callback $next_depth ]
-			set result [ concat $result $else ]
-			$block_close result $depth
+			if { $start_item_info == "" } {
+				set cond_text [ get_text_lines $texts $cond_item ]
+				set comment [ $commentator "item $cond_item" ]
+				lappend result $indent$comment
 
+				set cond [ condition_line $callback $cond_text ]
+				lappend result $indent$cond
+			
+				set then_node [ lindex $current 3 ]
+				set else_node [ lindex $current 2 ]
+				set then [ print_node $texts $then_node $callback $next_depth ]
+				set result [ concat $result $then ]
+			
+				lappend result "$indent[ $else_start ]"
+				set else [ print_node $texts $else_node $callback $next_depth ]
+				set result [ concat $result $else ]
+				$block_close result $depth
+			}
 			set was_return 0
 		} elseif { [ lindex $current 0 ] == "loop" } {
-			lappend result "$indent[ $while_start ]"
+			set fexit [ get_foreach_exit $current ]
+			if { $fexit == "" } {
+				lappend result "$indent[ $while_start ]"
+			} else {
+				lassign [ lindex $fexit 1] for_it for_var
+				set foreach_header [ $native_foreach $for_it $for_var ]
+				lappend result "${indent}$foreach_header"
+			}
 			set body [ print_node $texts $current $callback $next_depth ]
 			set result [ concat $result $body ]
 			$block_close result $depth
@@ -1968,6 +2036,8 @@ proc p.keywords { } {
 		select_end
 		bad_case
 		select_gen_default
+		native_foreach
+		can_glue
 	}
 }
 

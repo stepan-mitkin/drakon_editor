@@ -153,7 +153,8 @@ proc p.create_db { } {
 		(
 			declare_id integer primary key,
 			diagram_id integer,
-			line text
+			line text,
+			loop integer
 		);
 		
 		create index declares_by_diagram on declares(diagram_id);

@@ -500,6 +500,7 @@ proc make_callbacks { } {
     gen::put_callback callbacks for_incr		gen_java::foreach_incr
     gen::put_callback callbacks for_declare		gen_java::foreach_declare
     gen::put_callback callbacks shelf		gen_java::shelf
+    gen::put_callback callbacks native_foreach gen_java::native_foreach
     #item 650
     return $callbacks
 }
@@ -525,6 +526,11 @@ proc method_of_access { procedure access } {
         #item 922
         return 0
     }
+}
+
+proc native_foreach { for_it for_var } {
+    #item 1098
+    return "for ($for_it : $for_var) \{"
 }
 
 proc p.and { left right } {

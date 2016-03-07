@@ -255,7 +255,7 @@ proc make_callbacks { } {
 				
 	gen::put_callback callbacks body			gen_d::generate_body
 	gen::put_callback callbacks signature		gen_d::extract_signature
-
+	gen::put_callback callbacks native_foreach	gen_d::native_foreach
 
 	return $callbacks
 }
@@ -326,6 +326,10 @@ proc bad_case { switch_var select_icon_number } {
     } else {	
 		return "throw new Exception\(\"Not expected $switch_var\"\);"
 	}
+}
+
+proc native_foreach { for_it for_var } {
+	return "foreach ($for_it; $for_var) \{"
 }
 
 # Declares the iterator and/or the iterated variable.

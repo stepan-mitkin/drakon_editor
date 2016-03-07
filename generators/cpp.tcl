@@ -1206,6 +1206,7 @@ proc extract_class_name { section } {
         } else {
             #item 955
             return ""
+            break
         }
         #item 9450004
         set line [ lindex $_col945 $_ind945 ]
@@ -1218,6 +1219,7 @@ proc extract_class_name { section } {
             if {($first == "class") || ($first == "struct")} {
                 #item 956
                 return [ string map { ":" "" } $second ]
+                break
             } else {
                 
             }
@@ -1243,6 +1245,7 @@ proc extract_copying { section } {
         } else {
             #item 885
             return 0
+            break
         }
         #item 8780004
         set line [ lindex $_col878 $_ind878 ]
@@ -2180,30 +2183,44 @@ proc is_state_machine { diagram_id gdb } {
 
 proc isolate_branch { gdb branches branch name } {
     set diagram_id -1
-    #item 1820
-    set first_branch [ lindex $branches 0 ]
-    #item 1821
-    set first_header [ get_value $first_branch header ]
-    #item 1822
-    set end ""
-    set visited {}
-    #item 2040
-    set my_header [ get_value $branch header ]
-    #item 1823
-    set stack {}
-    lappend stack $my_header
     
-    set _next_item_ 1824
+    set _next_item_ 1820
     while { 1 } {
-        if {$_next_item_ == 1824} {
+        if {$_next_item_ == 1820} {
+            set first_branch [ lindex $branches 0 ]
+            set _next_item_ 1821
+    
+        } elseif {$_next_item_ == 1821} {
+            set first_header [ get_value $first_branch header ]
+            set _next_item_ 1822
+    
+        } elseif {$_next_item_ == 1822} {
+            set end ""
+            set visited {}
+            set _next_item_ 2040
+    
+        } elseif {$_next_item_ == 2040} {
+            set my_header [ get_value $branch header ]
+            set _next_item_ 1823
+    
+        } elseif {$_next_item_ == 1823} {
+            set stack {}
+            lappend stack $my_header
+            set _next_item_ 1824
+    
+        } elseif {$_next_item_ == 1824} {
             set current [ lindex $stack end ]
             set stack [ lrange $stack 0 end-1 ]
-            #item 1834
+            set _next_item_ 1834
+    
+        } elseif {$_next_item_ == 1834} {
             set next_links [ $gdb eval {
             	select ordinal
             	from links
             	where src = :current } ]
-            #item 18350001
+            set _next_item_ 18350001
+    
+        } elseif {$_next_item_ == 18350001} {
             set _col1835 $next_links
             set _len1835 [ llength $_col1835 ]
             set _ind1835 0
@@ -2213,27 +2230,31 @@ proc isolate_branch { gdb branches branch name } {
             if {$_ind1835 < $_len1835} {
                 #item 18350004
                 set ordinal [ lindex $_col1835 $_ind1835 ]
-                #item 1840
-                set next [ gen::p.link_dst \
-                 $gdb $current $ordinal ]
-                set _next_item_ 1828
+                set _next_item_ 1840
             } else {
                 set _next_item_ 1825
             }
+    
+        } elseif {$_next_item_ == 1840} {
+            set next [ gen::p.link_dst \
+             $gdb $current $ordinal ]
+            set _next_item_ 1828
     
         } elseif {$_next_item_ == 1828} {
             if {$next == $first_header} {
                 #item 1832
                 set msg "Diagram $name: cannot jump to the first branch "
                 append msg "of state machine."
-                #item 1833
-                error $msg
-                set _next_item_ 1984
+                set _next_item_ 1833
             } else {
                 #item 1841
                 set type [ gen::p.vertex_type $gdb $next ]
                 set _next_item_ 18420001
             }
+    
+        } elseif {$_next_item_ == 1833} {
+            error $msg
+            set _next_item_ 1984
     
         } elseif {$_next_item_ == 18420001} {
             if {$type == "beginend"} {
@@ -2283,12 +2304,16 @@ proc isolate_branch { gdb branches branch name } {
             } else {
                 #item 1862
                 lappend visited $next
-                #item 1863
-                set_diagram $gdb $next $diagram_id
-                #item 1870
-                lappend stack $next
-                set _next_item_ 18350003
+                set _next_item_ 1863
             }
+    
+        } elseif {$_next_item_ == 1863} {
+            set_diagram $gdb $next $diagram_id
+            set _next_item_ 1870
+    
+        } elseif {$_next_item_ == 1870} {
+            lappend stack $next
+            set _next_item_ 18350003
     
         } elseif {$_next_item_ == 18350003} {
             incr _ind1835
@@ -2334,6 +2359,7 @@ proc make_callbacks { language } {
     gen::put_callback callbacks shelf		gen_c::shelf
     gen::put_callback callbacks change_state 	gen_cpp::change_state
     gen::put_callback callbacks fsm_merge   0
+    gen::put_callback callbacks can_glue 1
     #item 1199
     if {$language == "c"} {
         #item 1197
@@ -3027,28 +3053,30 @@ proc parse_g_line { header line } {
 proc parse_globals { section } {
     set all_lines [ split $section "\n" ]
     set lines {}
-    #item 24810001
-    set _col2481 $all_lines
-    set _len2481 [ llength $_col2481 ]
-    set _ind2481 0
     
-    set _next_item_ 24810002
+    set _next_item_ 24810001
     while { 1 } {
-        if {$_next_item_ == 24810002} {
+        if {$_next_item_ == 24810001} {
+            set _col2481 $all_lines
+            set _len2481 [ llength $_col2481 ]
+            set _ind2481 0
+            set _next_item_ 24810002
+    
+        } elseif {$_next_item_ == 24810002} {
             if {$_ind2481 < $_len2481} {
                 #item 24810004
                 set line [ lindex $_col2481 $_ind2481 ]
-                #item 2483
-                set trimmed [ string trim $line ]
-                set _next_item_ 2484
+                set _next_item_ 2483
             } else {
                 #item 2438
                 set i 0
                 set length [ llength $lines ]
-                #item 2447
-                set result {}
-                set _next_item_ 2440
+                set _next_item_ 2447
             }
+    
+        } elseif {$_next_item_ == 2483} {
+            set trimmed [ string trim $line ]
+            set _next_item_ 2484
     
         } elseif {$_next_item_ == 2484} {
             if {($trimmed == "") || ([string match "//*" $trimmed])} {
@@ -3062,6 +3090,10 @@ proc parse_globals { section } {
         } elseif {$_next_item_ == 24810003} {
             incr _ind2481
             set _next_item_ 24810002
+    
+        } elseif {$_next_item_ == 2447} {
+            set result {}
+            set _next_item_ 2440
     
         } elseif {$_next_item_ == 2440} {
             if {$i < $length} {
@@ -3975,6 +4007,7 @@ proc separate_globals { classes } {
             #item 2596
             return [ list \
              $global_fields $nclasses ]
+            break
         }
         #item 25820004
         set class [ lindex $_col2582 $_ind2582 ]

@@ -80,7 +80,6 @@ function alternative_select(value, expected)
 end
 
 function arrayToString(array)
-    local i
     -- item 267
     local result = ""
     local current
@@ -153,7 +152,6 @@ function descComparer(left, right)
 end
 
 function fibonacci(n)
-    local i
     -- item 185
     local result = {0}
     -- item 1610001
@@ -254,7 +252,6 @@ function printListBackward(collection)
 end
 
 function printListFor(collection)
-    local j
     -- item 348
     local i
     -- item 142
@@ -296,39 +293,17 @@ function printListFor(collection)
 end
 
 function printListForeach(collection)
-    local _iter115, _state115, item
-    local _iter333, _state333, key, value
     -- item 119
     print("using foreach:")
-    -- item 1150001
-    _iter115, _state115, item = pairs(collection) item = _iter115(_state115, item)
-    while true do
-        -- item 1150002
-        if item ~= nil then
-            
-        else
-            break
-        end
+    for item in pairs(collection) do
         -- item 116
         output(item)
-        -- item 1150003
-        item = _iter115(_state115, item)
     end
     -- item 118
     print("")
-    -- item 3330001
-    _iter333, _state333, key = pairs(collection) key, value = _iter333(_state333, key)
-    while true do
-        -- item 3330002
-        if key ~= nil then
-            
-        else
-            break
-        end
+    for key, value in pairs(collection) do
         -- item 334
         output("(" .. key .. ", " .. value .. ")")
-        -- item 3330003
-        key, value = _iter333(_state333, key)
     end
     -- item 336
     print("")
@@ -421,21 +396,20 @@ function quicksortDemo()
 end
 
 function stringsAreSorted(array)
+    local _iter71, _state71, i, current
     local _sw810000_ = 0
-    local current = nil
-    local i = 0
     local j = 0
     local length = #array
     local after
-    -- item 710001
-    i = 1
     local _next_item_ = 0
-    _next_item_ = 710002
+    _next_item_ = 710001
     while true do
-        if _next_item_ == 710002 then
-            if i <= length then
-                -- item 73
-                current = array[i]
+        if _next_item_ == 710001 then
+            _iter71, _state71, i = pairs(array) i, current = _iter71(_state71, i)
+            _next_item_ = 710002
+    
+        elseif _next_item_ == 710002 then
+            if i ~= nil then
                 -- item 740001
                 j = i + 1
                 _next_item_ = 740002
@@ -447,14 +421,16 @@ function stringsAreSorted(array)
             if j <= length then
                 -- item 76
                 after = array[j]
-                -- item 810000
-                _sw810000_ = descComparer(current, after)
-                _next_item_ = 810001
+                _next_item_ = 810000
             else
                 -- item 710003
-                i = i + 1
+                i, current = _iter71(_state71, i)
                 _next_item_ = 710002
             end
+    
+        elseif _next_item_ == 810000 then
+            _sw810000_ = descComparer(current, after)
+            _next_item_ = 810001
     
         elseif _next_item_ == 810001 then
             if _sw810000_ == 1 then
@@ -486,13 +462,17 @@ function stringsAreSorted(array)
             end
     
         elseif _next_item_ == 88 then
-            -- item 259
+            _next_item_ = 259
+    
+        elseif _next_item_ == 259 then
             print("current = " .. current)
             print("after = " .. after)
             print("collection = " .. arrayToString(array))
             print("result = " .. descComparer(current, after))
             print("...not sorted.")
-            -- item 77
+            _next_item_ = 77
+    
+        elseif _next_item_ == 77 then
             error("Collection is not sorted.")
             return
     

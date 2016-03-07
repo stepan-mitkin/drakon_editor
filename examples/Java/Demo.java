@@ -162,19 +162,7 @@ public class Demo {
     }
 
     private static void print(List<Object> collection) {
-        Iterator<Object> _it96 = null;
-        Object item = null;
-        // item 960001
-        _it96 = collection.iterator();
-        while (true) {
-            // item 960002
-            if (_it96.hasNext()) {
-                
-            } else {
-                break;
-            }
-            // item 960004
-            item = _it96.next();
+        for (Object item : collection) {
             // item 98
             write(item);
         }
@@ -230,21 +218,9 @@ public class Demo {
     }
 
     private static void printListForeach(List<Integer> collection) {
-        Iterator<Integer> _it115 = null;
-        Integer item = null;
         // item 119
         System.out.println("using foreach:");
-        // item 1150001
-        _it115 = collection.iterator();
-        while (true) {
-            // item 1150002
-            if (_it115.hasNext()) {
-                
-            } else {
-                break;
-            }
-            // item 1150004
-            item = _it115.next();
+        for (Integer item : collection) {
             // item 116
             write(item);
         }
@@ -286,49 +262,56 @@ public class Demo {
 
     private static void stringsAreSorted(List<Object> array) {
         String current = null;
-        int i, j = 0;
+        String after = null;
+        int i = 0, j = 0;
         int length = array.size();
         int cmpResult = 0;
-        // item 710001
-        i = 0;
         int _next_item_ = 0;
-        _next_item_ = 710002;
+        _next_item_ = 710001;
         while (true) {
-            if (_next_item_ == 710002) {
+            if (_next_item_ == 710001) {
+                i = 0;
+                _next_item_ = 710002;
+        
+            } else if (_next_item_ == 710002) {
                 if (i < length) {
                     // item 73
                     current = (String)array.get(i);
-                    // item 740001
-                    j = i + 1;
-                    _next_item_ = 740002;
+                    _next_item_ = 740001;
                 } else {
                     return;
                 }
         
+            } else if (_next_item_ == 740001) {
+                j = i + 1;
+                _next_item_ = 740002;
+        
             } else if (_next_item_ == 740002) {
                 if (j < length) {
                     // item 76
-                    String after = (String)array.get(j);
-                    // item 190
-                    cmpResult = current.compareTo(after);
-                    _next_item_ = 191;
+                    after = (String)array.get(j);
+                    _next_item_ = 190;
                 } else {
                     // item 710003
                     i += 1;
                     _next_item_ = 710002;
                 }
         
+            } else if (_next_item_ == 190) {
+                cmpResult = current.compareTo(after);
+                _next_item_ = 191;
+        
             } else if (_next_item_ == 191) {
                 if (cmpResult < 0) {
-                    _next_item_ = 88;
+                    // item 88
+                    _next_item_ = 77;
                 } else {
                     // item 740003
                     j += 1;
                     _next_item_ = 740002;
                 }
         
-            } else if (_next_item_ == 88) {
-                // item 77
+            } else if (_next_item_ == 77) {
                 throw new IllegalStateException("Collection is not sorted.");
         
             }

@@ -288,6 +288,7 @@ proc extract_body { comments } {
         } else {
             #item 1673
             return ""
+            break
         }
         #item 16670004
         set comment [ lindex $_col1667 $_ind1667 ]
@@ -303,6 +304,7 @@ proc extract_body { comments } {
             set new_text [ join $rest "\n        " ]
             #item 1675
             return $new_text
+            break
         } else {
             
         }
@@ -575,6 +577,7 @@ proc find_function { functions id } {
         if {$diagram_id == $id} {
             #item 1607
             return $function
+            break
         } else {
             
         }
@@ -595,6 +598,7 @@ proc find_function_by_name { functions name } {
         } else {
             #item 1653
             return {}
+            break
         }
         #item 16460004
         set function [ lindex $_col1646 $_ind1646 ]
@@ -604,6 +608,7 @@ proc find_function_by_name { functions name } {
         if {$fname == $name} {
             #item 1652
             return $function
+            break
         } else {
             
         }
@@ -1141,6 +1146,7 @@ proc make_callbacks { } {
     gen::put_callback callbacks shelf gen_cs::shelf
     gen::put_callback callbacks change_state gen_cs::change_state
     gen::put_callback callbacks fsm_merge   0
+    gen::put_callback callbacks native_foreach gen_cs::native_foreach
     #item 650
     return $callbacks
 }
@@ -1166,6 +1172,11 @@ proc method_of_access { procedure access } {
         #item 922
         return 0
     }
+}
+
+proc native_foreach { for_it for_var } {
+    #item 1814
+    return "foreach ($for_it in $for_var) \{"
 }
 
 proc p.print_proc { weak_signature fhandle procedure class_name depth } {

@@ -191,22 +191,10 @@ static void iterate_arrow2(const(int)[] numbers) {
 void run() {
     // item 51
     int[] numbers = fibonacci(N);
-    // item 490001
-    auto _rng_i = numbers[];
-    while (true) {
-        // item 490002
-        if (!_rng_i.empty) {
-            
-        } else {
-            break;
-        }
-        // item 490004
-        auto i = _rng_i.front;
+    foreach (i; numbers[]) {
         // item 48
         write(i);
         write(" ");
-        // item 490003
-        _rng_i.popFront();
     }
     // item 53
     writeln();
@@ -215,24 +203,18 @@ void run() {
     iterate_arrow2(numbers);
     // item 154
     alt_select_test();
-    // item 610001
-    auto _rng_i2 = numbers[];
-    while (true) {
-        // item 610002
-        if (!_rng_i2.empty) {
-            
-        } else {
-            break;
-        }
-        // item 610004
-        auto i2 = _rng_i2.front;
+    foreach (int i, int n; numbers) {
+        // item 159
+        writefln("%d:%d ", i, n);
+    }
+    // item 162
+    writeln();
+    foreach (i2; numbers) {
         // item 63
         int clamped = clamp(i2, 50, 400);
         // item 60
         write(clamped);
         write(" ");
-        // item 610003
-        _rng_i2.popFront();
     }
     // item 65
     writeln();

@@ -463,6 +463,7 @@ proc make_callbacks { version } {
     gen::put_callback callbacks declare		gen_py::p.declare
     gen::put_callback callbacks for_declare gen_py::foreach_declare
     gen::put_callback callbacks shelf gen_py::shelf
+    gen::put_callback callbacks native_foreach gen_py::native_foreach
     #item 6420001
     if {$version == 2} {
         #item 648
@@ -482,6 +483,11 @@ proc make_callbacks { version } {
     }
     #item 650
     return $callbacks
+}
+
+proc native_foreach { for_it for_var } {
+    #item 799
+    return "for $for_it in $for_var:"
 }
 
 proc p.and { left right } {

@@ -42,25 +42,21 @@ void Fibonacci(
     
     // item 783
     if (n >= 0) {
-        goto item_787;
     } else {
+        // item 784
+        printf("Fibonacci: n < 0: %d\n", n);
+        abort();
     }
     
-    // item 784
-    printf("Fibonacci: n < 0: %d\n", n);
-    abort();
-    
-    item_787 :
+    // item 787
     if (output == 0) {
+        // item 782
+        printf("Fibonacci: output is null.\n");
+        abort();
     } else {
-        goto item_791;
     }
     
-    // item 782
-    printf("Fibonacci: output is null.\n");
-    abort();
-    
-    item_791 :
+    // item 791
     output->clear();
     
     // item 4530001
@@ -139,11 +135,10 @@ void QuickSort(
     if (Compare(collection, begin, last, comparer) <= 0) {
         return;
     } else {
+        // item 611
+        collection->Swap(begin, last);
+        return;
     }
-    
-    // item 611
-    collection->Swap(begin, last);
-    return;
     
     item_6150002 :
     if (i < last) {
@@ -194,13 +189,12 @@ void UnexpectedBranch(
         _elements.resize(0);
         return;
     } else {
+        // item 732
+        delete *it;
+        // item 735
+        ++it;
+        goto item_730;
     }
-    
-    // item 732
-    delete *it;
-    // item 735
-    ++it;
-    goto item_730;
     
 }
 
@@ -209,15 +203,13 @@ void StringList::Add(
 ) {
     // item 741
     if (element == 0) {
+        // item 742
+        printf("StringList::Add: element is null\n");
+        abort();
     } else {
-        goto item_745;
     }
     
-    // item 742
-    printf("StringList::Add: element is null\n");
-    abort();
-    
-    item_745 :
+    // item 745
     _elements.push_back(element);
     return;
     
@@ -228,15 +220,13 @@ void StringList::AddFromCString(
 ) {
     // item 797
     if (text == 0) {
+        // item 798
+        printf("StringList::AddFromCString: text is null\n");
+        abort();
     } else {
-        goto item_801;
     }
     
-    // item 798
-    printf("StringList::AddFromCString: text is null\n");
-    abort();
-    
-    item_801 :
+    // item 801
     std::string* element = new std::string(text);
     Add(element);
     return;
@@ -254,15 +244,13 @@ std::string* StringList::Get(
 ) {
     // item 751
     if ((index >= 0) && (index < Count())) {
-        goto item_755;
     } else {
+        // item 752
+        printf("StringList::Get: index out of range: %d\n", index);
+        abort();
     }
     
-    // item 752
-    printf("StringList::Get: index out of range: %d\n", index);
-    abort();
-    
-    item_755 :
+    // item 755
     return _elements[index];
     
 }
@@ -273,25 +261,21 @@ void StringList::Swap(
 ) {
     // item 762
     if ((index1 >= 0) && (index1 < Count())) {
-        goto item_768;
     } else {
+        // item 763
+        printf("StringList::Swap: index1 out of range: %d\n", index1);
+        abort();
     }
     
-    // item 763
-    printf("StringList::Swap: index1 out of range: %d\n", index1);
-    abort();
-    
-    item_768 :
+    // item 768
     if ((index2 >= 0) && (index2 < Count())) {
-        goto item_773;
     } else {
+        // item 769
+        printf("StringList::Swap: index2 out of range: %d\n", index2);
+        abort();
     }
     
-    // item 769
-    printf("StringList::Swap: index2 out of range: %d\n", index2);
-    abort();
-    
-    item_773 :
+    // item 773
     if (index1 == index2) {
         return;
     } else {

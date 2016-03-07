@@ -301,34 +301,40 @@ proc string_comparer { left right } {
 
 proc strings_are_sorted { array } {
     set length [llength $array]
-    #item 2550001
-    set i 0
     
-    set _next_item_ 2550002
+    set _next_item_ 2550001
     while { 1 } {
-        if {$_next_item_ == 2550002} {
+        if {$_next_item_ == 2550001} {
+            set i 0
+            set _next_item_ 2550002
+    
+        } elseif {$_next_item_ == 2550002} {
             if {$i < $length} {
                 #item 257
                 set current [lindex $array $i]
-                #item 2580001
-                set j [expr { $i + 1 }]
-                set _next_item_ 2580002
+                set _next_item_ 2580001
             } else {
                 return {}
             }
+    
+        } elseif {$_next_item_ == 2580001} {
+            set j [expr { $i + 1 }]
+            set _next_item_ 2580002
     
         } elseif {$_next_item_ == 2580002} {
             if {$j < $length} {
                 #item 260
                 set after [lindex $array $j]
-                #item 2650000
-                set _sw2650000_ [string compare $current $after]
-                set _next_item_ 2650001
+                set _next_item_ 2650000
             } else {
                 #item 2550003
                 incr i
                 set _next_item_ 2550002
             }
+    
+        } elseif {$_next_item_ == 2650000} {
+            set _sw2650000_ [string compare $current $after]
+            set _next_item_ 2650001
     
         } elseif {$_next_item_ == 2650001} {
             if {$_sw2650000_ == -1} {
@@ -360,7 +366,9 @@ proc strings_are_sorted { array } {
             }
     
         } elseif {$_next_item_ == 274} {
-            #item 261
+            set _next_item_ 261
+    
+        } elseif {$_next_item_ == 261} {
             error "Collection is not sorted:\n$array"
             return {}
     

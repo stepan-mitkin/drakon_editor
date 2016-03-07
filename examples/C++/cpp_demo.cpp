@@ -55,13 +55,12 @@ static void Fill(
     if (*current == 0) {
         return;
     } else {
+        // item 558
+        output->AddFromCString(*current);
+        // item 560
+        current++;
+        goto item_559;
     }
-    
-    // item 558
-    output->AddFromCString(*current);
-    // item 560
-    current++;
-    goto item_559;
     
 }
 
@@ -129,17 +128,16 @@ static void PrintIntsArrow(
     
     item_480 :
     if (i < length) {
+        // item 478
+        cout << collection->at(i) << " ";
+        // item 482
+        i++;
+        goto item_480;
     } else {
         // item 485
         cout << endl;
         return;
     }
-    
-    // item 478
-    cout << collection->at(i) << " ";
-    // item 482
-    i++;
-    goto item_480;
     
 }
 
@@ -149,17 +147,16 @@ static void PrintIntsBackward(
 ) {
     item_522 :
     if (n >= 0) {
+        // item 724
+        cout << collection->at(n) << " ";
+        // item 524
+        n--;
+        goto item_522;
     } else {
         // item 528
         cout << endl;
         return;
     }
-    
-    // item 724
-    cout << collection->at(n) << " ";
-    // item 524
-    n--;
-    goto item_522;
     
 }
 
@@ -268,16 +265,15 @@ static void StringsAreSorted(
     
     // item 726
     if (*current > *after) {
+        // item 689
+        cout << "Collection is not sorted." << endl;
+        abort();
+        return;
     } else {
         // item 6860003
         j += 1;
         goto item_6860002;
     }
-    
-    // item 689
-    cout << "Collection is not sorted." << endl;
-    abort();
-    return;
     
 }
 

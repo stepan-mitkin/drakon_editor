@@ -164,27 +164,9 @@ def print_list_for(collection):
 def print_list_foreach(collection):
     #item 137
     print("using foreach:")
-    #item 1110001
-    _it111 = iter(collection)
-    try:
-        item = _it111.next()
-        _go111 = True
-    except StopIteration:
-        _go111 = False
-    while True:
-        #item 1110002
-        if _go111:
-            pass
-        else:
-            break
+    for item in collection:
         #item 112
         write(item)
-        #item 1110003
-        try:
-            item = _it111.next()
-            _go111 = True
-        except StopIteration:
-            _go111 = False
     #item 136
     print("")
 
@@ -238,32 +220,47 @@ def string_comparer(left, right):
 
 def strings_are_sorted(array):
     length = len(array)
-    #item 260001
-    i = 0
     
-    _next_item_ = 260002
+    _next_item_ = 260001
     while True:
-        if _next_item_ == 260002:
-            if i < length:
+        if _next_item_ == 260001:
+            _it26 = iter(range(0, length))
+            try:
+                i = _it26.next()
+                _go26 = True
+            except StopIteration:
+                _go26 = False
+            _next_item_ = 260002
+    
+        elif _next_item_ == 260002:
+            if _go26:
                 #item 28
                 current = array[i]
-                #item 290001
-                j = i + 1
-                _next_item_ = 290002
+                _next_item_ = 290001
             else:
                 return None
+    
+        elif _next_item_ == 290001:
+            j = i + 1
+            _next_item_ = 290002
     
         elif _next_item_ == 290002:
             if j < length:
                 #item 31
                 after = array[j]
-                #item 360000
-                _sw360000_ = string_comparer(current, after)
-                _next_item_ = 360001
+                _next_item_ = 360000
             else:
                 #item 260003
-                i += 1
+                try:
+                    i = _it26.next()
+                    _go26 = True
+                except StopIteration:
+                    _go26 = False
                 _next_item_ = 260002
+    
+        elif _next_item_ == 360000:
+            _sw360000_ = string_comparer(current, after)
+            _next_item_ = 360001
     
         elif _next_item_ == 360001:
             if _sw360000_ == -1:
@@ -292,7 +289,9 @@ def strings_are_sorted(array):
                 _next_item_ = 45
     
         elif _next_item_ == 45:
-            #item 32
+            _next_item_ = 32
+    
+        elif _next_item_ == 32:
             raise Exception( "Collection is not sorted:\n" + str(array))
             return None
     

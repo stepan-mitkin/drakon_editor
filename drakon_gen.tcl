@@ -34,6 +34,7 @@ source [ file join $script_path scripts/search.tcl ]
 source [ file join $script_path scripts/colors.tcl ]
 source [ file join $script_path scripts/graph2.tcl ]
 source [ file join $script_path scripts/icon.links.tcl ]
+source [ file join $script_path scripts/newfor.tcl ]
 
 source [ file join $script_path generators/c.tcl ]
 source [ file join $script_path generators/cpp.tcl ]
