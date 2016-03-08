@@ -2,6 +2,8 @@
 
 namespace eval gen_c {
 
+variable exit_jump 0
+
 variable keywords {
 auto
 break
@@ -115,11 +117,16 @@ proc generate_body { gdb diagram_id start_item node_list items incoming } {
 }
 
 proc generate_body_goto { gdb diagram_id start_item node_list items incoming callbacks } {
+    #item 682
+    variable exit_jump
+    set exit_jump 0
     #item 623
     set tagger [ gen::get_callback \
     	$callbacks tag ]
     set comment [ gen::get_callback \
     	$callbacks comment ]
+    set exit_door [ gen::get_optional_callback \
+    	$callbacks exit_door ]
     #item 275
     set result {}
     set count [ llength $items ]
@@ -212,6 +219,13 @@ proc generate_body_goto { gdb diagram_id start_item node_list items incoming cal
                 break
             }
         }
+    }
+    #item 693
+    if {$exit_jump} {
+        #item 692
+        gen::add_line result $exit_door $base 0
+    } else {
+        
     }
     #item 280
     return $result
@@ -333,6 +347,8 @@ proc p.generate_if { output links text b base next_item_id items i callbacks } {
 }
 
 proc p.jump { output item_id base depth next_item_id has_text items i callbacks } {
+    #item 687
+    variable exit_jump
     #item 360
     upvar 1 $output result
     #item 661
@@ -340,13 +356,23 @@ proc p.jump { output item_id base depth next_item_id has_text items i callbacks 
     set return_none [ gen::get_callback $callbacks return_none ]
     #item 662
     set returns [ $return_none ]
-    #item 368
-    set next_ordinal [ lsearch $items $item_id ]
     #item 3490001
     if {$item_id == "last_item"} {
-        #item 357
-        gen::add_line result \
-        $returns $base $depth
+        #item 683
+        set last [ llength $items ]
+        incr last -1
+        #item 684
+        if {$i == $last} {
+            
+        } else {
+            #item 688
+            set exit_jump 1
+            #item 690
+            set label [ label_name $item_id ]
+            set g_op [ $goto "exit_door" ]
+            #item 691
+            gen::add_line result $g_op $base $depth
+        }
     } else {
         #item 3490002
         if {($item_id == $next_item_id) || ($item_id == "has_return")} {

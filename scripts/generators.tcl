@@ -2133,6 +2133,7 @@ proc p.keywords { } {
 		select_gen_default
 		native_foreach
 		can_glue
+		exit_door
 	}
 }
 

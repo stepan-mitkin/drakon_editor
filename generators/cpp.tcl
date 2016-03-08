@@ -1902,6 +1902,7 @@ proc make_callbacks { language } {
     gen::put_callback callbacks change_state 	gen_cpp::change_state
     gen::put_callback callbacks fsm_merge   0
     gen::put_callback callbacks can_glue 1
+    gen::put_callback callbacks exit_door "exit_door:;"
     #item 1199
     if {$language == "c"} {
         #item 1197

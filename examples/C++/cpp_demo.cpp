@@ -53,7 +53,6 @@ static void Fill(
     
     item_559 :
     if (*current == 0) {
-        return;
     } else {
         // item 558
         output->AddFromCString(*current);
@@ -79,7 +78,6 @@ static void IterationDemo() {
     PrintIntsFor(&sequence);
     // item 506
     cout << endl;
-    return;
     
 }
 
@@ -102,7 +100,6 @@ static void Print(
     } else {
         // item 575
         cout << endl;
-        return;
     }
     
 }
@@ -111,7 +108,6 @@ static void PrintHello() {
     // item 722
     cout << "DRAKON-C++ demo" << endl;
     cout << "===============" << endl;
-    return;
     
 }
 
@@ -136,7 +132,6 @@ static void PrintIntsArrow(
     } else {
         // item 485
         cout << endl;
-        return;
     }
     
 }
@@ -155,7 +150,6 @@ static void PrintIntsBackward(
     } else {
         // item 528
         cout << endl;
-        return;
     }
     
 }
@@ -182,7 +176,6 @@ static void PrintIntsFor(
     } else {
         // item 501
         cout << endl;
-        return;
     }
     
 }
@@ -228,7 +221,6 @@ static void QuickSortDemo() {
     StringsAreSorted(&reverse);
     StringsAreSorted(&empty);
     StringsAreSorted(&flat);
-    return;
     
 }
 
@@ -250,7 +242,7 @@ static void StringsAreSorted(
         // item 6860001
         j = i + 1;
     } else {
-        return;
+        goto exit_door;
     }
     
     item_6860002 :
@@ -268,13 +260,13 @@ static void StringsAreSorted(
         // item 689
         cout << "Collection is not sorted." << endl;
         abort();
-        return;
     } else {
         // item 6860003
         j += 1;
         goto item_6860002;
     }
     
+    exit_door:;
 }
 
 int main(

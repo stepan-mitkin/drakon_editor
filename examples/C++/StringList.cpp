@@ -63,7 +63,7 @@ void Fibonacci(
     if (n == 0) {
         // item 457
         output->push_back(0);
-        return;
+        goto exit_door;
     } else {
     }
     
@@ -72,7 +72,7 @@ void Fibonacci(
         // item 471
         output->push_back(0);
         output->push_back(1);
-        return;
+        goto exit_door;
     } else {
         // item 790
         output->push_back(0);
@@ -93,9 +93,9 @@ void Fibonacci(
         i += 1;
         goto item_4630002;
     } else {
-        return;
     }
     
+    exit_door:;
 }
 
 void QuickSort(
@@ -114,7 +114,7 @@ void QuickSort(
     
     // item 5930001
     if ((length == 0) || (length == 1)) {
-        return;
+        goto exit_door;
     } else {
     }
     
@@ -133,11 +133,11 @@ void QuickSort(
     
     // item 610
     if (Compare(collection, begin, last, comparer) <= 0) {
-        return;
+        goto exit_door;
     } else {
         // item 611
         collection->Swap(begin, last);
-        return;
+        goto exit_door;
     }
     
     item_6150002 :
@@ -149,7 +149,7 @@ void QuickSort(
         QuickSort(collection, begin, storeIndex, comparer);
         // item 657
         QuickSort(collection, storeIndex + 1, end, comparer);
-        return;
+        goto exit_door;
     }
     
     // item 651
@@ -164,6 +164,7 @@ void QuickSort(
     i++;
     goto item_6150002;
     
+    exit_door:;
 }
 
 void UnexpectedBranch(
@@ -172,7 +173,6 @@ void UnexpectedBranch(
     // item 710
     printf("An unexpected value in the 'select' ('switch') construct: %d\n", switchValue);
     abort();
-    return;
     
 }
 
@@ -187,7 +187,6 @@ void UnexpectedBranch(
     if (it == _elements.end()) {
         // item 734
         _elements.resize(0);
-        return;
     } else {
         // item 732
         delete *it;
@@ -211,7 +210,6 @@ void StringList::Add(
     
     // item 745
     _elements.push_back(element);
-    return;
     
 }
 
@@ -229,7 +227,6 @@ void StringList::AddFromCString(
     // item 801
     std::string* element = new std::string(text);
     Add(element);
-    return;
     
 }
 
@@ -277,13 +274,11 @@ void StringList::Swap(
     
     // item 773
     if (index1 == index2) {
-        return;
     } else {
         // item 766
         std::string* old1 = _elements[index1];
         _elements[index1] = _elements[index2];
         _elements[index2] = old1;
-        return;
     }
     
 }

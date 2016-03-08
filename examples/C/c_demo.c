@@ -121,7 +121,6 @@ static void Fill(
     
     item_559 :
     if (*current == 0) {
-        return;
     } else {
         /* item 558 */
         Put(output, i, *current);
@@ -151,7 +150,6 @@ static void IterationDemo(void) {
     printf("\n");
     /* item 508 */
     IntArray_Delete(sequence);
-    return;
     
 }
 
@@ -176,7 +174,6 @@ static void Print(
     } else {
         /* item 575 */
         printf("\n");
-        return;
     }
     
 }
@@ -185,7 +182,6 @@ static void PrintHello(void) {
     // item 722
     printf("DRAKON-C demo\n");
     printf("=============\n");
-    return;
     
 }
 
@@ -211,7 +207,6 @@ static void PrintIntsArrow(
     } else {
         /* item 485 */
         printf("\n");
-        return;
     }
     
 }
@@ -230,7 +225,6 @@ static void PrintIntsBackward(
     } else {
         /* item 528 */
         printf("\n");
-        return;
     }
     
 }
@@ -258,7 +252,6 @@ static void PrintIntsFor(
     } else {
         /* item 501 */
         printf("\n");
-        return;
     }
     
 }
@@ -274,7 +267,6 @@ static void Put(
     /* item 536 */
     item = String_FromCString(text);
     ObjectArray_Put(array, index, item);
-    return;
     
 }
 
@@ -330,7 +322,6 @@ static void QuickSortDemo(void) {
     ObjectArray_Delete(reverse);
     ObjectArray_Delete(empty);
     ObjectArray_Delete(flat);
-    return;
     
 }
 
@@ -342,7 +333,6 @@ static void SortStrings(
     int length = ObjectArray_Count(strings);
     /* item 676 */
     QuickSort(strings, 0, length, comparer);
-    return;
     
 }
 
@@ -365,7 +355,7 @@ static void StringsAreSorted(
         /* item 6860001 */
         j = i + 1;
     } else {
-        return;
+        goto exit_door;
     }
     
     item_6860002 :
@@ -409,8 +399,8 @@ static void StringsAreSorted(
     /* item 689 */
     printf("Collection is not sorted.\n");
     abort();
-    return;
     
+    exit_door:;
 }
 
 static void Swap(
@@ -420,7 +410,6 @@ static void Swap(
 ) {
     // item 658
     if (firstIndex == secondIndex) {
-        return;
     } else {
         /* item 641 */
         void* first = ObjectArray_Get(collection, firstIndex);
@@ -428,7 +417,6 @@ static void Swap(
         /* item 642 */
         ObjectArray_Put(collection, firstIndex, second);
         ObjectArray_Put(collection, secondIndex, first);
-        return;
     }
     
 }
@@ -438,7 +426,6 @@ static void alt_select_test(void) {
     alternative_select(-100, -1);
     alternative_select(100, 1);
     alternative_select(0, 0);
-    return;
     
 }
 
@@ -503,13 +490,11 @@ static void alternative_select(
     
     item_769 :
     if (actual == expected) {
-        return;
     } else {
         /* item 771 */
         printf("alt select failure!\n");
         /* item 775 */
         abort();
-        return;
     }
     
 }
@@ -622,12 +607,10 @@ void IntArray_Delete(
 ) {
     // item 298
     if (object == 0) {
-        return;
     } else {
         /* item 301 */
         Memory_Free(object->Buffer);
         Memory_Free(object);
-        return;
     }
     
 }
@@ -680,7 +663,6 @@ void IntArray_Put(
     
     // item 330
     object->Buffer[index] = value;
-    return;
     
 }
 
@@ -733,11 +715,9 @@ void Memory_Free(
 ) {
     // item 367
     if (buffer == 0) {
-        return;
     } else {
         /* item 366 */
         free(buffer);
-        return;
     }
     
 }
@@ -802,7 +782,7 @@ void ObjectArray_Delete(
     
     // item 393
     if (object == 0) {
-        return;
+        goto exit_door;
     } else {
     }
     
@@ -827,8 +807,8 @@ void ObjectArray_Delete(
     item_396 :
     Memory_Free(object->Buffer);
     Memory_Free(object);
-    return;
     
+    exit_door:;
 }
 
 void* ObjectArray_Get(
@@ -879,7 +859,6 @@ void ObjectArray_Put(
     
     // item 425
     object->Buffer[index] = value;
-    return;
     
 }
 
@@ -899,7 +878,7 @@ void QuickSort(
     
     // item 5930001
     if ((length == 0) || (length == 1)) {
-        return;
+        goto exit_door;
     } else {
     }
     
@@ -918,11 +897,11 @@ void QuickSort(
     
     // item 610
     if (Compare(collection, begin, last, comparer) <= 0) {
-        return;
+        goto exit_door;
     } else {
         /* item 611 */
         Swap(collection, begin, last);
-        return;
+        goto exit_door;
     }
     
     item_6150002 :
@@ -934,7 +913,7 @@ void QuickSort(
         QuickSort(collection, begin, storeIndex, comparer);
         /* item 657 */
         QuickSort(collection, storeIndex + 1, end, comparer);
-        return;
+        goto exit_door;
     }
     
     // item 651
@@ -949,6 +928,7 @@ void QuickSort(
     i++;
     goto item_6150002;
     
+    exit_door:;
 }
 
 int String_Compare(
@@ -1042,12 +1022,10 @@ void String_Delete(
 ) {
     // item 220
     if (object == 0) {
-        return;
     } else {
         /* item 223 */
         Memory_Free(object->Buffer);
         Memory_Free(object);
-        return;
     }
     
 }
@@ -1105,7 +1083,6 @@ void UnexpectedBranch(
     // item 710
     printf("An unexpected value in the 'select' ('switch') construct: %d\n", switchValue);
     abort();
-    return;
     
 }
 
