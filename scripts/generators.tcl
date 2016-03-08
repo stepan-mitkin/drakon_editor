@@ -1171,9 +1171,10 @@ proc extract_return_type { line } {
 proc p.contains_return { text } {
 	set lines [ split $text "\n" ]
 	foreach line $lines {
-		if { [ string match "return *" $line ] } { return 1 }
-		if { [ string match "throw *" $line ] } { return 1 }
-		if { $line == "throw;" } { return 1 }
+		set line2 [ string trim $line ]
+		if { [ string match "return *" $line2 ] } { return 1 }
+		if { [ string match "throw *" $line2 ] } { return 1 }
+		if { $line2 == "throw;" } { return 1 }
 	}
 	return 0
 }
@@ -1716,24 +1717,98 @@ proc print_select { texts node callback depth } {
 	return $result
 }
 
-proc get_foreach_exit { node } {
-	set length [ llength $node ]
-	for { set i 1 } { $i < $length } { incr i } {
-		set current [ lindex $node $i ]
 
+proc seq_has_return { texts node } {
+	foreach current $node {
+		if { [ string is integer $current ] } {
+			set text [ get_text_lines $texts $current ]
+			if { [ p.contains_return $text ] } {
+				return 1
+			}
+		}
+	}
+	return 0
+}
+
+proc seq_has_break { texts node } {
+	if { ![ contains $node "break" ] } {
+		return 0
+	}
+
+	set rest [ lrange $node 1 end]
+	foreach current $rest {
+		if { [ string is integer $current ] } {
+			set text [ get_text_lines $texts $current ]
+			if { [ p.contains_return $text ] } {
+				return 0
+			}
+		}
+	}
+	return 1
+}
+
+proc has_break { texts node } {
+	set first [ lindex $node 2 ]
+	set second [ lindex $node 3 ]
+	if { [ seq_has_break $texts $first  ] } {
+		return 1
+	}
+	if { [ seq_has_break $texts $second ] } {
+		return 1
+	}
+	return 0
+} 
+
+proc scan_foreach_exits { texts node } {
+	set native 0
+	set early 0
+	set meaningful "seq"
+	set rest [ lrange $node 1 end]
+	set start_info ""
+	foreach current $rest {
 		if { [ lindex $current 0 ] == "if" } {
 			set cond_item [ lindex $current 1 ]
 			set start_item_info [ newfor::get $cond_item ]
 
 			if { $start_item_info != "" } {
-				return $start_item_info
+				set start_info $start_item_info
+				set native 1
+				set exit_branch [ lindex $current 2 ]
+				set meaningful [ lrange $exit_branch 0 end-1 ]
+			} else {
+				if { [ has_break $texts $current ] } {
+					set early 1
+				}
 			}
 		}
 	}
-	return ""
+	return [ list $native $early $meaningful $start_info ]
 }
 
+proc add_block { texts node callback depth early early_var result_name } {
+	upvar 1 $result_name result
+	set compare [ get_callback $callback compare ]
+
+	set block_close [ get_callback $callback block_close ]
+	set indent [ make_indent $depth ]
+	if {$early} {
+		set cond_text [ $compare $early_var 1 ]
+		set cond [ condition_line $callback $cond_text]
+		lappend result $indent$cond		
+		set d2 [ expr { $depth + 1 } ]
+		set chunk [print_node $texts $node $callback $d2]
+		set result [ concat $result $chunk ]
+		$block_close result $depth		
+	} else {
+		set chunk [print_node $texts $node $callback $depth]
+		set result [ concat $result $chunk ]
+	}
+}
 proc print_node { texts node callback depth } {
+	return [ print_node_core $texts $node $callback $depth "" ]
+}
+
+proc print_node_core { texts node callback depth break_var } {
 	set line_end [ get_optional_callback $callback line_end ]
 	set commentator [ get_callback $callback comment ]
 	set break_str [ get_callback $callback break ]
@@ -1745,6 +1820,10 @@ proc print_node { texts node callback depth } {
 	set while_start [ get_callback $callback while_start ]
 	set else_start [ get_callback $callback else_start ]
 	set pass [ get_callback $callback pass ]
+
+	set assign [ get_callback $callback assign ]
+	set compare [ get_callback $callback compare ]
+	set declare [ get_callback $callback declare ]
 	
 	set length [ llength $node ]
 	set result {}
@@ -1759,6 +1838,7 @@ proc print_node { texts node callback depth } {
 			set iteration [ newfor::get $current ]
 
 			set text [ get_text_lines $texts $current ]
+			set was_return 0
 			if { $iteration == "" } {
 				set parts [ split $text "\n" ]
 				if { [ llength $parts ] != 0 } {
@@ -1775,9 +1855,11 @@ proc print_node { texts node callback depth } {
 					lappend result $line
 				}
 			}
-			set was_return 0
 		} elseif { $current == "break" } {
 			if { !$was_return } {
+				if { $break_var != "" } {
+					lappend result "${indent}[$assign $break_var 0]"
+				}
 				lappend result $indent$break_str
 			}
 			set was_return 0
@@ -1800,27 +1882,40 @@ proc print_node { texts node callback depth } {
 			
 				set then_node [ lindex $current 3 ]
 				set else_node [ lindex $current 2 ]
-				set then [ print_node $texts $then_node $callback $next_depth ]
+				set then [ print_node_core $texts $then_node $callback $next_depth $break_var ]
 				set result [ concat $result $then ]
 			
 				lappend result "$indent[ $else_start ]"
-				set else [ print_node $texts $else_node $callback $next_depth ]
+				set else [ print_node_core $texts $else_node $callback $next_depth $break_var ]
 				set result [ concat $result $else ]
 				$block_close result $depth
 			}
 			set was_return 0
 		} elseif { [ lindex $current 0 ] == "loop" } {
-			set fexit [ get_foreach_exit $current ]
-			if { $fexit == "" } {
-				lappend result "$indent[ $while_start ]"
-			} else {
+			lassign [scan_foreach_exits $texts $current] native early meaningful fexit
+			set loop_item [ lindex $fexit 0 ]
+			set early_var ""
+			if { $native } {
+				if { $early && $meaningful != "seq" } {
+					set early_var "normal_$loop_item"
+					set decl [ $declare "int" $early_var "" ]
+					lappend result "${indent}$decl"
+					lappend result "${indent}[$assign $early_var 1]"
+				} else {
+					set early_var ""
+				}
 				lassign [ lindex $fexit 1] for_it for_var
 				set foreach_header [ $native_foreach $for_it $for_var ]
 				lappend result "${indent}$foreach_header"
+			} else {
+				lappend result "$indent[ $while_start ]"
 			}
-			set body [ print_node $texts $current $callback $next_depth ]
+			set body [ print_node_core $texts $current $callback $next_depth $early_var ]
 			set result [ concat $result $body ]
 			$block_close result $depth
+			if { $native && $meaningful != "seq" } {
+				add_block $texts $meaningful $callback $depth $early $early_var result
+			}
 			set was_return 0
 		} elseif { [ lindex $current 0 ] == "sel" } {
 			append_line_end result $i $line_end		

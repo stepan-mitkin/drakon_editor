@@ -188,19 +188,7 @@ proc build_machine { gdb diagram_id callbacks } {
             set state_names {}
             #item 755
             set boiler {}
-            #item 3540001
-            set _col354 $state_headers
-            set _len354 [ llength $_col354 ]
-            set _ind354 0
-            while { 1 } {
-                #item 3540002
-                if {$_ind354 < $_len354} {
-                    
-                } else {
-                    break
-                }
-                #item 3540004
-                set header [ lindex $_col354 $_ind354 ]
+            foreach header $state_headers {
                 #item 754
                 lassign \
                 [create_sub_diagrams $gdb $diagram_id $header $message_types \
@@ -210,8 +198,6 @@ proc build_machine { gdb diagram_id callbacks } {
                 lappend boiler $state \
                  [ list "good" $good "bad" $bad ]
                 lappend state_names $state
-                #item 3540003
-                incr _ind354
             }
             #item 882
             set last_header [ lindex $headers end ]
@@ -348,19 +334,7 @@ proc copy_vertexes { gdb new_diagram vertex_id last end callbacks prev_new } {
             #item 553
             set next [ find_next $gdb $vertex_id ]
             set i 1
-            #item 5540001
-            set _col554 $next
-            set _len554 [ llength $_col554 ]
-            set _ind554 0
-            while { 1 } {
-                #item 5540002
-                if {$_ind554 < $_len554} {
-                    
-                } else {
-                    break
-                }
-                #item 5540004
-                set next_vertex [ lindex $_col554 $_ind554 ]
+            foreach next_vertex $next {
                 #item 558
                 set new_next \
                 [copy_vertexes $gdb $new_diagram $next_vertex \
@@ -369,8 +343,6 @@ proc copy_vertexes { gdb new_diagram vertex_id last end callbacks prev_new } {
                 connect $gdb $new_vertex $new_next $i
                 #item 556
                 incr i
-                #item 5540003
-                incr _ind554
             }
         }
     }
@@ -389,19 +361,7 @@ proc create_sub_diagrams { gdb diagram_id header message_types parameters last_b
     set has_default [ contains $types "" ]
     #item 494
     set redirected {}
-    #item 4870001
-    set _col487 $message_types
-    set _len487 [ llength $_col487 ]
-    set _ind487 0
-    while { 1 } {
-        #item 4870002
-        if {$_ind487 < $_len487} {
-            
-        } else {
-            break
-        }
-        #item 4870004
-        set common_type [ lindex $_col487 $_ind487 ]
+    foreach common_type $message_types {
         #item 490
         if {[contains $types $common_type]} {
             
@@ -409,32 +369,16 @@ proc create_sub_diagrams { gdb diagram_id header message_types parameters last_b
             #item 495
             lappend redirected $common_type
         }
-        #item 4870003
-        incr _ind487
     }
     #item 526
     set next [ find_next $gdb $select ]
     set i 0
-    #item 4990001
-    set _col499 $next
-    set _len499 [ llength $_col499 ]
-    set _ind499 0
-    while { 1 } {
-        #item 4990002
-        if {$_ind499 < $_len499} {
-            
-        } else {
-            break
-        }
-        #item 4990004
-        set case [ lindex $_col499 $_ind499 ]
+    foreach case $next {
         #item 502
         build_sub_diagram $gdb $diagram_id $state $case \
          $parameters $last_branch $callbacks $i
         #item 845
         incr i
-        #item 4990003
-        incr _ind499
     }
     #item 503
     if {$redirected == {}} {
@@ -497,21 +441,7 @@ proc extract_machine { gdb callbacks } {
     #item 132
     set diagrams [ $gdb eval {
     	select diagram_id from diagrams } ]
-    #item 1330001
-    set _col133 $diagrams
-    set _len133 [ llength $_col133 ]
-    set _ind133 0
-    while { 1 } {
-        #item 1330002
-        if {$_ind133 < $_len133} {
-            
-        } else {
-            #item 138
-            return {}
-            break
-        }
-        #item 1330004
-        set diagram_id [ lindex $_col133 $_ind133 ]
+    foreach diagram_id $diagrams {
         #item 135
         if {[graph::is_machine $diagram_id]} {
             #item 148
@@ -520,13 +450,12 @@ proc extract_machine { gdb callbacks } {
             delete_diagram $gdb $diagram_id
             #item 139
             return $info
-            break
         } else {
             
         }
-        #item 1330003
-        incr _ind133
     }
+    #item 138
+    return {}
 }
 
 proc extract_many_machines { gdb callbacks } {
@@ -535,19 +464,7 @@ proc extract_many_machines { gdb callbacks } {
     #item 857
     set diagrams [ $gdb eval {
     	select diagram_id from diagrams } ]
-    #item 8580001
-    set _col858 $diagrams
-    set _len858 [ llength $_col858 ]
-    set _ind858 0
-    while { 1 } {
-        #item 8580002
-        if {$_ind858 < $_len858} {
-            
-        } else {
-            break
-        }
-        #item 8580004
-        set diagram_id [ lindex $_col858 $_ind858 ]
+    foreach diagram_id $diagrams {
         #item 860
         if {[graph::is_machine $diagram_id]} {
             #item 866
@@ -559,8 +476,6 @@ proc extract_many_machines { gdb callbacks } {
         } else {
             
         }
-        #item 8580003
-        incr _ind858
     }
     #item 868
     return $result
@@ -584,19 +499,7 @@ proc find_end { gdb diagram_id } {
 proc find_message_types { gdb headers } {
     #item 465
     set all_types {}
-    #item 4620001
-    set _col462 $headers
-    set _len462 [ llength $_col462 ]
-    set _ind462 0
-    while { 1 } {
-        #item 4620002
-        if {$_ind462 < $_len462} {
-            
-        } else {
-            break
-        }
-        #item 4620004
-        set header [ lindex $_col462 $_ind462 ]
+    foreach header $headers {
         #item 467
         set select [ gen::p.get_next $gdb $header 1 ]
         #item 464
@@ -605,8 +508,6 @@ proc find_message_types { gdb headers } {
         set wo_default [ filter2 $types not_empty ]
         #item 466
         set all_types [ concat $all_types $wo_default ]
-        #item 4620003
-        incr _ind462
     }
     #item 468
     set result [ lsort -unique $all_types ]
@@ -677,26 +578,12 @@ proc get_new_vertex_id { vertex_id } {
 proc get_param_names { parameters } {
     #item 772
     set result {}
-    #item 7740001
-    set _col774 $parameters
-    set _len774 [ llength $_col774 ]
-    set _ind774 0
-    while { 1 } {
-        #item 7740002
-        if {$_ind774 < $_len774} {
-            
-        } else {
-            break
-        }
-        #item 7740004
-        set par [ lindex $_col774 $_ind774 ]
+    foreach par $parameters {
         #item 776
         set parts [ split $par " \t" ]
         set last [ lindex $parts end ]
         #item 777
         lappend result $last
-        #item 7740003
-        incr _ind774
     }
     #item 773
     return $result
@@ -722,19 +609,7 @@ proc get_params_text { gdb diagram_id } {
             set lines [ split $text "\n" ]
             #item 330
             set result {}
-            #item 3280001
-            set _col328 $lines
-            set _len328 [ llength $_col328 ]
-            set _ind328 0
-            while { 1 } {
-                #item 3280002
-                if {$_ind328 < $_len328} {
-                    
-                } else {
-                    break
-                }
-                #item 3280004
-                set line [ lindex $_col328 $_ind328 ]
+            foreach line $lines {
                 #item 334
                 set trimmed [ string trim $line ]
                 #item 335
@@ -744,8 +619,6 @@ proc get_params_text { gdb diagram_id } {
                     #item 340
                     lappend result $trimmed
                 }
-                #item 3280003
-                incr _ind328
             }
             #item 332
             return $result
@@ -769,19 +642,7 @@ proc get_receives { gdb diagram_id } {
     	where diagram_id = :diagram_id } ]
     #item 254
     set result {}
-    #item 2560001
-    set _col256 $vertexes
-    set _len256 [ llength $_col256 ]
-    set _ind256 0
-    while { 1 } {
-        #item 2560002
-        if {$_ind256 < $_len256} {
-            
-        } else {
-            break
-        }
-        #item 2560004
-        set vertex_id [ lindex $_col256 $_ind256 ]
+    foreach vertex_id $vertexes {
         #item 258
         if {[is_receive $gdb $vertex_id]} {
             #item 261
@@ -789,8 +650,6 @@ proc get_receives { gdb diagram_id } {
         } else {
             
         }
-        #item 2560003
-        incr _ind256
     }
     #item 255
     return $result
@@ -936,25 +795,11 @@ proc message_types_for_select { gdb select } {
     set next [ find_next $gdb $select ]
     #item 409
     set result {}
-    #item 4110001
-    set _col411 $next
-    set _len411 [ llength $_col411 ]
-    set _ind411 0
-    while { 1 } {
-        #item 4110002
-        if {$_ind411 < $_len411} {
-            
-        } else {
-            break
-        }
-        #item 4110004
-        set case [ lindex $_col411 $_ind411 ]
+    foreach case $next {
         #item 413
         set text [ get_text $gdb $case ]
         #item 417
         lappend result $text
-        #item 4110003
-        incr _ind411
     }
     #item 410
     return $result
@@ -1018,43 +863,15 @@ proc print_vertex { gdb vertex_id } {
         set next [ find_next $gdb $vertex_id ]
         #item 733
         puts "  $next"
-        #item 7390001
-        set _col739 $next
-        set _len739 [ llength $_col739 ]
-        set _ind739 0
-        while { 1 } {
-            #item 7390002
-            if {$_ind739 < $_len739} {
-                
-            } else {
-                break
-            }
-            #item 7390004
-            set next_id [ lindex $_col739 $_ind739 ]
+        foreach next_id $next {
             #item 741
             print_vertex $gdb $next_id
-            #item 7390003
-            incr _ind739
         }
     }
 }
 
 proc receives_are_first { gdb receives } {
-    #item 2320001
-    set _col232 $receives
-    set _len232 [ llength $_col232 ]
-    set _ind232 0
-    while { 1 } {
-        #item 2320002
-        if {$_ind232 < $_len232} {
-            
-        } else {
-            #item 307
-            return 1
-            break
-        }
-        #item 2320004
-        set receive [ lindex $_col232 $_ind232 ]
+    foreach receive $receives {
         #item 234
         if {[ previous_is_header $gdb $receive ]} {
             
@@ -1064,11 +881,10 @@ proc receives_are_first { gdb receives } {
              "A 'receive' icon must be first in the branch."
             #item 308
             return 0
-            break
         }
-        #item 2320003
-        incr _ind232
     }
+    #item 307
+    return 1
 }
 
 proc register_last { } {

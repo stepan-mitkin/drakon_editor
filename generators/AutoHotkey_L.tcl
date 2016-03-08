@@ -149,23 +149,9 @@ proc generate { db gdb filename } {
     	from vertices
     	group by diagram_id
     } ]
-    #item 17680001
-    set _col1768 $diagrams
-    set _len1768 [ llength $_col1768 ]
-    set _ind1768 0
-    while { 1 } {
-        #item 17680002
-        if {$_ind1768 < $_len1768} {
-            
-        } else {
-            break
-        }
-        #item 17680004
-        set diagram_id [ lindex $_col1768 $_ind1768 ]
+    foreach diagram_id $diagrams {
         #item 1766
         rewire_AutoHotkey_L_for $gdb $diagram_id
-        #item 17680003
-        incr _ind1768
     }
     #item 1284
     set callbacks [ make_callbacks ]
@@ -242,19 +228,7 @@ proc highlight { tokens } {
     set state "idle"
     #item 1930
     variable keywords
-    #item 18960001
-    set _col1896 $tokens
-    set _len1896 [ llength $_col1896 ]
-    set _ind1896 0
-    while { 1 } {
-        #item 18960002
-        if {$_ind1896 < $_len1896} {
-            
-        } else {
-            break
-        }
-        #item 18960004
-        set token [ lindex $_col1896 $_ind1896 ]
+    foreach token $tokens {
         #item 1978
         lassign $token type text
         #item 18910001
@@ -368,8 +342,6 @@ proc highlight { tokens } {
                 }
             }
         }
-        #item 18960003
-        incr _ind1896
     }
     #item 1888
     return $result
@@ -628,23 +600,9 @@ proc print_function { fhandle function } {
             }
             #item 552
             lappend result $line
-            #item 5830001
-            set _col583 $body
-            set _len583 [ llength $_col583 ]
-            set _ind583 0
-            while { 1 } {
-                #item 5830002
-                if {$_ind583 < $_len583} {
-                    
-                } else {
-                    break
-                }
-                #item 5830004
-                set line [ lindex $_col583 $_ind583 ]
+            foreach line $body {
                 #item 582
                 lappend result "    $line"
-                #item 5830003
-                incr _ind583
             }
             #item 1835
             if {($ahk_diagramtype == "free") || ($ahk_diagramtype == "hotkey")} {
@@ -656,23 +614,9 @@ proc print_function { fhandle function } {
                 #item 585
                 lappend result "\}"
             }
-            #item 10200001
-            set _col1020 $result
-            set _len1020 [ llength $_col1020 ]
-            set _ind1020 0
-            while { 1 } {
-                #item 10200002
-                if {$_ind1020 < $_len1020} {
-                    
-                } else {
-                    break
-                }
-                #item 10200004
-                set line [ lindex $_col1020 $_ind1020 ]
+            foreach line $result {
                 #item 1022
                 puts $fhandle $line
-                #item 10200003
-                incr _ind1020
             }
             #item 1023
             puts $fhandle ""
@@ -685,23 +629,9 @@ proc print_to_file { fhandle functions header footer } {
     put_credits $fhandle
     #item 1559
     puts $fhandle $header
-    #item 15680001
-    set _col1568 $functions
-    set _len1568 [ llength $_col1568 ]
-    set _ind1568 0
-    while { 1 } {
-        #item 15680002
-        if {$_ind1568 < $_len1568} {
-            
-        } else {
-            break
-        }
-        #item 15680004
-        set function [ lindex $_col1568 $_ind1568 ]
+    foreach function $functions {
         #item 1570
         print_function $fhandle $function
-        #item 15680003
-        incr _ind1568
     }
     #item 1560
     puts $fhandle $footer
@@ -730,19 +660,7 @@ proc rewire_AutoHotkey_L_for { gdb diagram_id } {
     } ]
     #item 1733
     set loop_vars {}
-    #item 17340001
-    set _col1734 $starts
-    set _len1734 [ llength $_col1734 ]
-    set _ind1734 0
-    while { 1 } {
-        #item 17340002
-        if {$_ind1734 < $_len1734} {
-            
-        } else {
-            break
-        }
-        #item 17340004
-        set vertex_id [ lindex $_col1734 $_ind1734 ]
+    foreach vertex_id $starts {
         #item 1736
         unpack [ $gdb eval { 
         	select text, item_id
@@ -761,8 +679,6 @@ proc rewire_AutoHotkey_L_for { gdb diagram_id } {
         }
         #item 1740
         lappend loop_vars $var
-        #item 17340003
-        incr _ind1734
     }
     #item 1753
     set var_list [ lsort -unique $loop_vars ]
@@ -789,19 +705,7 @@ proc split_vars { $item_id var_list } {
     set raw [ split $var_list "," ]
     #item 1653
     set result {}
-    #item 16550001
-    set _col1655 $raw
-    set _len1655 [ llength $_col1655 ]
-    set _ind1655 0
-    while { 1 } {
-        #item 16550002
-        if {$_ind1655 < $_len1655} {
-            
-        } else {
-            break
-        }
-        #item 16550004
-        set part [ lindex $_col1655 $_ind1655 ]
+    foreach part $raw {
         #item 1657
         set stripped [ string trim $part ]
         #item 1658
@@ -811,8 +715,6 @@ proc split_vars { $item_id var_list } {
             #item 1661
             lappend result $stripped
         }
-        #item 16550003
-        incr _ind1655
     }
     #item 1663
     if {$result == {}} {
@@ -835,19 +737,7 @@ proc to_tokens { text } {
     set tokens [ search::to_tokens $text ]
     #item 1701
     set result {}
-    #item 17030001
-    set _col1703 $tokens
-    set _len1703 [ llength $_col1703 ]
-    set _ind1703 0
-    while { 1 } {
-        #item 17030002
-        if {$_ind1703 < $_len1703} {
-            
-        } else {
-            break
-        }
-        #item 17030004
-        set token [ lindex $_col1703 $_ind1703 ]
+    foreach token $tokens {
         #item 1705
         set text [ lindex $token 0 ]
         #item 1706
@@ -859,8 +749,6 @@ proc to_tokens { text } {
             #item 1707
             lappend result $text
         }
-        #item 17030003
-        incr _ind1703
     }
     #item 1702
     return $result

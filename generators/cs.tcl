@@ -117,19 +117,7 @@ yield
 proc add_handlers { gdb machines functions } {
     #item 1580
     set result {}
-    #item 15770001
-    set _col1577 $machines
-    set _len1577 [ llength $_col1577 ]
-    set _ind1577 0
-    while { 1 } {
-        #item 15770002
-        if {$_ind1577 < $_len1577} {
-            
-        } else {
-            break
-        }
-        #item 15770004
-        set machine [ lindex $_col1577 $_ind1577 ]
+    foreach machine $machines {
         #item 1579
         set name [ dict get $machine "name" ]
         #item 1583
@@ -140,30 +128,14 @@ proc add_handlers { gdb machines functions } {
         } ]
         #item 1611
         set handlers {}
-        #item 16090001
-        set _col1609 $handler_ids
-        set _len1609 [ llength $_col1609 ]
-        set _ind1609 0
-        while { 1 } {
-            #item 16090002
-            if {$_ind1609 < $_len1609} {
-                
-            } else {
-                break
-            }
-            #item 16090004
-            set id [ lindex $_col1609 $_ind1609 ]
+        foreach id $handler_ids {
             #item 1588
             lappend handlers [ find_function $functions $id ]
-            #item 16090003
-            incr _ind1609
         }
         #item 1589
         lappend machine "handlers" $handlers
         #item 1582
         lappend result $machine
-        #item 15770003
-        incr _ind1577
     }
     #item 1581
     return $result
@@ -277,21 +249,7 @@ proc classify_keywords { keywords name } {
 }
 
 proc extract_body { comments } {
-    #item 16670001
-    set _col1667 $comments
-    set _len1667 [ llength $_col1667 ]
-    set _ind1667 0
-    while { 1 } {
-        #item 16670002
-        if {$_ind1667 < $_len1667} {
-            
-        } else {
-            #item 1673
-            return ""
-            break
-        }
-        #item 16670004
-        set comment [ lindex $_col1667 $_ind1667 ]
+    foreach comment $comments {
         #item 1669
         set trimmed [ string trim $comment ]
         set lines [ split $trimmed "\n" ]
@@ -304,13 +262,12 @@ proc extract_body { comments } {
             set new_text [ join $rest "\n        " ]
             #item 1675
             return $new_text
-            break
         } else {
             
         }
-        #item 16670003
-        incr _ind1667
     }
+    #item 1673
+    return ""
 }
 
 proc extract_class_name { section } {
@@ -370,19 +327,7 @@ proc extract_many_cs_machines { gdb callbacks } {
     #item 1751
     set diagrams [ $gdb eval {
     	select diagram_id from diagrams } ]
-    #item 17520001
-    set _col1752 $diagrams
-    set _len1752 [ llength $_col1752 ]
-    set _ind1752 0
-    while { 1 } {
-        #item 17520002
-        if {$_ind1752 < $_len1752} {
-            
-        } else {
-            break
-        }
-        #item 17520004
-        set diagram_id [ lindex $_col1752 $_ind1752 ]
+    foreach diagram_id $diagrams {
         #item 1754
         if {[graph::is_machine $diagram_id]} {
             #item 1767
@@ -406,8 +351,6 @@ proc extract_many_cs_machines { gdb callbacks } {
         } else {
             
         }
-        #item 17520003
-        incr _ind1752
     }
     #item 1761
     return $result
@@ -556,65 +499,35 @@ proc extract_signature { text name } {
 }
 
 proc find_function { functions id } {
-    #item 16000001
-    set _col1600 $functions
-    set _len1600 [ llength $_col1600 ]
-    set _ind1600 0
-    while { 1 } {
-        #item 16000002
-        if {$_ind1600 < $_len1600} {
-            
-        } else {
-            #item 1608
-            error "procedure $id not found"
-            break
-        }
-        #item 16000004
-        set function [ lindex $_col1600 $_ind1600 ]
+    foreach function $functions {
         #item 1606
         unpack $function diagram_id name
         #item 1602
         if {$diagram_id == $id} {
             #item 1607
             return $function
-            break
         } else {
             
         }
-        #item 16000003
-        incr _ind1600
     }
+    #item 1608
+    error "procedure $id not found"
 }
 
 proc find_function_by_name { functions name } {
-    #item 16460001
-    set _col1646 $functions
-    set _len1646 [ llength $_col1646 ]
-    set _ind1646 0
-    while { 1 } {
-        #item 16460002
-        if {$_ind1646 < $_len1646} {
-            
-        } else {
-            #item 1653
-            return {}
-            break
-        }
-        #item 16460004
-        set function [ lindex $_col1646 $_ind1646 ]
+    foreach function $functions {
         #item 1651
         unpack $function diagram_id fname
         #item 1648
         if {$fname == $name} {
             #item 1652
             return $function
-            break
         } else {
             
         }
-        #item 16460003
-        incr _ind1646
     }
+    #item 1653
+    return {}
 }
 
 proc foreach_check { item_id first second } {
@@ -673,19 +586,7 @@ proc generate { db gdb filename } {
     #item 1089
     set diagrams [ $gdb eval {
     	select diagram_id from diagrams } ]
-    #item 10870001
-    set _col1087 $diagrams
-    set _len1087 [ llength $_col1087 ]
-    set _ind1087 0
-    while { 1 } {
-        #item 10870002
-        if {$_ind1087 < $_len1087} {
-            
-        } else {
-            break
-        }
-        #item 10870004
-        set diagram_id [ lindex $_col1087 $_ind1087 ]
+    foreach diagram_id $diagrams {
         #item 1248
         if {[mwc::is_drakon $diagram_id]} {
             #item 1086
@@ -693,8 +594,6 @@ proc generate { db gdb filename } {
         } else {
             
         }
-        #item 10870003
-        incr _ind1087
     }
     #item 1243
     tab::generate_tables $gdb $callbacks 0
@@ -766,19 +665,7 @@ proc generate_body { gdb diagram_id start_item node_list items incoming } {
 proc handle_message { fhandle ind states message names handlers } {
     #item 1727
     puts $fhandle "$ind            switch \(CurrentState\) \{"
-    #item 17240001
-    set _col1724 $states
-    set _len1724 [ llength $_col1724 ]
-    set _ind1724 0
-    while { 1 } {
-        #item 17240002
-        if {$_ind1724 < $_len1724} {
-            
-        } else {
-            break
-        }
-        #item 17240004
-        set state [ lindex $_col1724 $_ind1724 ]
+    foreach state $states {
         #item 1742
         set message2 [ string map { - _ . _ } $message ]
         #item 1729
@@ -794,8 +681,6 @@ proc handle_message { fhandle ind states message names handlers } {
         }
         #item 1734
         puts $fhandle "$ind                    break;"
-        #item 17240003
-        incr _ind1724
     }
     #item 1726
     puts $fhandle "$ind                default:"
@@ -815,19 +700,7 @@ proc highlight_generic { keywords tokens } {
     set result {}
     #item 1361
     set state "idle"
-    #item 13260001
-    set _col1326 $tokens
-    set _len1326 [ llength $_col1326 ]
-    set _ind1326 0
-    while { 1 } {
-        #item 13260002
-        if {$_ind1326 < $_len1326} {
-            
-        } else {
-            break
-        }
-        #item 13260004
-        set token [ lindex $_col1326 $_ind1326 ]
+    foreach token $tokens {
         #item 1328
         lassign $token type text
         #item 13290001
@@ -1027,8 +900,6 @@ proc highlight_generic { keywords tokens } {
                 }
             }
         }
-        #item 13260003
-        incr _ind1326
     }
     #item 15130001
     if {($state == "comment start") || ($state == "verbatim start")} {
@@ -1418,19 +1289,7 @@ proc print_machine { fhandle machine } {
             #item 1738
             puts $fhandle "        public void OnMessage\($params\) \{"
             puts $fhandle "            switch \(message.Code\) \{"
-            #item 15440001
-            set _col1544 $messages
-            set _len1544 [ llength $_col1544 ]
-            set _ind1544 0
-            while { 1 } {
-                #item 15440002
-                if {$_ind1544 < $_len1544} {
-                    
-                } else {
-                    break
-                }
-                #item 15440004
-                set message [ lindex $_col1544 $_ind1544 ]
+            foreach message $messages {
                 #item 1740
                 puts $fhandle "                case $message:"
                 #item 1737
@@ -1438,8 +1297,6 @@ proc print_machine { fhandle machine } {
                  $message $pnames $handlers
                 #item 1741
                 puts $fhandle "                    break;"
-                #item 15440003
-                incr _ind1544
             }
             #item 1739
             puts $fhandle "                default:"
@@ -1454,91 +1311,35 @@ proc print_machine { fhandle machine } {
             set pnames [ lrange $param_names 1 end ]
             #item 1697
             set arg_name_list [ join $pnames ", " ]
-            #item 16990001
-            set _col1699 $messages
-            set _len1699 [ llength $_col1699 ]
-            set _ind1699 0
-            while { 1 } {
-                #item 16990002
-                if {$_ind1699 < $_len1699} {
-                    
-                } else {
-                    break
-                }
-                #item 16990004
-                set message [ lindex $_col1699 $_ind1699 ]
+            foreach message $messages {
                 #item 1698
                 print_handler $fhandle \
                   $states $message $params $arg_name_list \
                   $handlers
-                #item 16990003
-                incr _ind1699
             }
         }
     }
-    #item 17820001
-    set _col1782 $handlers
-    set _len1782 [ llength $_col1782 ]
-    set _ind1782 0
-    while { 1 } {
-        #item 17820002
-        if {$_ind1782 < $_len1782} {
-            
-        } else {
-            break
-        }
-        #item 17820004
-        set procedure [ lindex $_col1782 $_ind1782 ]
+    foreach procedure $handlers {
         #item 1791
         unpack $procedure _ proc_name
         #item 1784
         p.print_proc $weak $fhandle $procedure "" 2
-        #item 17820003
-        incr _ind1782
     }
     #item 1542
     puts $fhandle "    \}"
 }
 
 proc print_machines { fhandle machines } {
-    #item 15380001
-    set _col1538 $machines
-    set _len1538 [ llength $_col1538 ]
-    set _ind1538 0
-    while { 1 } {
-        #item 15380002
-        if {$_ind1538 < $_len1538} {
-            
-        } else {
-            break
-        }
-        #item 15380004
-        set machine [ lindex $_col1538 $_ind1538 ]
+    foreach machine $machines {
         #item 1540
         print_machine $fhandle $machine
-        #item 15380003
-        incr _ind1538
     }
 }
 
 proc print_procs { weak_signature fhandle procedures class_name depth } {
-    #item 9630001
-    set _col963 $procedures
-    set _len963 [ llength $_col963 ]
-    set _ind963 0
-    while { 1 } {
-        #item 9630002
-        if {$_ind963 < $_len963} {
-            
-        } else {
-            break
-        }
-        #item 9630004
-        set procedure [ lindex $_col963 $_ind963 ]
+    foreach procedure $procedures {
         #item 965
         p.print_proc $weak_signature $fhandle $procedure $class_name $depth
-        #item 9630003
-        incr _ind963
     }
 }
 
@@ -1571,19 +1372,7 @@ proc print_state_class { fhandle messages iface name parameters lines } {
     puts $fhandle "        public string Name \{ get \{ return \"$name\"; \} \}"
     #item 1221
     set i 0
-    #item 12040001
-    set _col1204 $messages
-    set _len1204 [ llength $_col1204 ]
-    set _ind1204 0
-    while { 1 } {
-        #item 12040002
-        if {$_ind1204 < $_len1204} {
-            
-        } else {
-            break
-        }
-        #item 12040004
-        set message [ lindex $_col1204 $_ind1204 ]
+    foreach message $messages {
         #item 1206
         puts $fhandle "        public void $message\($parameters\) \{"
         #item 1223
@@ -1593,8 +1382,6 @@ proc print_state_class { fhandle messages iface name parameters lines } {
         puts $fhandle "        \}"
         #item 1222
         incr i
-        #item 12040003
-        incr _ind1204
     }
     #item 1203
     puts $fhandle "    \}"
@@ -1620,19 +1407,7 @@ proc separate_methods { gdb all_functions functions_name methods_name } {
     #item 1275
     array set methods_by_class {}
     set functions {}
-    #item 12710001
-    set _col1271 $all_functions
-    set _len1271 [ llength $_col1271 ]
-    set _ind1271 0
-    while { 1 } {
-        #item 12710002
-        if {$_ind1271 < $_len1271} {
-            
-        } else {
-            break
-        }
-        #item 12710004
-        set function [ lindex $_col1271 $_ind1271 ]
+    foreach function $all_functions {
         #item 1274
         lassign $function diagram_id name signature body
         #item 1568
@@ -1673,8 +1448,6 @@ proc separate_methods { gdb all_functions functions_name methods_name } {
                 lappend functions $function
             }
         }
-        #item 12710003
-        incr _ind1271
     }
     #item 1292
     set methods [ array get methods_by_class ]

@@ -187,6 +187,10 @@ proc shelf { primary secondary } {
 	return $result
 }
 
+proc native_foreach { for_it for_var } {
+	return "foreach $for_it $for_var \{"
+}
+
 proc foreach_init { item_id first second } {
 	set index_var "_ind$item_id"
 	set coll_var "_col$item_id"
@@ -253,6 +257,8 @@ proc make_callbacks { } {
 	gen::put_callback callbacks for_declare		gen_tcl::for_declare
 	gen::put_callback callbacks shelf			gen_tcl::shelf
 	gen::put_callback callbacks if_cond			gen_tcl::if_cond
+	gen::put_callback callbacks native_foreach		gen_tcl::native_foreach
+
 
 	return $callbacks
 }

@@ -169,44 +169,16 @@ proc add_structures { structures struct_h_name struct_c_name } {
         set includes "#include <stdlib.h>\n#include <string.h>\n"
         set struct_c "$includes$struct_c"
     }
-    #item 36070001
-    set _col3607 $structures
-    set _len3607 [ llength $_col3607 ]
-    set _ind3607 0
-    while { 1 } {
-        #item 36070002
-        if {$_ind3607 < $_len3607} {
-            
-        } else {
-            break
-        }
-        #item 36070004
-        set str [ lindex $_col3607 $_ind3607 ]
+    foreach str $structures {
         #item 3609
         set forward [ inl_make_forward $str ]
         set struct_h "$forward\n$struct_h"
-        #item 36070003
-        incr _ind3607
     }
     #item 3606
     set impl_lines {}
-    #item 36100001
-    set _col3610 $structures
-    set _len3610 [ llength $_col3610 ]
-    set _ind3610 0
-    while { 1 } {
-        #item 36100002
-        if {$_ind3610 < $_len3610} {
-            
-        } else {
-            break
-        }
-        #item 36100004
-        set str [ lindex $_col3610 $_ind3610 ]
+    foreach str $structures {
         #item 3612
         print_class_impl $str impl_lines
-        #item 36100003
-        incr _ind3610
     }
     #item 3613
     set impl [ join $impl_lines "\n" ]
@@ -274,19 +246,7 @@ proc check_index_fields { index state } {
     } else {
         #item 1014
         if {[ is_unique $ifields ]} {
-            #item 10180001
-            set _col1018 $ifields
-            set _len1018 [ llength $_col1018 ]
-            set _ind1018 0
-            while { 1 } {
-                #item 10180002
-                if {$_ind1018 < $_len1018} {
-                    
-                } else {
-                    break
-                }
-                #item 10180004
-                set ifield [ lindex $_col1018 $_ind1018 ]
+            foreach ifield $ifields {
                 #item 1017
                 set field_key [ find_key $fields $ifield ]
                 #item 1020
@@ -316,8 +276,6 @@ proc check_index_fields { index state } {
                     error $msg
                     break
                 }
-                #item 10180003
-                incr _ind1018
             }
         } else {
             #item 1016
@@ -552,37 +510,11 @@ proc class_create { name fields smachine } {
         #item 3492
         lappend lines "obj->State = &${name}_${first_state}_State;"
     }
-    #item 28900001
-    set _col2890 $ctr_fields
-    set _len2890 [ llength $_col2890 ]
-    set _ind2890 0
-    while { 1 } {
-        #item 28900002
-        if {$_ind2890 < $_len2890} {
-            
-        } else {
-            break
-        }
-        #item 28900004
-        set fname [ lindex $_col2890 $_ind2890 ]
+    foreach fname $ctr_fields {
         #item 2893
         lappend lines "obj->$fname = $fname;"
-        #item 28900003
-        incr _ind2890
     }
-    #item 36620001
-    set _col3662 $own_names
-    set _len3662 [ llength $_col3662 ]
-    set _ind3662 0
-    while { 1 } {
-        #item 36620002
-        if {$_ind3662 < $_len3662} {
-            
-        } else {
-            break
-        }
-        #item 36620004
-        set fname [ lindex $_col3662 $_ind3662 ]
+    foreach fname $own_names {
         #item 3664
         if {[ contains $ctr_fields $fname ]} {
             
@@ -590,8 +522,6 @@ proc class_create { name fields smachine } {
             #item 3674
             lappend lines [ field_ctr $fname $fields "obj" ]
         }
-        #item 36620003
-        incr _ind3662
     }
     #item 2882
     lappend lines "return obj;"
@@ -737,19 +667,7 @@ proc class_load { item fields smachine } {
     lappend lines "return 1;"
     #item 3504
     lappend lines "delete_item:"
-    #item 35050001
-    set _col3505 $ser_fields
-    set _len3505 [ llength $_col3505 ]
-    set _ind3505 0
-    while { 1 } {
-        #item 35050002
-        if {$_ind3505 < $_len3505} {
-            
-        } else {
-            break
-        }
-        #item 35050004
-        set fname [ lindex $_col3505 $_ind3505 ]
+    foreach fname $ser_fields {
         #item 3507
         set field [ get_value $fields $fname ]
         set type [ get_value $field type ]
@@ -761,8 +679,6 @@ proc class_load { item fields smachine } {
         } else {
             
         }
-        #item 35050003
-        incr _ind3505
     }
     #item 3503
     lappend lines "Allocator_Free\(item\);"
@@ -858,26 +774,12 @@ proc clone_item { name item fields indices } {
      "newItem->_parent_ = table;"
     #item 2350
     add_range lines [ lmap_user $own_names st::field_clone $fields ]
-    #item 23700001
-    set _col2370 $indices
-    set _len2370 [ llength $_col2370 ]
-    set _ind2370 0
-    while { 1 } {
-        #item 23700002
-        if {$_ind2370 < $_len2370} {
-            
-        } else {
-            break
-        }
-        #item 23700004
-        set index [ lindex $_col2370 $_ind2370 ]
+    foreach index $indices {
         #item 2372
         set iname [ get_value $index name ]
         #item 2373
         lappend lines \
          "Hashtable_Put\(table->$iname, newItem\);"
-        #item 23700003
-        incr _ind2370
     }
     #item 2357
     lappend lines "return 0;"
@@ -957,19 +859,7 @@ proc create_ctr { name item indices } {
     set signature [ ssignature $dname $returns {} $comment ]
     #item 1422
     set lines [ new_obj $name ]
-    #item 14180001
-    set _col1418 $indices
-    set _len1418 [ llength $_col1418 ]
-    set _ind1418 0
-    while { 1 } {
-        #item 14180002
-        if {$_ind1418 < $_len1418} {
-            
-        } else {
-            break
-        }
-        #item 14180004
-        set index [ lindex $_col1418 $_ind1418 ]
+    foreach index $indices {
         #item 1420
         set iname [ get_value $index name ]
         #item 1425
@@ -977,8 +867,6 @@ proc create_ctr { name item indices } {
         set hash "${item}_${iname}_Hash"
         #item 1421
         lappend lines "obj->$iname = Hashtable_Create\(\(GetHashCodeFun\)$hash, \(EqualsFun\)$eq\);"
-        #item 14180003
-        incr _ind1418
     }
     #item 1424
     lappend lines "return obj;"
@@ -1005,26 +893,12 @@ proc create_delete { name item indices } {
     lappend lines "assert\(table\);"
     lappend lines "assert\(item\);"
     lappend lines "assert\(item->_parent_ == table\);"
-    #item 19170001
-    set _col1917 $indices
-    set _len1917 [ llength $_col1917 ]
-    set _ind1917 0
-    while { 1 } {
-        #item 19170002
-        if {$_ind1917 < $_len1917} {
-            
-        } else {
-            break
-        }
-        #item 19170004
-        set index [ lindex $_col1917 $_ind1917 ]
+    foreach index $indices {
         #item 1919
         set iname [ get_value $index name ]
         #item 1920
         lappend lines \
          "Hashtable_Remove\(table->$iname, item\);"
-        #item 19170003
-        incr _ind1917
     }
     #item 1937
     lappend lines "${item}_DeleteItem\(item, 0\);"
@@ -1051,25 +925,11 @@ proc create_dtr { name item indices } {
     #item 1386
     lappend lines \
      "Hashtable_Foreach\(obj->$iname, \(VisitorFun\)${item}_DeleteItem\, 0\);"
-    #item 13810001
-    set _col1381 $indices
-    set _len1381 [ llength $_col1381 ]
-    set _ind1381 0
-    while { 1 } {
-        #item 13810002
-        if {$_ind1381 < $_len1381} {
-            
-        } else {
-            break
-        }
-        #item 13810004
-        set index [ lindex $_col1381 $_ind1381 ]
+    foreach index $indices {
         #item 1383
         set iname [ get_value $index name ]
         #item 1384
         lappend lines "Hashtable_Destroy\(obj->$iname\);"
-        #item 13810003
-        incr _ind1381
     }
     #item 1385
     lappend lines [ delete_me ]
@@ -1095,19 +955,7 @@ proc create_find { name item iname fields ifields } {
     #item 2021
     set lines {}
     lappend lines "$item _key_;"
-    #item 20220001
-    set _col2022 $ifields
-    set _len2022 [ llength $_col2022 ]
-    set _ind2022 0
-    while { 1 } {
-        #item 20220002
-        if {$_ind2022 < $_len2022} {
-            
-        } else {
-            break
-        }
-        #item 20220004
-        set ifield [ lindex $_col2022 $_ind2022 ]
+    foreach ifield $ifields {
         #item 2049
         set field [ get_value $fields $ifield ]
         set type [ get_value $field type ]
@@ -1120,8 +968,6 @@ proc create_find { name item iname fields ifields } {
             #item 2053
             lappend lines "_key_.$ifield = $ifield;"
         }
-        #item 20220003
-        incr _ind2022
     }
     #item 2026
     lappend lines "return Hashtable_Get\(_table_->$iname, &_key_\);"
@@ -1188,81 +1034,27 @@ proc create_insert { name item fields indices } {
     lappend lines "$item _key_;"
     lappend lines "$item* _new_;"
     lappend lines "assert\(_table_\);"
-    #item 18560001
-    set _col1856 $indexed
-    set _len1856 [ llength $_col1856 ]
-    set _ind1856 0
-    while { 1 } {
-        #item 18560002
-        if {$_ind1856 < $_len1856} {
-            
-        } else {
-            break
-        }
-        #item 18560004
-        set fname [ lindex $_col1856 $_ind1856 ]
+    foreach fname $indexed {
         #item 1858
         lappend lines "_key_.$fname = $fname;"
-        #item 18560003
-        incr _ind1856
     }
-    #item 18120001
-    set _col1812 $indices
-    set _len1812 [ llength $_col1812 ]
-    set _ind1812 0
-    while { 1 } {
-        #item 18120002
-        if {$_ind1812 < $_len1812} {
-            
-        } else {
-            break
-        }
-        #item 18120004
-        set index [ lindex $_col1812 $_ind1812 ]
+    foreach index $indices {
         #item 1814
         set iname [ get_value $index name ]
         #item 1815
         lappend lines \
          "if \(Hashtable_Get\(_table_->$iname, &_key_\)\) \{ return 0; \}"
-        #item 18120003
-        incr _ind1812
     }
     #item 1861
     lappend lines \
      "_new_ = Allocator_Allocate\(sizeof\($item\), 1\);"
     lappend lines \
      "_new_->_parent_ = _table_;"
-    #item 18590001
-    set _col1859 $ctr_fields
-    set _len1859 [ llength $_col1859 ]
-    set _ind1859 0
-    while { 1 } {
-        #item 18590002
-        if {$_ind1859 < $_len1859} {
-            
-        } else {
-            break
-        }
-        #item 18590004
-        set fname [ lindex $_col1859 $_ind1859 ]
+    foreach fname $ctr_fields {
         #item 1862
         lappend lines "_new_->$fname = $fname;"
-        #item 18590003
-        incr _ind1859
     }
-    #item 36810001
-    set _col3681 $own_names
-    set _len3681 [ llength $_col3681 ]
-    set _ind3681 0
-    while { 1 } {
-        #item 36810002
-        if {$_ind3681 < $_len3681} {
-            
-        } else {
-            break
-        }
-        #item 36810004
-        set fname [ lindex $_col3681 $_ind3681 ]
+    foreach fname $own_names {
         #item 3677
         if {[ contains $ctr_fields $fname ]} {
             
@@ -1270,29 +1062,13 @@ proc create_insert { name item fields indices } {
             #item 3680
             lappend lines [ field_ctr $fname $fields "_new_" ]
         }
-        #item 36810003
-        incr _ind3681
     }
-    #item 18630001
-    set _col1863 $indices
-    set _len1863 [ llength $_col1863 ]
-    set _ind1863 0
-    while { 1 } {
-        #item 18630002
-        if {$_ind1863 < $_len1863} {
-            
-        } else {
-            break
-        }
-        #item 18630004
-        set index [ lindex $_col1863 $_ind1863 ]
+    foreach index $indices {
         #item 1865
         set iname [ get_value $index name ]
         #item 1866
         lappend lines \
          "Hashtable_Put\(_table_->$iname, _new_\);"
-        #item 18630003
-        incr _ind1863
     }
     #item 1816
     lappend lines "return _new_;"
@@ -1403,27 +1179,13 @@ proc create_table_fields { indices } {
     lappend result [ sfield "Object" "Super" "" ]
     #item 1306
     set comment "The number of records in the table."
-    #item 13030001
-    set _col1303 $indices
-    set _len1303 [ llength $_col1303 ]
-    set _ind1303 0
-    while { 1 } {
-        #item 13030002
-        if {$_ind1303 < $_len1303} {
-            
-        } else {
-            break
-        }
-        #item 13030004
-        set index [ lindex $_col1303 $_ind1303 ]
+    foreach index $indices {
         #item 1301
         set name [ get_value $index name ]
         #item 1302
         set comment "The $name index"
         #item 1300
         lappend result [ sfield "Hashtable*" $name $comment ]
-        #item 13030003
-        incr _ind1303
     }
     #item 1299
     return $result
@@ -1511,19 +1273,7 @@ proc diff_arrays { left right } {
     #item 252
     set left_unmatched {}
     set right_unmatched {}
-    #item 2460001
-    set _col246 $left
-    set _len246 [ llength $_col246 ]
-    set _ind246 0
-    while { 1 } {
-        #item 2460002
-        if {$_ind246 < $_len246} {
-            
-        } else {
-            break
-        }
-        #item 2460004
-        set item [ lindex $_col246 $_ind246 ]
+    foreach item $left {
         #item 248
         if {[ contains $right $item ]} {
             
@@ -1531,22 +1281,8 @@ proc diff_arrays { left right } {
             #item 251
             lappend left_unmatched $item
         }
-        #item 2460003
-        incr _ind246
     }
-    #item 2530001
-    set _col253 $right
-    set _len253 [ llength $_col253 ]
-    set _ind253 0
-    while { 1 } {
-        #item 2530002
-        if {$_ind253 < $_len253} {
-            
-        } else {
-            break
-        }
-        #item 2530004
-        set item [ lindex $_col253 $_ind253 ]
+    foreach item $right {
         #item 255
         if {[ contains $left $item ]} {
             
@@ -1554,8 +1290,6 @@ proc diff_arrays { left right } {
             #item 258
             lappend right_unmatched $item
         }
-        #item 2530003
-        incr _ind253
     }
     #item 261
     if {($left_unmatched == {}) && ($right_unmatched == {})} {
@@ -2372,23 +2106,9 @@ proc generate_table { obj print_fun } {
     set classes [ make_classes_for_table $obj ]
     #item 1139
     set lines {}
-    #item 11440001
-    set _col1144 $classes
-    set _len1144 [ llength $_col1144 ]
-    set _ind1144 0
-    while { 1 } {
-        #item 11440002
-        if {$_ind1144 < $_len1144} {
-            
-        } else {
-            break
-        }
-        #item 11440004
-        set class [ lindex $_col1144 $_ind1144 ]
+    foreach class $classes {
         #item 1140
         $print_fun $class lines
-        #item 11440003
-        incr _ind1144
     }
     #item 1141
     set result [ join $lines "\n" ]
@@ -2567,66 +2287,26 @@ proc load_item { name item fields indices } {
         #item 26080003
         incr i
     }
-    #item 26030001
-    set _col2603 $indices
-    set _len2603 [ llength $_col2603 ]
-    set _ind2603 0
-    while { 1 } {
-        #item 26030002
-        if {$_ind2603 < $_len2603} {
-            
-        } else {
-            break
-        }
-        #item 26030004
-        set index [ lindex $_col2603 $_ind2603 ]
+    foreach index $indices {
         #item 2605
         set iname [ get_value $index name ]
         #item 2606
         lappend lines \
          "if \(!Hashtable_Put\(table->$iname, item\)\) goto full_undo;"
-        #item 26030003
-        incr _ind2603
     }
     #item 2637
     lappend lines "return 1;"
     lappend lines "full_undo:"
-    #item 26380001
-    set _col2638 $indices
-    set _len2638 [ llength $_col2638 ]
-    set _ind2638 0
-    while { 1 } {
-        #item 26380002
-        if {$_ind2638 < $_len2638} {
-            
-        } else {
-            break
-        }
-        #item 26380004
-        set index [ lindex $_col2638 $_ind2638 ]
+    foreach index $indices {
         #item 2640
         set iname [ get_value $index name ]
         #item 2641
         lappend lines \
          "Hashtable_Remove\(table->$iname, item\);"
-        #item 26380003
-        incr _ind2638
     }
     #item 2642
     lappend lines "delete_item:"
-    #item 26430001
-    set _col2643 $ser_fields
-    set _len2643 [ llength $_col2643 ]
-    set _ind2643 0
-    while { 1 } {
-        #item 26430002
-        if {$_ind2643 < $_len2643} {
-            
-        } else {
-            break
-        }
-        #item 26430004
-        set fname [ lindex $_col2643 $_ind2643 ]
+    foreach fname $ser_fields {
         #item 2645
         set field [ get_value $fields $fname ]
         set type [ get_value $field type ]
@@ -2638,8 +2318,6 @@ proc load_item { name item fields indices } {
         } else {
             
         }
-        #item 26430003
-        incr _ind2643
     }
     #item 2597
     lappend lines "Allocator_Free\(item\);"
@@ -2895,23 +2573,9 @@ proc make_class_class { name props fields smachine } {
     set fields [ make_fields_map $name $field_values ]
     #item 2801
     add_range sfields [ lmap_user $fnames st::record_field $fields ]
-    #item 28200001
-    set _col2820 $fnames
-    set _len2820 [ llength $_col2820 ]
-    set _ind2820 0
-    while { 1 } {
-        #item 28200002
-        if {$_ind2820 < $_len2820} {
-            
-        } else {
-            break
-        }
-        #item 28200004
-        set fname [ lindex $_col2820 $_ind2820 ]
+    foreach fname $fnames {
         #item 2822
         add_range methods [ field_accessors $fname $name $fields ]
-        #item 28200003
-        incr _ind2820
     }
     #item 3376
     set ptypedefs {}
@@ -3027,45 +2691,19 @@ proc make_code_for_sm { smachine name } {
     lappend lines "struct ${name}_funs \{"
     lappend lines "    int Id;"
     lappend lines "    const char* Name;"
-    #item 34200001
-    set _col3420 $messages
-    set _len3420 [ llength $_col3420 ]
-    set _ind3420 0
-    while { 1 } {
-        #item 34200002
-        if {$_ind3420 < $_len3420} {
-            
-        } else {
-            break
-        }
-        #item 34200004
-        set message [ lindex $_col3420 $_ind3420 ]
+    foreach message $messages {
         #item 3423
         set m [ parse_message_signature $message $name ]
         set mname [ get_value $m name ]
         #item 3424
         lappend lines "    ${name}_${mname}_fun $mname;"
-        #item 34200003
-        incr _ind3420
     }
     #item 3422
     lappend lines "\};"
     lappend lines ""
     #item 3438
     set id 1
-    #item 34270001
-    set _col3427 $states
-    set _len3427 [ llength $_col3427 ]
-    set _ind3427 0
-    while { 1 } {
-        #item 34270002
-        if {$_ind3427 < $_len3427} {
-            
-        } else {
-            break
-        }
-        #item 34270004
-        set state [ lindex $_col3427 $_ind3427 ]
+    foreach state $states {
         #item 3431
         lappend lines ""
         lappend lines "// $state state of $name."
@@ -3076,19 +2714,7 @@ proc make_code_for_sm { smachine name } {
         incr id
         #item 3440
         set i 1
-        #item 34300001
-        set _col3430 $messages
-        set _len3430 [ llength $_col3430 ]
-        set _ind3430 0
-        while { 1 } {
-            #item 34300002
-            if {$_ind3430 < $_len3430} {
-                
-            } else {
-                break
-            }
-            #item 34300004
-            set message [ lindex $_col3430 $_ind3430 ]
+        foreach message $messages {
             #item 3448
             set m [ parse_message_signature $message $name ]
             set mname [ get_value $m name ]
@@ -3115,14 +2741,10 @@ proc make_code_for_sm { smachine name } {
             incr i
             #item 3445
             lappend lines "    $method"
-            #item 34300003
-            incr _ind3430
         }
         #item 3432
         lappend lines "\};"
         lappend lines ""
-        #item 34270003
-        incr _ind3427
     }
     #item 3425
     return [ join $lines "\n" ]
@@ -3278,19 +2900,7 @@ proc make_fields_map { name fields } {
     set result {}
     #item 295
     set names {}
-    #item 2920001
-    set _col292 $fields
-    set _len292 [ llength $_col292 ]
-    set _ind292 0
-    while { 1 } {
-        #item 2920002
-        if {$_ind292 < $_len292} {
-            
-        } else {
-            break
-        }
-        #item 2920004
-        set field [ lindex $_col292 $_ind292 ]
+    foreach field $fields {
         #item 291
         array set fprops $field
         set fname $fprops(name)
@@ -3304,8 +2914,6 @@ proc make_fields_map { name fields } {
             #item 294
             lappend result $fname $field
         }
-        #item 2920003
-        incr _ind292
     }
     #item 301
     return $result
@@ -3525,23 +3133,9 @@ proc make_record_class { name props fields indices } {
      "Pointer to the collection that owns this record" ]
     #item 1590
     add_range sfields [ lmap_user $fnames st::record_field $fields ]
-    #item 20570001
-    set _col2057 $fnames
-    set _len2057 [ llength $_col2057 ]
-    set _ind2057 0
-    while { 1 } {
-        #item 20570002
-        if {$_ind2057 < $_len2057} {
-            
-        } else {
-            break
-        }
-        #item 20570004
-        set fname [ lindex $_col2057 $_ind2057 ]
+    foreach fname $fnames {
         #item 2059
         add_range methods [ field_accessors $fname $item $fields ]
-        #item 20570003
-        incr _ind2057
     }
     #item 1748
     set udata [ list $item $fields $indices ]
@@ -3666,19 +3260,7 @@ proc make_table_class { name props fields indices } {
     } else {
         
     }
-    #item 12660001
-    set _col1266 $indices
-    set _len1266 [ llength $_col1266 ]
-    set _ind1266 0
-    while { 1 } {
-        #item 12660002
-        if {$_ind1266 < $_len1266} {
-            
-        } else {
-            break
-        }
-        #item 12660004
-        set index [ lindex $_col1266 $_ind1266 ]
+    foreach index $indices {
         #item 1268
         lassign $index iname ifields_raw
         #item 2048
@@ -3689,8 +3271,6 @@ proc make_table_class { name props fields indices } {
         #item 1270
         lappend methods [ create_find \
          $name $item $iname $fields $ifields ]
-        #item 12660003
-        incr _ind1266
     }
     #item 1274
     set comment "Collection class for table $name"
@@ -3811,43 +3391,15 @@ proc print_class_decl { class lines_var } {
     lappend lines "///////////////////////////////"
     lappend lines "// $name"
     lappend lines "// $comment"
-    #item 19990001
-    set _col1999 $typedefs
-    set _len1999 [ llength $_col1999 ]
-    set _ind1999 0
-    while { 1 } {
-        #item 19990002
-        if {$_ind1999 < $_len1999} {
-            
-        } else {
-            break
-        }
-        #item 19990004
-        set typedef [ lindex $_col1999 $_ind1999 ]
+    foreach typedef $typedefs {
         #item 2001
         typedef_decl $typedef lines
-        #item 19990003
-        incr _ind1999
     }
-    #item 14400001
-    set _col1440 $pmethods
-    set _len1440 [ llength $_col1440 ]
-    set _ind1440 0
-    while { 1 } {
-        #item 14400002
-        if {$_ind1440 < $_len1440} {
-            
-        } else {
-            break
-        }
-        #item 14400004
-        set method [ lindex $_col1440 $_ind1440 ]
+    foreach method $pmethods {
         #item 1442
         smethod_decl $method lines
         #item 1506
         lappend lines "\);"
-        #item 14400003
-        incr _ind1440
     }
 }
 
@@ -3868,41 +3420,15 @@ proc print_class_impl { class lines_var } {
     lappend lines "///////////////////////////////"
     lappend lines "// $name"
     lappend lines "// $comment"
-    #item 33960001
-    set _col3396 $ptypedefs
-    set _len3396 [ llength $_col3396 ]
-    set _ind3396 0
-    while { 1 } {
-        #item 33960002
-        if {$_ind3396 < $_len3396} {
-            
-        } else {
-            break
-        }
-        #item 33960004
-        set typedef [ lindex $_col3396 $_ind3396 ]
+    foreach typedef $ptypedefs {
         #item 3398
         typedef_decl $typedef lines
-        #item 33960003
-        incr _ind3396
     }
     #item 3426
     lappend lines $code
     #item 1539
     lappend lines "struct $name \{"
-    #item 15420001
-    set _col1542 $fields
-    set _len1542 [ llength $_col1542 ]
-    set _ind1542 0
-    while { 1 } {
-        #item 15420002
-        if {$_ind1542 < $_len1542} {
-            
-        } else {
-            break
-        }
-        #item 15420004
-        set field [ lindex $_col1542 $_ind1542 ]
+    foreach field $fields {
         #item 1541
         set fname [ get_value $field name ]
         set ftype [ get_value $field type ]
@@ -3918,8 +3444,6 @@ proc print_class_impl { class lines_var } {
         }
         #item 1549
         lappend lines "    $ftype $fname;"
-        #item 15420003
-        incr _ind1542
     }
     #item 1540
     lappend lines "\};"
@@ -3945,39 +3469,13 @@ proc print_class_impl { class lines_var } {
     #item 1577
     lassign [ lpartition $methods st::method_is_public ] \
      _ prmethods
-    #item 15780001
-    set _col1578 $prmethods
-    set _len1578 [ llength $_col1578 ]
-    set _ind1578 0
-    while { 1 } {
-        #item 15780002
-        if {$_ind1578 < $_len1578} {
-            
-        } else {
-            break
-        }
-        #item 15780004
-        set method [ lindex $_col1578 $_ind1578 ]
+    foreach method $prmethods {
         #item 1580
         smethod_decl $method lines
         #item 1581
         lappend lines "\);"
-        #item 15780003
-        incr _ind1578
     }
-    #item 15100001
-    set _col1510 $methods
-    set _len1510 [ llength $_col1510 ]
-    set _ind1510 0
-    while { 1 } {
-        #item 15100002
-        if {$_ind1510 < $_len1510} {
-            
-        } else {
-            break
-        }
-        #item 15100004
-        set method [ lindex $_col1510 $_ind1510 ]
+    foreach method $methods {
         #item 1559
         set body [ get_value $method body ]
         #item 1512
@@ -3991,8 +3489,6 @@ proc print_class_impl { class lines_var } {
         lappend lines $body_block
         #item 1514
         lappend lines "\}"
-        #item 15100003
-        incr _ind1510
     }
 }
 
@@ -4161,19 +3657,7 @@ proc read_matrix { table name } {
             set defaults {}
             #item 3224
             set rows [ lrange $table 2 end ]
-            #item 32250001
-            set _col3225 $rows
-            set _len3225 [ llength $_col3225 ]
-            set _ind3225 0
-            while { 1 } {
-                #item 32250002
-                if {$_ind3225 < $_len3225} {
-                    
-                } else {
-                    break
-                }
-                #item 32250004
-                set row [ lindex $_col3225 $_ind3225 ]
+            foreach row $rows {
                 #item 3227
                 set state [ lindex $row 0 ]
                 #item 32280001
@@ -4205,8 +3689,6 @@ proc read_matrix { table name } {
                 }
                 #item 3236
                 lappend state_list $state
-                #item 32250003
-                incr _ind3225
             }
         } else {
             #item 3223
@@ -4513,19 +3995,7 @@ proc select_ser_fields { fields } {
     set fnames [ get_keys $fields ]
     #item 2413
     set result {}
-    #item 24150001
-    set _col2415 $fnames
-    set _len2415 [ llength $_col2415 ]
-    set _ind2415 0
-    while { 1 } {
-        #item 24150002
-        if {$_ind2415 < $_len2415} {
-            
-        } else {
-            break
-        }
-        #item 24150004
-        set fname [ lindex $_col2415 $_ind2415 ]
+    foreach fname $fnames {
         #item 2417
         set field [ get_value $fields $fname ]
         set class [ get_value $field class ]
@@ -4536,8 +4006,6 @@ proc select_ser_fields { fields } {
             #item 2421
             lappend result $fname
         }
-        #item 24150003
-        incr _ind2415
     }
     #item 2414
     return $result
@@ -4567,19 +4035,7 @@ proc smethod_args { arguments lines_var } {
         #item 1487
         set first_args [ lrange $arguments 0 end-1 ]
         set last_arg [ lindex $arguments end ]
-        #item 14880001
-        set _col1488 $first_args
-        set _len1488 [ llength $_col1488 ]
-        set _ind1488 0
-        while { 1 } {
-            #item 14880002
-            if {$_ind1488 < $_len1488} {
-                
-            } else {
-                break
-            }
-            #item 14880004
-            set arg [ lindex $_col1488 $_ind1488 ]
+        foreach arg $first_args {
             #item 1490
             set atype [ get_value $arg type ]
             set aname [ get_value $arg name ]
@@ -4592,8 +4048,6 @@ proc smethod_args { arguments lines_var } {
                 #item 1494
                 lappend lines "    $atype $aname, // $acomm"
             }
-            #item 14880003
-            incr _ind1488
         }
         #item 1496
         set atype [ get_value $last_arg type ]

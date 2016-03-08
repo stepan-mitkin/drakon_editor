@@ -241,19 +241,7 @@ proc right_if { condition } {
 proc switch_bug { items special } {
     #item 218
     set result ""
-    #item 2060001
-    set _col206 $items
-    set _len206 [ llength $_col206 ]
-    set _ind206 0
-    while { 1 } {
-        #item 2060002
-        if {$_ind206 < $_len206} {
-            
-        } else {
-            break
-        }
-        #item 2060004
-        set item [ lindex $_col206 $_ind206 ]
+    foreach item $items {
         #item 201
         if {$item == "foo"} {
             #item 204
@@ -278,8 +266,6 @@ proc switch_bug { items special } {
         }
         #item 217
         append result "V"
-        #item 2060003
-        incr _ind206
     }
     #item 215
     return $result

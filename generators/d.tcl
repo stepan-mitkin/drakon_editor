@@ -378,7 +378,11 @@ proc p.not { operand } {
 
 # Declares and inits a variable
 proc declare { type name value } {
-    return "$type $name = $value;"
+    if { $value == "" } {
+	return "$type $name;"
+    } else {
+	return "$type $name = $value;"
+    }
 }
 
 # Builds code for a __shelf__ icon.

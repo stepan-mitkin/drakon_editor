@@ -292,21 +292,7 @@ proc p.jump { output item_id base depth next_item_id has_text items i } {
 }
 
 proc p.one_exit { links item_id } {
-    #item 1910001
-    set _col191 $links
-    set _len191 [ llength $_col191 ]
-    set _ind191 0
-    while { 1 } {
-        #item 1910002
-        if {$_ind191 < $_len191} {
-            
-        } else {
-            #item 204
-            return $found
-            break
-        }
-        #item 1910004
-        set link [ lindex $_col191 $_ind191 ]
+    foreach link $links {
         #item 190
         set linked_item [ lindex $link 0 ]
         #item 238
@@ -322,12 +308,11 @@ proc p.one_exit { links item_id } {
             } else {
                 #item 205
                 return 0
-                break
             }
         }
-        #item 1910003
-        incr _ind191
     }
+    #item 204
+    return $found
 }
 
 proc save_callbacks { callbacks } {

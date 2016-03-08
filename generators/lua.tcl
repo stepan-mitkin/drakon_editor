@@ -82,8 +82,14 @@ proc compare { variable constant } {
 }
 
 proc declare { type name value } {
-    #item 1434
-    return "local $name = $value"
+    #item 2094
+    if {$value == ""} {
+        #item 2097
+        return "local $name"
+    } else {
+        #item 1434
+        return "local $name = $value"
+    }
 }
 
 proc else_start { } {
@@ -223,23 +229,9 @@ proc generate { db gdb filename } {
     	from vertices
     	group by diagram_id
     } ]
-    #item 17680001
-    set _col1768 $diagrams
-    set _len1768 [ llength $_col1768 ]
-    set _ind1768 0
-    while { 1 } {
-        #item 17680002
-        if {$_ind1768 < $_len1768} {
-            
-        } else {
-            break
-        }
-        #item 17680004
-        set diagram_id [ lindex $_col1768 $_ind1768 ]
+    foreach diagram_id $diagrams {
         #item 1766
         rewire_lua_for $gdb $diagram_id
-        #item 17680003
-        incr _ind1768
     }
     #item 1284
     set callbacks [ make_callbacks ]
@@ -256,23 +248,9 @@ proc generate { db gdb filename } {
     #item 1812
     set diagrams [ $gdb eval {
     	select diagram_id from diagrams } ]
-    #item 18100001
-    set _col1810 $diagrams
-    set _len1810 [ llength $_col1810 ]
-    set _ind1810 0
-    while { 1 } {
-        #item 18100002
-        if {$_ind1810 < $_len1810} {
-            
-        } else {
-            break
-        }
-        #item 18100004
-        set diagram_id [ lindex $_col1810 $_ind1810 ]
+    foreach diagram_id $diagrams {
         #item 1809
         gen::fix_graph_for_diagram $gdb $callbacks 0 $diagram_id
-        #item 18100003
-        incr _ind1810
     }
     #item 1279
     set sections { header footer }
@@ -327,19 +305,7 @@ proc highlight { tokens } {
     set state "idle"
     #item 1976
     variable keywords
-    #item 19420001
-    set _col1942 $tokens
-    set _len1942 [ llength $_col1942 ]
-    set _ind1942 0
-    while { 1 } {
-        #item 19420002
-        if {$_ind1942 < $_len1942} {
-            
-        } else {
-            break
-        }
-        #item 19420004
-        set token [ lindex $_col1942 $_ind1942 ]
+    foreach token $tokens {
         #item 2024
         lassign $token type text
         #item 19370001
@@ -474,8 +440,6 @@ proc highlight { tokens } {
                 }
             }
         }
-        #item 19420003
-        incr _ind1942
     }
     #item 2082
     if {$state == "comment start"} {
@@ -618,42 +582,14 @@ proc make_callbacks { } {
 proc make_machine_ctr { name states param_names messages } {
     #item 1890
     set lines {}
-    #item 18880001
-    set _col1888 $states
-    set _len1888 [ llength $_col1888 ]
-    set _ind1888 0
-    while { 1 } {
-        #item 18880002
-        if {$_ind1888 < $_len1888} {
-            
-        } else {
-            break
-        }
-        #item 18880004
-        set state [ lindex $_col1888 $_ind1888 ]
-        #item 18930001
-        set _col1893 $messages
-        set _len1893 [ llength $_col1893 ]
-        set _ind1893 0
-        while { 1 } {
-            #item 18930002
-            if {$_ind1893 < $_len1893} {
-                
-            } else {
-                break
-            }
-            #item 18930004
-            set message [ lindex $_col1893 $_ind1893 ]
+    foreach state $states {
+        foreach message $messages {
             #item 1895
             lappend lines \
              "${name}_state_${state}.$message = ${name}_${state}_${message}"
-            #item 18930003
-            incr _ind1893
         }
         #item 1896
         lappend lines "${name}_state_${state}.state_name = \"$state\""
-        #item 18880003
-        incr _ind1888
     }
     #item 1899
     set params [ lrange $param_names 1 end ]
@@ -669,19 +605,7 @@ proc make_machine_ctr { name states param_names messages } {
     #item 1903
     set first [ lindex $states 0 ]
     lappend lines "  obj.state = ${name}_state_${first}"
-    #item 19000001
-    set _col1900 $messages
-    set _len1900 [ llength $_col1900 ]
-    set _ind1900 0
-    while { 1 } {
-        #item 19000002
-        if {$_ind1900 < $_len1900} {
-            
-        } else {
-            break
-        }
-        #item 19000004
-        set message [ lindex $_col1900 $_ind1900 ]
+    foreach message $messages {
         #item 1904
         lappend lines \
          "  obj.$message = function\($params_str\)"
@@ -689,8 +613,6 @@ proc make_machine_ctr { name states param_names messages } {
          "    self.state.$message\($params_str\)"
         lappend lines \
          "  end"
-        #item 19000003
-        incr _ind1900
     }
     #item 1898
     lappend lines "  return obj"
@@ -702,19 +624,7 @@ proc make_machine_ctr { name states param_names messages } {
 proc make_machine_ctrs { machines } {
     #item 1869
     set result ""
-    #item 18670001
-    set _col1867 $machines
-    set _len1867 [ llength $_col1867 ]
-    set _ind1867 0
-    while { 1 } {
-        #item 18670002
-        if {$_ind1867 < $_len1867} {
-            
-        } else {
-            break
-        }
-        #item 18670004
-        set machine [ lindex $_col1867 $_ind1867 ]
+    foreach machine $machines {
         #item 1864
         set states [ dict get $machine "states"]
         set param_names [ dict get $machine "param_names" ]
@@ -725,8 +635,6 @@ proc make_machine_ctrs { machines } {
         [make_machine_ctr $name $states $param_names $messages]
         #item 1863
         append result $ctr
-        #item 18670003
-        incr _ind1867
     }
     #item 1843
     return $result
@@ -735,42 +643,14 @@ proc make_machine_ctrs { machines } {
 proc make_machine_declares { machines } {
     #item 1913
     set lines {}
-    #item 19110001
-    set _col1911 $machines
-    set _len1911 [ llength $_col1911 ]
-    set _ind1911 0
-    while { 1 } {
-        #item 19110002
-        if {$_ind1911 < $_len1911} {
-            
-        } else {
-            break
-        }
-        #item 19110004
-        set machine [ lindex $_col1911 $_ind1911 ]
+    foreach machine $machines {
         #item 1910
         set states [ dict get $machine "states"]
         set name [ dict get $machine "name" ]
-        #item 19180001
-        set _col1918 $states
-        set _len1918 [ llength $_col1918 ]
-        set _ind1918 0
-        while { 1 } {
-            #item 19180002
-            if {$_ind1918 < $_len1918} {
-                
-            } else {
-                break
-            }
-            #item 19180004
-            set state [ lindex $_col1918 $_ind1918 ]
+        foreach state $states {
             #item 1914
             lappend lines "${name}_state_${state} = \{\}"
-            #item 19180003
-            incr _ind1918
         }
-        #item 19110003
-        incr _ind1911
     }
     #item 1915
     return [ join $lines "\n" ]
@@ -903,43 +783,15 @@ proc print_function { fhandle function } {
         append line "\)"
         #item 552
         lappend result $line
-        #item 5830001
-        set _col583 $body
-        set _len583 [ llength $_col583 ]
-        set _ind583 0
-        while { 1 } {
-            #item 5830002
-            if {$_ind583 < $_len583} {
-                
-            } else {
-                break
-            }
-            #item 5830004
-            set line [ lindex $_col583 $_ind583 ]
+        foreach line $body {
             #item 582
             lappend result "    $line"
-            #item 5830003
-            incr _ind583
         }
         #item 585
         lappend result "end"
-        #item 10200001
-        set _col1020 $result
-        set _len1020 [ llength $_col1020 ]
-        set _ind1020 0
-        while { 1 } {
-            #item 10200002
-            if {$_ind1020 < $_len1020} {
-                
-            } else {
-                break
-            }
-            #item 10200004
-            set line [ lindex $_col1020 $_ind1020 ]
+        foreach line $result {
             #item 1022
             puts $fhandle $line
-            #item 10200003
-            incr _ind1020
         }
         #item 1023
         puts $fhandle ""
@@ -953,23 +805,9 @@ proc print_to_file { fhandle functions header footer machine_decl machine_ctrs }
     puts $fhandle $header
     #item 1917
     puts $fhandle $machine_decl
-    #item 15680001
-    set _col1568 $functions
-    set _len1568 [ llength $_col1568 ]
-    set _ind1568 0
-    while { 1 } {
-        #item 15680002
-        if {$_ind1568 < $_len1568} {
-            
-        } else {
-            break
-        }
-        #item 15680004
-        set function [ lindex $_col1568 $_ind1568 ]
+    foreach function $functions {
         #item 1570
         print_function $fhandle $function
-        #item 15680003
-        incr _ind1568
     }
     #item 1819
     puts $fhandle $machine_ctrs
@@ -1000,19 +838,7 @@ proc rewire_lua_for { gdb diagram_id } {
     } ]
     #item 1733
     set loop_vars {}
-    #item 17340001
-    set _col1734 $starts
-    set _len1734 [ llength $_col1734 ]
-    set _ind1734 0
-    while { 1 } {
-        #item 17340002
-        if {$_ind1734 < $_len1734} {
-            
-        } else {
-            break
-        }
-        #item 17340004
-        set vertex_id [ lindex $_col1734 $_ind1734 ]
+    foreach vertex_id $starts {
         #item 1736
         unpack [ $gdb eval { 
         	select text, item_id
@@ -1031,8 +857,6 @@ proc rewire_lua_for { gdb diagram_id } {
         }
         #item 1740
         lappend loop_vars $var
-        #item 17340003
-        incr _ind1734
     }
     #item 1753
     set var_list [ lsort -unique $loop_vars ]
@@ -1045,7 +869,7 @@ proc rewire_lua_for { gdb diagram_id } {
         #item 1756
         set declaration "local $vars_comma"
         #item 1757
-        gen::p.save_declare_kernel $gdb $diagram_id $declaration 1
+        gen::p.save_declare_kernel $gdb $diagram_id $declaration 0
     }
 }
 
@@ -1059,19 +883,7 @@ proc split_vars { $item_id var_list } {
     set raw [ split $var_list "," ]
     #item 1653
     set result {}
-    #item 16550001
-    set _col1655 $raw
-    set _len1655 [ llength $_col1655 ]
-    set _ind1655 0
-    while { 1 } {
-        #item 16550002
-        if {$_ind1655 < $_len1655} {
-            
-        } else {
-            break
-        }
-        #item 16550004
-        set part [ lindex $_col1655 $_ind1655 ]
+    foreach part $raw {
         #item 1657
         set stripped [ string trim $part ]
         #item 1658
@@ -1081,8 +893,6 @@ proc split_vars { $item_id var_list } {
             #item 1661
             lappend result $stripped
         }
-        #item 16550003
-        incr _ind1655
     }
     #item 1663
     if {$result == {}} {
@@ -1105,19 +915,7 @@ proc to_tokens { text } {
     set tokens [ search::to_tokens $text ]
     #item 1701
     set result {}
-    #item 17030001
-    set _col1703 $tokens
-    set _len1703 [ llength $_col1703 ]
-    set _ind1703 0
-    while { 1 } {
-        #item 17030002
-        if {$_ind1703 < $_len1703} {
-            
-        } else {
-            break
-        }
-        #item 17030004
-        set token [ lindex $_col1703 $_ind1703 ]
+    foreach token $tokens {
         #item 1705
         set text [ lindex $token 0 ]
         #item 1706
@@ -1129,8 +927,6 @@ proc to_tokens { text } {
             #item 1707
             lappend result $text
         }
-        #item 17030003
-        incr _ind1703
     }
     #item 1702
     return $result

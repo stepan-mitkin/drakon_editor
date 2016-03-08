@@ -113,6 +113,45 @@ proc foreach_demo { } {
     print_list_foreach $sequence
     #item 183
     puts ""
+    #item 379
+    test_early 20 60
+    #item 381
+    test_early 35 70
+    #item 382
+    test_early 4 0
+}
+
+proc foreach_early_exit { value } {
+    
+    set normal_351 1
+    foreach x {10 20 30} {
+        #item 357
+        if {$x == $value} {
+            #item 361
+            set found $x
+            set normal_351 0
+            break
+        } else {
+            
+        }
+    }
+    if {$normal_351 == 1} {
+        #item 360
+        set found 0
+    }
+    foreach x {40 20 70} {
+        #item 380
+        set m [ expr { $x / 2 } ]
+        #item 364
+        if {$m == $value} {
+            #item 368
+            return [expr {$x + $found}]
+        } else {
+            
+        }
+    }
+    #item 367
+    return 0
 }
 
 proc main { } {
@@ -177,23 +216,9 @@ proc print_list_for { collection } {
 proc print_list_foreach { collection } {
     #item 137
     puts "using foreach:"
-    #item 1110001
-    set _col111 $collection
-    set _len111 [ llength $_col111 ]
-    set _ind111 0
-    while { 1 } {
-        #item 1110002
-        if {$_ind111 < $_len111} {
-            
-        } else {
-            break
-        }
-        #item 1110004
-        set item [ lindex $_col111 $_ind111 ]
+    foreach item $collection {
         #item 112
         write $item
-        #item 1110003
-        incr _ind111
     }
     #item 136
     puts ""
@@ -373,6 +398,19 @@ proc strings_are_sorted { array } {
             return {}
     
         }
+    }
+}
+
+proc test_early { value expected } {
+    #item 374
+    set actual \
+    [foreach_early_exit $value]
+    #item 375
+    if {$actual == $expected} {
+        
+    } else {
+        #item 378
+        error "foreach_early_exit failed $actual $expected"
     }
 }
 

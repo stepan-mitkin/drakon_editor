@@ -71,6 +71,47 @@ public class Demo {
         PrintListForeach(sequence);
         // item 156
         Console.WriteLine();
+        // item 291
+        TestEarly(20, 60);
+        // item 292
+        TestEarly(35, 70);
+        // item 293
+        TestEarly(4, 0);
+    }
+
+    private static int ForeachEarlyExit(int value) {
+        // item 279
+        int found = -1;
+        int normal_262;
+        normal_262 = 1;
+        foreach (int x in new int[] {10, 20, 30}) {
+            // item 266
+            if (x == value) {
+                // item 270
+                found = x;
+                normal_262 = 0;
+                break;
+            } else {
+                
+            }
+        }
+        if (normal_262 == 1) {
+            // item 269
+            found = 0;
+        }
+        foreach (int x in new int[] {40, 20, 70}) {
+            // item 278
+            int m = x / 2;
+            // item 273
+            if (m == value) {
+                // item 277
+                return x + found;
+            } else {
+                
+            }
+        }
+        // item 276
+        return 0;
     }
 
     private static void Print(Object[] collection) {
@@ -259,6 +300,18 @@ public class Demo {
                 throw new InvalidOperationException("Collection is not sorted.");
         
             }
+        }
+    }
+
+    private static void TestEarly(int value, int expected) {
+        // item 285
+        int actual = ForeachEarlyExit(value);
+        // item 286
+        if (actual == expected) {
+            
+        } else {
+            // item 289
+            throw new Exception("foreach_early_exit failed: " + actual + " " + expected);
         }
     }
 

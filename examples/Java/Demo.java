@@ -159,6 +159,47 @@ public class Demo {
         printListForeach(sequence);
         // item 156
         System.out.println();
+        // item 284
+        testEarly(20, 60);
+        // item 285
+        testEarly(35, 70);
+        // item 286
+        testEarly(4, 0);
+    }
+
+    private static int foreachEarlyExit(int value) {
+        // item 272
+        int found = -1;
+        int normal_256;
+        normal_256 = 1;
+        for (int x : new int[] {10, 20, 30}) {
+            // item 260
+            if (x == value) {
+                // item 264
+                found = x;
+                normal_256 = 0;
+                break;
+            } else {
+                
+            }
+        }
+        if (normal_256 == 1) {
+            // item 263
+            found = 0;
+        }
+        for (int x : new int[] {40, 20, 70}) {
+            // item 271
+            int m = x / 2;
+            // item 266
+            if (m == value) {
+                // item 270
+                return x + found;
+            } else {
+                
+            }
+        }
+        // item 269
+        return 0;
     }
 
     private static void print(List<Object> collection) {
@@ -315,6 +356,18 @@ public class Demo {
                 throw new IllegalStateException("Collection is not sorted.");
         
             }
+        }
+    }
+
+    private static void testEarly(int value, int expected) {
+        // item 279
+        int actual = foreachEarlyExit(value);
+        // item 280
+        if (actual == expected) {
+            
+        } else {
+            // item 283
+            throw new IllegalStateException("foreach_early_exit failed: " + actual + " " + expected);
         }
     }
 

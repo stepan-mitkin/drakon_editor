@@ -148,6 +148,41 @@ static pure int[] fibonacci(int n) {
     return result;
 }
 
+int foreachEarlyExit(int value) {
+    // item 192
+    int found = -1;
+    int normal_176;
+    normal_176 = 1;
+    foreach (int x; [10, 20, 30]) {
+        // item 180
+        if (x == value) {
+            // item 184
+            found = x;
+            normal_176 = 0;
+            break;
+        } else {
+            
+        }
+    }
+    if (normal_176 == 1) {
+        // item 183
+        found = 0;
+    }
+    foreach (int x; [40, 20, 70]) {
+        // item 191
+        int m = x / 2;
+        // item 186
+        if (m == value) {
+            // item 190
+            return x + found;
+        } else {
+            
+        }
+    }
+    // item 189
+    return 0;
+}
+
 static void iterate_arrow(const(int)[] numbers) {
     // item 86
     int i = 0;
@@ -203,6 +238,12 @@ void run() {
     iterate_arrow2(numbers);
     // item 154
     alt_select_test();
+    // item 204
+    testEarly(20, 60);
+    // item 205
+    testEarly(35, 70);
+    // item 206
+    testEarly(4, 0);
     foreach (int i, int n; numbers) {
         // item 159
         writefln("%d:%d ", i, n);
@@ -218,6 +259,18 @@ void run() {
     }
     // item 65
     writeln();
+}
+
+void testEarly(int value, int expected) {
+    // item 199
+    int actual = foreachEarlyExit(value);
+    // item 200
+    if (actual == expected) {
+        
+    } else {
+        // item 203
+        throw new Exception("foreach_early_exit failed");
+    }
 }
 
 // This part goes to the end of the file.

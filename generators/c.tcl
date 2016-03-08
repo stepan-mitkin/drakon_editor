@@ -73,34 +73,19 @@ proc compare { variable constant } {
 }
 
 proc contains_exit { links item_id } {
-    #item 5330001
-    set _col533 $links
-    set _len533 [ llength $_col533 ]
-    set _ind533 0
-    while { 1 } {
-        #item 5330002
-        if {$_ind533 < $_len533} {
-            
-        } else {
-            #item 546
-            return 0
-            break
-        }
-        #item 5330004
-        set link [ lindex $_col533 $_ind533 ]
+    foreach link $links {
         #item 532
         set linked_item [ lindex $link 0 ]
         #item 550
         if {$linked_item == $item_id} {
             #item 548
             return 1
-            break
         } else {
             
         }
-        #item 5330003
-        incr _ind533
     }
+    #item 546
+    return 0
 }
 
 proc declare { type name value } {
@@ -395,59 +380,17 @@ proc print_c { header_filename fhandle public static header footer } {
     #item 206
     puts $fhandle ""
     puts $fhandle $header
-    #item 2150001
-    set _col215 $static
-    set _len215 [ llength $_col215 ]
-    set _ind215 0
-    while { 1 } {
-        #item 2150002
-        if {$_ind215 < $_len215} {
-            
-        } else {
-            break
-        }
-        #item 2150004
-        set function [ lindex $_col215 $_ind215 ]
+    foreach function $static {
         #item 217
         print_function $fhandle $function 1
-        #item 2150003
-        incr _ind215
     }
-    #item 2070001
-    set _col207 $static
-    set _len207 [ llength $_col207 ]
-    set _ind207 0
-    while { 1 } {
-        #item 2070002
-        if {$_ind207 < $_len207} {
-            
-        } else {
-            break
-        }
-        #item 2070004
-        set function [ lindex $_col207 $_ind207 ]
+    foreach function $static {
         #item 209
         print_function $fhandle $function 0
-        #item 2070003
-        incr _ind207
     }
-    #item 2190001
-    set _col219 $public
-    set _len219 [ llength $_col219 ]
-    set _ind219 0
-    while { 1 } {
-        #item 2190002
-        if {$_ind219 < $_len219} {
-            
-        } else {
-            break
-        }
-        #item 2190004
-        set function [ lindex $_col219 $_ind219 ]
+    foreach function $public {
         #item 221
         print_function $fhandle $function 0
-        #item 2190003
-        incr _ind219
     }
     #item 210
     puts $fhandle $footer
@@ -461,24 +404,10 @@ proc print_function { fhandle function declaration } {
     #item 228
     unpack $signature type access parameters returns
     set param_names {}
-    #item 2360001
-    set _col236 $parameters
-    set _len236 [ llength $_col236 ]
-    set _ind236 0
-    while { 1 } {
-        #item 2360002
-        if {$_ind236 < $_len236} {
-            
-        } else {
-            break
-        }
-        #item 2360004
-        set parameter [ lindex $_col236 $_ind236 ]
+    foreach parameter $parameters {
         #item 235
         set pname [ lindex $parameter 0 ]
         lappend param_names $pname
-        #item 2360003
-        incr _ind236
     }
     #item 503
     set param_count [ llength $param_names ]
@@ -547,23 +476,9 @@ proc print_header { filename fhandle functions header footer } {
     #item 183
     puts $fhandle ""
     puts $fhandle $header
-    #item 1840001
-    set _col184 $functions
-    set _len184 [ llength $_col184 ]
-    set _ind184 0
-    while { 1 } {
-        #item 1840002
-        if {$_ind184 < $_len184} {
-            
-        } else {
-            break
-        }
-        #item 1840004
-        set function [ lindex $_col184 $_ind184 ]
+    foreach function $functions {
         #item 186
         print_function $fhandle $function 1
-        #item 1840003
-        incr _ind184
     }
     #item 187
     puts $fhandle $footer
@@ -576,19 +491,7 @@ proc print_switches { output node_list } {
     #item 558
     upvar 1 $output result
     array set nodes $node_list
-    #item 5590001
-    set _col559 [ array names nodes ]
-    set _len559 [ llength $_col559 ]
-    set _ind559 0
-    while { 1 } {
-        #item 5590002
-        if {$_ind559 < $_len559} {
-            
-        } else {
-            break
-        }
-        #item 5590004
-        set item_id [ lindex $_col559 $_ind559 ]
+    foreach item_id [ array names nodes ] {
         #item 561
         set node $nodes($item_id)	
         unpack $node body links
@@ -601,8 +504,6 @@ proc print_switches { output node_list } {
         } else {
             
         }
-        #item 5590003
-        incr _ind559
     }
 }
 

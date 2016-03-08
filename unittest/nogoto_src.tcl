@@ -304,23 +304,9 @@ proc ExitToAbove { } {
 proc ForEach { } {
     #item 171
     set counter 0
-    #item 1720001
-    set _col172 { a a a a }
-    set _len172 [ llength $_col172 ]
-    set _ind172 0
-    while { 1 } {
-        #item 1720002
-        if {$_ind172 < $_len172} {
-            
-        } else {
-            break
-        }
-        #item 1720004
-        set i [ lindex $_col172 $_ind172 ]
+    foreach i { a a a a } {
         #item 174
         incr counter
-        #item 1720003
-        incr _ind172
     }
     #item 175
     return $counter
@@ -329,19 +315,7 @@ proc ForEach { } {
 proc ForEachBreak { } {
     #item 179
     set counter 0
-    #item 1800001
-    set _col180 { a a a a a a }
-    set _len180 [ llength $_col180 ]
-    set _ind180 0
-    while { 1 } {
-        #item 1800002
-        if {$_ind180 < $_len180} {
-            
-        } else {
-            break
-        }
-        #item 1800004
-        set i [ lindex $_col180 $_ind180 ]
+    foreach i { a a a a a a } {
         #item 184
         if {$counter > 2} {
             break
@@ -350,8 +324,6 @@ proc ForEachBreak { } {
         }
         #item 182
         incr counter
-        #item 1800003
-        incr _ind180
     }
     #item 183
     return $counter

@@ -33,34 +33,10 @@ proc assemble { item indent class } {
     set class_name [ tab::get_class_name $class ]
     #item 361
     a "var _record_ = new $class_name\(id\);" $indent
-    #item 3540001
-    set _col354 $classes
-    set _len354 [ llength $_col354 ]
-    set _ind354 0
-    while { 1 } {
-        #item 3540002
-        if {$_ind354 < $_len354} {
-            
-        } else {
-            break
-        }
-        #item 3540004
-        set class [ lindex $_col354 $_ind354 ]
+    foreach class $classes {
         #item 353
         set fields [ dict get $indexed $class ]
-        #item 3560001
-        set _col356 $fields
-        set _len356 [ llength $_col356 ]
-        set _ind356 0
-        while { 1 } {
-            #item 3560002
-            if {$_ind356 < $_len356} {
-                
-            } else {
-                break
-            }
-            #item 3560004
-            set field [ lindex $_col356 $_ind356 ]
+        foreach field $fields {
             #item 359
             set field_name [ tab::get_field_name $field ]
             set link [ tab::get_field2_link $field ]
@@ -76,33 +52,15 @@ proc assemble { item indent class } {
             }
             #item 595
             a "_record_.$uname = $arg_name;" $indent
-            #item 3560003
-            incr _ind356
         }
-        #item 3540003
-        incr _ind354
     }
     #item 852
     set chain [ tab::inheritance_chain $class ]
-    #item 8530001
-    set _col853 $chain
-    set _len853 [ llength $_col853 ]
-    set _ind853 0
-    while { 1 } {
-        #item 8530002
-        if {$_ind853 < $_len853} {
-            
-        } else {
-            break
-        }
-        #item 8530004
-        set cls [ lindex $_col853 $_ind853 ]
+    foreach cls $chain {
         #item 855
         set main_index [ pk_index_name $cls ]
         #item 856
         a "$main_index\[id\] = _record_;" $indent
-        #item 8530003
-        incr _ind853
     }
 }
 
@@ -310,23 +268,9 @@ proc comparer { index } {
     a "    private class $name : IEqualityComparer<$class_name> \{"
     #item 95
     a "        public bool Equals\($class_name x, $class_name y\) \{"
-    #item 1700001
-    set _col170 $fields
-    set _len170 [ llength $_col170 ]
-    set _ind170 0
-    while { 1 } {
-        #item 1700002
-        if {$_ind170 < $_len170} {
-            
-        } else {
-            break
-        }
-        #item 1700004
-        set field_name [ lindex $_col170 $_ind170 ]
+    foreach field_name $fields {
         #item 172
         compare $class $field_name
-        #item 1700003
-        incr _ind170
     }
     #item 96
     a "            return true;"
@@ -335,25 +279,11 @@ proc comparer { index } {
     a "        public int GetHashCode\($class_name obj\) \{"
     #item 176
     set first 1
-    #item 1730001
-    set _col173 $fields
-    set _len173 [ llength $_col173 ]
-    set _ind173 0
-    while { 1 } {
-        #item 1730002
-        if {$_ind173 < $_len173} {
-            
-        } else {
-            break
-        }
-        #item 1730004
-        set field_name [ lindex $_col173 $_ind173 ]
+    foreach field_name $fields {
         #item 175
         hash $first $class $field_name
         #item 177
         set first 0
-        #item 1730003
-        incr _ind173
     }
     #item 94
     a "            return code;"
@@ -409,19 +339,7 @@ proc create_wrapper { field } {
 proc data_classes { classes db_class_name methods } {
     #item 240
     set in "    "
-    #item 2310001
-    set _col231 $classes
-    set _len231 [ llength $_col231 ]
-    set _ind231 0
-    while { 1 } {
-        #item 2310002
-        if {$_ind231 < $_len231} {
-            
-        } else {
-            break
-        }
-        #item 2310004
-        set class [ lindex $_col231 $_ind231 ]
+    foreach class $classes {
         #item 1260
         if {[dict exists $methods $class]} {
             #item 1263
@@ -449,19 +367,7 @@ proc data_classes { classes db_class_name methods } {
             a "private class $class_name : $base_name, I$class_name, IDelRecord \{" $in
             a "    public $class_name\(int id\) : base\(id\) \{" $in
         }
-        #item 2450001
-        set _col245 $fields
-        set _len245 [ llength $_col245 ]
-        set _ind245 0
-        while { 1 } {
-            #item 2450002
-            if {$_ind245 < $_len245} {
-                
-            } else {
-                break
-            }
-            #item 2450004
-            set field [ lindex $_col245 $_ind245 ]
+        foreach field $fields {
             #item 247
             set type [ tab::get_field2_type $field ]
             #item 248
@@ -471,8 +377,6 @@ proc data_classes { classes db_class_name methods } {
             } else {
                 
             }
-            #item 2450003
-            incr _ind245
         }
         #item 260
         a "    \}" $in
@@ -486,23 +390,9 @@ proc data_classes { classes db_class_name methods } {
         } else {
             
         }
-        #item 2420001
-        set _col242 $fields
-        set _len242 [ llength $_col242 ]
-        set _ind242 0
-        while { 1 } {
-            #item 2420002
-            if {$_ind242 < $_len242} {
-                
-            } else {
-                break
-            }
-            #item 2420004
-            set field [ lindex $_col242 $_ind242 ]
+        foreach field $fields {
             #item 244
             class_field $field
-            #item 2420003
-            incr _ind242
         }
         #item 939
         gen_can_delete $class
@@ -513,8 +403,6 @@ proc data_classes { classes db_class_name methods } {
         a "\}" $in
         #item 997
         gen_key_record $class
-        #item 2310003
-        incr _ind231
     }
 }
 
@@ -913,25 +801,11 @@ proc gen_do_delete { class db_class_name } {
     #item 936
     set chain [ tab::inheritance_chain $class ]
     set chain [ lreverse $chain ]
-    #item 9370001
-    set _col937 $chain
-    set _len937 [ llength $_col937 ]
-    set _ind937 0
-    while { 1 } {
-        #item 9370002
-        if {$_ind937 < $_len937} {
-            
-        } else {
-            break
-        }
-        #item 9370004
-        set cls [ lindex $_col937 $_ind937 ]
+    foreach cls $chain {
         #item 930
         set main_index [ pk_index_name $cls ]
         #item 959
         a "db.$main_index.Remove\(_id\);" $indent
-        #item 9370003
-        incr _ind937
     }
     #item 928
     a "        \}"
@@ -945,19 +819,7 @@ proc gen_find { class } {
     set class_name [ tab::get_class_name $class ]
     set iface "I$class_name"
     set indent "        "
-    #item 9700001
-    set _col970 $indexes
-    set _len970 [ llength $_col970 ]
-    set _ind970 0
-    while { 1 } {
-        #item 9700002
-        if {$_ind970 < $_len970} {
-            
-        } else {
-            break
-        }
-        #item 9700004
-        set index [ lindex $_col970 $_ind970 ]
+    foreach index $indexes {
         #item 980
         set name [ find_name $index ]
         set fields [ tab::index_fields $index ]
@@ -978,8 +840,6 @@ proc gen_find { class } {
         a "\}" $indent
         #item 984
         a "    \}"
-        #item 9700003
-        incr _ind970
     }
 }
 
@@ -1058,19 +918,7 @@ proc gen_key { fields changed indent } {
 }
 
 proc gen_key_insert { key_name fields indent } {
-    #item 6730001
-    set _col673 $fields
-    set _len673 [ llength $_col673 ]
-    set _ind673 0
-    while { 1 } {
-        #item 6730002
-        if {$_ind673 < $_len673} {
-            
-        } else {
-            break
-        }
-        #item 6730004
-        set field [ lindex $_col673 $_ind673 ]
+    foreach field $fields {
         #item 1136
         set fname [ tab::get_field_name $field ]
         set link [ tab::get_field2_link $field ]
@@ -1087,8 +935,6 @@ proc gen_key_insert { key_name fields indent } {
             #item 1141
             a "$key_name.$uname = \($type\)$lname;" $indent
         }
-        #item 6730003
-        incr _ind673
     }
 }
 
@@ -1107,19 +953,7 @@ proc gen_key_record { class } {
 }
 
 proc gen_key_update { key_name fields changed_name indent } {
-    #item 10680001
-    set _col1068 $fields
-    set _len1068 [ llength $_col1068 ]
-    set _ind1068 0
-    while { 1 } {
-        #item 10680002
-        if {$_ind1068 < $_len1068} {
-            
-        } else {
-            break
-        }
-        #item 10680004
-        set field [ lindex $_col1068 $_ind1068 ]
+    foreach field $fields {
         #item 1071
         set fname [ tab::get_field_name $field ]
         set uname [ first_underscore $fname ]
@@ -1141,8 +975,6 @@ proc gen_key_update { key_name fields changed_name indent } {
             #item 1070
             a "$key_name.$uname = _record_.$uname;" $indent
         }
-        #item 10680003
-        incr _ind1068
     }
 }
 
@@ -1192,19 +1024,7 @@ proc gen_setters { class } {
     #item 1014
     set class_name [ tab::get_class_name $class ]
     set fields [ tab::get_class_fields $class ]
-    #item 10150001
-    set _col1015 $fields
-    set _len1015 [ llength $_col1015 ]
-    set _ind1015 0
-    while { 1 } {
-        #item 10150002
-        if {$_ind1015 < $_len1015} {
-            
-        } else {
-            break
-        }
-        #item 10150004
-        set field [ lindex $_col1015 $_ind1015 ]
+    foreach field $fields {
         #item 1033
         set setter [ tab::core_update $field ]
         #item 1023
@@ -1221,8 +1041,6 @@ proc gen_setters { class } {
                 
             }
         }
-        #item 10150003
-        incr _ind1015
     }
 }
 
@@ -1261,47 +1079,9 @@ proc getter_only { type property field in } {
 proc has_arrow { class } {
     #item 1091
     set links [ tab::get_class_links $class ]
-    #item 10960001
-    set _col1096 $links
-    set _len1096 [ llength $_col1096 ]
-    set _ind1096 0
-    while { 1 } {
-        #item 10960002
-        if {$_ind1096 < $_len1096} {
-            
-        } else {
-            #item 1111
-            set derived [ tab::get_class2_derived $class ]
-            #item 11120001
-            set _col1112 $derived
-            set _len1112 [ llength $_col1112 ]
-            set _ind1112 0
-            while { 1 } {
-                #item 11120002
-                if {$_ind1112 < $_len1112} {
-                    
-                } else {
-                    #item 1118
-                    set result 0
-                    break
-                }
-                #item 11120004
-                set cls [ lindex $_col1112 $_ind1112 ]
-                #item 1114
-                if {[has_arrow $cls]} {
-                    #item 1117
-                    set result 1
-                    break
-                } else {
-                    
-                }
-                #item 11120003
-                incr _ind1112
-            }
-            break
-        }
-        #item 10960004
-        set link [ lindex $_col1096 $_ind1096 ]
+    
+    set normal_1096 1
+    foreach link $links {
         #item 1098
         set type [ tab::get_link_type $link ]
         set dst  [ tab::get_link_dst_table $link ]
@@ -1309,12 +1089,32 @@ proc has_arrow { class } {
         if {($type == "arrow") && ($dst == $class)} {
             #item 1109
             set result 1
+            set normal_1096 0
             break
         } else {
             
         }
-        #item 10960003
-        incr _ind1096
+    }
+    if {$normal_1096 == 1} {
+        #item 1111
+        set derived [ tab::get_class2_derived $class ]
+        
+        set normal_1112 1
+        foreach cls $derived {
+            #item 1114
+            if {[has_arrow $cls]} {
+                #item 1117
+                set result 1
+                set normal_1112 0
+                break
+            } else {
+                
+            }
+        }
+        if {$normal_1112 == 1} {
+            #item 1118
+            set result 0
+        }
     }
     #item 1120
     return $result
@@ -1415,25 +1215,11 @@ proc index_not_exists { item indent class } {
 proc indexes { classes } {
     #item 60
     set indexes [ tab::index_name_keys ]
-    #item 610001
-    set _col61 $indexes
-    set _len61 [ llength $_col61 ]
-    set _ind61 0
-    while { 1 } {
-        #item 610002
-        if {$_ind61 < $_len61} {
-            
-        } else {
-            break
-        }
-        #item 610004
-        set index [ lindex $_col61 $_ind61 ]
+    foreach index $indexes {
         #item 63
         comparer $index
         #item 64
         index_collection $index
-        #item 610003
-        incr _ind61
     }
 }
 
@@ -1509,19 +1295,7 @@ proc interfaces { classes db_class_name } {
     a "        void EnsureCanDelete\($list\);"
     a "        void DoDelete\($db_class_name db, $list\);"
     a "    \}"
-    #item 1850001
-    set _col185 $classes
-    set _len185 [ llength $_col185 ]
-    set _ind185 0
-    while { 1 } {
-        #item 1850002
-        if {$_ind185 < $_len185} {
-            
-        } else {
-            break
-        }
-        #item 1850004
-        set class [ lindex $_col185 $_ind185 ]
+    foreach class $classes {
         #item 187
         set class_name [ tab::get_class_name $class ]
         set base [ tab::get_class2_base $class ]
@@ -1536,19 +1310,7 @@ proc interfaces { classes db_class_name } {
             #item 192
             a "public interface I$class_name : I$base_name \{" $in
         }
-        #item 1960001
-        set _col196 $fields
-        set _len196 [ llength $_col196 ]
-        set _ind196 0
-        while { 1 } {
-            #item 1960002
-            if {$_ind196 < $_len196} {
-                
-            } else {
-                break
-            }
-            #item 1960004
-            set field [ lindex $_col196 $_ind196 ]
+        foreach field $fields {
             #item 1257
             if {[is_private $field]} {
                 
@@ -1556,13 +1318,9 @@ proc interfaces { classes db_class_name } {
                 #item 198
                 interface_field $field
             }
-            #item 1960003
-            incr _ind196
         }
         #item 195
         a "\}" $in
-        #item 1850003
-        incr _ind185
     }
 }
 
@@ -1603,19 +1361,7 @@ proc method_modifier { class } {
 }
 
 proc methods { classes links } {
-    #item 7670001
-    set _col767 $classes
-    set _len767 [ llength $_col767 ]
-    set _ind767 0
-    while { 1 } {
-        #item 7670002
-        if {$_ind767 < $_len767} {
-            
-        } else {
-            break
-        }
-        #item 7670004
-        set class [ lindex $_col767 $_ind767 ]
+    foreach class $classes {
         #item 769
         gen_insert $class
         gen_get $class
@@ -1624,22 +1370,8 @@ proc methods { classes links } {
         gen_delete $class
         gen_find $class
         gen_setters $class
-        #item 7670003
-        incr _ind767
     }
-    #item 11770001
-    set _col1177 $links
-    set _len1177 [ llength $_col1177 ]
-    set _ind1177 0
-    while { 1 } {
-        #item 11770002
-        if {$_ind1177 < $_len1177} {
-            
-        } else {
-            break
-        }
-        #item 11770004
-        set link [ lindex $_col1177 $_ind1177 ]
+    foreach link $links {
         #item 1179
         set type [ tab::get_link_type $link ]
         #item 1180
@@ -1650,8 +1382,6 @@ proc methods { classes links } {
         } else {
             
         }
-        #item 11770003
-        incr _ind1177
     }
 }
 
@@ -1672,19 +1402,7 @@ proc pk_index_name { class } {
 }
 
 proc pk_indexes { classes } {
-    #item 230001
-    set _col23 $classes
-    set _len23 [ llength $_col23 ]
-    set _ind23 0
-    while { 1 } {
-        #item 230002
-        if {$_ind23 < $_len23} {
-            
-        } else {
-            break
-        }
-        #item 230004
-        set class [ lindex $_col23 $_ind23 ]
+    foreach class $classes {
         #item 22
         set next [ next_name $class ]
         set class_name [ tab::get_class_name $class ]
@@ -1701,8 +1419,6 @@ proc pk_indexes { classes } {
         }
         #item 47
         a "    private readonly $type $collection = new $type\(\);"
-        #item 230003
-        incr _ind23
     }
 }
 
@@ -1866,19 +1582,7 @@ proc render_if { items indent class } {
 }
 
 proc render_list { items indent class } {
-    #item 6820001
-    set _col682 $items
-    set _len682 [ llength $_col682 ]
-    set _ind682 0
-    while { 1 } {
-        #item 6820002
-        if {$_ind682 < $_len682} {
-            
-        } else {
-            break
-        }
-        #item 6820004
-        set item [ lindex $_col682 $_ind682 ]
+    foreach item $items {
         #item 684
         set type [ lindex $item 0 ]
         #item 6850001
@@ -1902,8 +1606,6 @@ proc render_list { items indent class } {
                 render_foreach $item $indent $class
             }
         }
-        #item 6820003
-        incr _ind682
     }
 }
 

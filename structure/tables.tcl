@@ -9,19 +9,7 @@ proc actions_and_shelves { } {
     set vertex_ids [ vertex_type_keys ]
     #item 210
     set result {}
-    #item 2120001
-    set _col212 $vertex_ids
-    set _len212 [ llength $_col212 ]
-    set _ind212 0
-    while { 1 } {
-        #item 2120002
-        if {$_ind212 < $_len212} {
-            
-        } else {
-            break
-        }
-        #item 2120004
-        set vertex_id [ lindex $_col212 $_ind212 ]
+    foreach vertex_id $vertex_ids {
         #item 214
         set type [ get_vertex_type $vertex_id ]
         #item 2150001
@@ -31,8 +19,6 @@ proc actions_and_shelves { } {
         } else {
             
         }
-        #item 2120003
-        incr _ind212
     }
     #item 211
     return $result
@@ -132,19 +118,7 @@ proc add_class_definition { vertex_id } {
     }
     #item 991
     set indices {}
-    #item 9720001
-    set _col972 $body_lines
-    set _len972 [ llength $_col972 ]
-    set _ind972 0
-    while { 1 } {
-        #item 9720002
-        if {$_ind972 < $_len972} {
-            
-        } else {
-            break
-        }
-        #item 9720004
-        set line [ lindex $_col972 $_ind972 ]
+    foreach line $body_lines {
         #item 974
         set line_parts [ split $line ":" ]
         lassign $line_parts line_begin line_end
@@ -170,26 +144,10 @@ proc add_class_definition { vertex_id } {
                  [ list $begin_parts $tail_parts ]
             }
         }
-        #item 9720003
-        incr _ind972
     }
-    #item 9950001
-    set _col995 $indices
-    set _len995 [ llength $_col995 ]
-    set _ind995 0
-    while { 1 } {
-        #item 9950002
-        if {$_ind995 < $_len995} {
-            
-        } else {
-            break
-        }
-        #item 9950004
-        set index [ lindex $_col995 $_ind995 ]
+    foreach index $indices {
         #item 997
         create_index $id $index $vertex_id
-        #item 9950003
-        incr _ind995
     }
 }
 
@@ -288,47 +246,9 @@ proc add_link_to_class { class_id link_id } {
 proc assemble_trees { nodes edges } {
     #item 2892
     set node_ids [ dict keys $nodes ]
-    #item 28930001
-    set _col2893 $node_ids
-    set _len2893 [ llength $_col2893 ]
-    set _ind2893 0
-    while { 1 } {
-        #item 28930002
-        if {$_ind2893 < $_len2893} {
-            
-        } else {
-            #item 2923
-            set roots {}
-            #item 29540001
-            set _col2954 $node_ids
-            set _len2954 [ llength $_col2954 ]
-            set _ind2954 0
-            while { 1 } {
-                #item 29540002
-                if {$_ind2954 < $_len2954} {
-                    
-                } else {
-                    break
-                }
-                #item 29540004
-                set node_id [ lindex $_col2954 $_ind2954 ]
-                #item 2955
-                set incoming \
-                [get_tnode_incoming $node_id $edges]
-                #item 2956
-                if {$incoming == {}} {
-                    #item 2983
-                    lappend roots $node_id
-                } else {
-                    
-                }
-                #item 29540003
-                incr _ind2954
-            }
-            break
-        }
-        #item 28930004
-        set node_id [ lindex $_col2893 $_ind2893 ]
+    
+    set normal_2893 1
+    foreach node_id $node_ids {
         #item 2895
         set node [ dict get $nodes $node_id ]
         set text [ get_tnode_text $node ]
@@ -336,33 +256,34 @@ proc assemble_trees { nodes edges } {
         if {[string trim $text] == ""} {
             #item 2908
             error "Some icons do not contains significat text"
+            set normal_2893 0
             break
         } else {
             
         }
-        #item 28930003
-        incr _ind2893
+    }
+    if {$normal_2893 == 1} {
+        #item 2923
+        set roots {}
+        foreach node_id $node_ids {
+            #item 2955
+            set incoming \
+            [get_tnode_incoming $node_id $edges]
+            #item 2956
+            if {$incoming == {}} {
+                #item 2983
+                lappend roots $node_id
+            } else {
+                
+            }
+        }
     }
     #item 2984
     set trees {}
-    #item 29860001
-    set _col2986 $roots
-    set _len2986 [ llength $_col2986 ]
-    set _ind2986 0
-    while { 1 } {
-        #item 29860002
-        if {$_ind2986 < $_len2986} {
-            
-        } else {
-            break
-        }
-        #item 29860004
-        set root [ lindex $_col2986 $_ind2986 ]
+    foreach root $roots {
         #item 2964
         lappend trees \
           [ build_traverse $nodes $edges $root ]
-        #item 29860003
-        incr _ind2986
     }
     #item 2985
     return $trees
@@ -373,19 +294,7 @@ proc base_classes { class } {
     set result {}
     #item 1938
     set links [ get_class_links $class ]
-    #item 19390001
-    set _col1939 $links
-    set _len1939 [ llength $_col1939 ]
-    set _ind1939 0
-    while { 1 } {
-        #item 19390002
-        if {$_ind1939 < $_len1939} {
-            
-        } else {
-            break
-        }
-        #item 19390004
-        set link [ lindex $_col1939 $_ind1939 ]
+    foreach link $links {
         #item 1941
         set type [ get_link_type $link ]
         set src [ get_link_src_table $link ]
@@ -396,8 +305,6 @@ proc base_classes { class } {
         } else {
             
         }
-        #item 19390003
-        incr _ind1939
     }
     #item 1937
     return $result
@@ -406,19 +313,7 @@ proc base_classes { class } {
 proc build_aux { } {
     #item 1436
     set classes [ class_name_keys ]
-    #item 14370001
-    set _col1437 $classes
-    set _len1437 [ llength $_col1437 ]
-    set _ind1437 0
-    while { 1 } {
-        #item 14370002
-        if {$_ind1437 < $_len1437} {
-            
-        } else {
-            break
-        }
-        #item 14370004
-        set class [ lindex $_col1437 $_ind1437 ]
+    foreach class $classes {
         #item 1439
         set base [ find_base $class ]
         set derived [ find_derived $class ]
@@ -439,58 +334,16 @@ proc build_aux { } {
          $derived $ref_count $master_arrow
         #item 1449
         set fields [ get_class_fields $class ]
-        #item 14470001
-        set _col1447 $fields
-        set _len1447 [ llength $_col1447 ]
-        set _ind1447 0
-        while { 1 } {
-            #item 14470002
-            if {$_ind1447 < $_len1447} {
-                
-            } else {
-                break
-            }
-            #item 14470004
-            set field [ lindex $_col1447 $_ind1447 ]
+        foreach field $fields {
             #item 1450
             gen_field_aux $class $field
-            #item 14470003
-            incr _ind1447
         }
-        #item 14370003
-        incr _ind1437
     }
-    #item 26860001
-    set _col2686 $classes
-    set _len2686 [ llength $_col2686 ]
-    set _ind2686 0
-    while { 1 } {
-        #item 26860002
-        if {$_ind2686 < $_len2686} {
-            
-        } else {
-            break
-        }
-        #item 26860004
-        set class [ lindex $_col2686 $_ind2686 ]
+    foreach class $classes {
         #item 2688
         check_class_inheritance $class
-        #item 26860003
-        incr _ind2686
     }
-    #item 23420001
-    set _col2342 $classes
-    set _len2342 [ llength $_col2342 ]
-    set _ind2342 0
-    while { 1 } {
-        #item 23420002
-        if {$_ind2342 < $_len2342} {
-            
-        } else {
-            break
-        }
-        #item 23420004
-        set class [ lindex $_col2342 $_ind2342 ]
+    foreach class $classes {
         #item 2344
         set chain [ inheritance_chain $class ]
         set base [ lindex $chain 0 ]
@@ -502,27 +355,13 @@ proc build_aux { } {
         } else {
             
         }
-        #item 23420003
-        incr _ind2342
     }
 }
 
 proc build_classes { } {
     #item 847
     set vertex_ids [ vertex_type_keys ]
-    #item 8500001
-    set _col850 $vertex_ids
-    set _len850 [ llength $_col850 ]
-    set _ind850 0
-    while { 1 } {
-        #item 8500002
-        if {$_ind850 < $_len850} {
-            
-        } else {
-            break
-        }
-        #item 8500004
-        set vertex_id [ lindex $_col850 $_ind850 ]
+    foreach vertex_id $vertex_ids {
         #item 852
         set type [ get_vertex_type $vertex_id ]
         #item 8530001
@@ -538,8 +377,6 @@ proc build_classes { } {
                 
             }
         }
-        #item 8500003
-        incr _ind850
     }
 }
 
@@ -547,19 +384,7 @@ proc build_connections { } {
     #item 226
     set vertexes \
     [actions_and_shelves]
-    #item 2270001
-    set _col227 $vertexes
-    set _len227 [ llength $_col227 ]
-    set _ind227 0
-    while { 1 } {
-        #item 2270002
-        if {$_ind227 < $_len227} {
-            
-        } else {
-            break
-        }
-        #item 2270004
-        set vertex_id [ lindex $_col227 $_ind227 ]
+    foreach vertex_id $vertexes {
         #item 229
         set right \
         [get_vertex_right $vertex_id]
@@ -575,35 +400,19 @@ proc build_connections { } {
         con_hor_begin $right $con
         #item 234
         con_ver_begin $down $con
-        #item 2270003
-        incr _ind227
     }
 }
 
 proc build_indexes { } {
     #item 1324
     set ids [ index_info_data_keys ]
-    #item 13250001
-    set _col1325 $ids
-    set _len1325 [ llength $_col1325 ]
-    set _ind1325 0
-    while { 1 } {
-        #item 13250002
-        if {$_ind1325 < $_len1325} {
-            
-        } else {
-            break
-        }
-        #item 13250004
-        set id [ lindex $_col1325 $_ind1325 ]
+    foreach id $ids {
         #item 1327
         set class_id [ get_index_info_class_id $id ]
         set data [ get_index_info_data $id ]
         set vertex_id [ get_index_info_vertex $id ]
         #item 1328
         create_index_core $class_id $data $vertex_id
-        #item 13250003
-        incr _ind1325
     }
 }
 
@@ -710,23 +519,9 @@ proc build_links { } {
     #item 1069
     set connections \
     [connection_vertex1_keys]
-    #item 10870001
-    set _col1087 $connections
-    set _len1087 [ llength $_col1087 ]
-    set _ind1087 0
-    while { 1 } {
-        #item 10870002
-        if {$_ind1087 < $_len1087} {
-            
-        } else {
-            break
-        }
-        #item 10870004
-        set connection_id [ lindex $_col1087 $_ind1087 ]
+    foreach connection_id $connections {
         #item 1068
         build_link $connection_id
-        #item 10870003
-        incr _ind1087
     }
 }
 
@@ -741,19 +536,7 @@ proc build_traverse { nodes edges root_id } {
         #item 2975
         set outgoing [ get_tnode_outgoing $root_id $edges ]
         set children {}
-        #item 29760001
-        set _col2976 $outgoing
-        set _len2976 [ llength $_col2976 ]
-        set _ind2976 0
-        while { 1 } {
-            #item 29760002
-            if {$_ind2976 < $_len2976} {
-                
-            } else {
-                break
-            }
-            #item 29760004
-            set edge [ lindex $_col2976 $_ind2976 ]
+        foreach edge $outgoing {
             #item 2978
             lassign $edge _ _ _ dst
             #item 2979
@@ -761,8 +544,6 @@ proc build_traverse { nodes edges root_id } {
             [build_traverse $nodes $edges $dst]
             #item 2980
             lappend children $child
-            #item 29760003
-            incr _ind2976
         }
         #item 2981
         lappend node $children
@@ -820,32 +601,17 @@ proc build_tree_link { connection_id } {
 }
 
 proc chain_ref_count { chain } {
-    #item 23260001
-    set _col2326 $chain
-    set _len2326 [ llength $_col2326 ]
-    set _ind2326 0
-    while { 1 } {
-        #item 23260002
-        if {$_ind2326 < $_len2326} {
-            
-        } else {
-            #item 2332
-            return 0
-            break
-        }
-        #item 23260004
-        set $class [ lindex $_col2326 $_ind2326 ]
+    foreach $class $chain {
         #item 2328
         if {[get_class2_has_ref_count $class]} {
             #item 2331
             return 1
-            break
         } else {
             
         }
-        #item 23260003
-        incr _ind2326
     }
+    #item 2332
+    return 0
 }
 
 proc check_class_inheritance { class } {
@@ -890,22 +656,9 @@ proc check_empty_link { id } {
     set edge [ get_empty_link_edge $id ]
     #item 1407
     set links [ link_type_keys ]
-    #item 14080001
-    set _col1408 $links
-    set _len1408 [ llength $_col1408 ]
-    set _ind1408 0
-    while { 1 } {
-        #item 14080002
-        if {$_ind1408 < $_len1408} {
-            
-        } else {
-            #item 1414
-            report_error_edge $edge \
-             "Properties for this link are not defined"
-            break
-        }
-        #item 14080004
-        set link_id [ lindex $_col1408 $_ind1408 ]
+    
+    set normal_1408 1
+    foreach link_id $links {
         #item 1410
         set type2 [ get_link_type $link_id ]
         set own2 [ get_link_ownership $link_id ]
@@ -913,12 +666,16 @@ proc check_empty_link { id } {
         set dst2 [ get_link_dst_table $link_id ]
         #item 1411
         if {((($type == $type2) && ($own == $own2)) && ($src == $src2)) && ($dst == $dst2)} {
+            set normal_1408 0
             break
         } else {
             
         }
-        #item 14080003
-        incr _ind1408
+    }
+    if {$normal_1408 == 1} {
+        #item 1414
+        report_error_edge $edge \
+         "Properties for this link are not defined"
     }
 }
 
@@ -955,19 +712,7 @@ proc check_hor_ellipse { vertex_id } {
 proc check_inheritance { } {
     #item 1855
     set links [ link_type_keys ]
-    #item 18530001
-    set _col1853 $links
-    set _len1853 [ llength $_col1853 ]
-    set _ind1853 0
-    while { 1 } {
-        #item 18530002
-        if {$_ind1853 < $_len1853} {
-            
-        } else {
-            break
-        }
-        #item 18530004
-        set link [ lindex $_col1853 $_ind1853 ]
+    foreach link $links {
         #item 1856
         set type [ get_link_type $link ]
         #item 1857
@@ -979,8 +724,6 @@ proc check_inheritance { } {
         } else {
             
         }
-        #item 18530003
-        incr _ind1853
     }
 }
 
@@ -988,23 +731,9 @@ proc check_links_defined { } {
     #item 1377
     set ids \
     [empty_link_src_keys]
-    #item 13790001
-    set _col1379 $ids
-    set _len1379 [ llength $_col1379 ]
-    set _ind1379 0
-    while { 1 } {
-        #item 13790002
-        if {$_ind1379 < $_len1379} {
-            
-        } else {
-            break
-        }
-        #item 13790004
-        set id [ lindex $_col1379 $_ind1379 ]
+    foreach id $ids {
         #item 1376
         check_empty_link $id
-        #item 13790003
-        incr _ind1379
     }
 }
 
@@ -1578,19 +1307,7 @@ proc core_can_delete { class } {
     set body {}
     #item 2454
     set fields [ get_class_fields $class ]
-    #item 24550001
-    set _col2455 $fields
-    set _len2455 [ llength $_col2455 ]
-    set _ind2455 0
-    while { 1 } {
-        #item 24550002
-        if {$_ind2455 < $_len2455} {
-            
-        } else {
-            break
-        }
-        #item 24550004
-        set field [ lindex $_col2455 $_ind2455 ]
+    foreach field $fields {
         #item 2457
         set type [ get_field2_type $field ]
         #item 2458
@@ -1619,8 +1336,6 @@ proc core_can_delete { class } {
         } else {
             
         }
-        #item 24550003
-        incr _ind2455
     }
     #item 2471
     set head [ list "proc" "can_delete" "body" $body ]
@@ -1633,47 +1348,19 @@ proc core_classes_table { } {
     set names {}
     #item 1976
     set classes [ class_name_keys ]
-    #item 19780001
-    set _col1978 $classes
-    set _len1978 [ llength $_col1978 ]
-    set _ind1978 0
-    while { 1 } {
-        #item 19780002
-        if {$_ind1978 < $_len1978} {
-            
-        } else {
-            break
-        }
-        #item 19780004
-        set class [ lindex $_col1978 $_ind1978 ]
+    foreach class $classes {
         #item 1980
         set name [ get_class_name $class ]
         lappend names $name
-        #item 19780003
-        incr _ind1978
     }
     #item 1983
     set sorted [ lsort $names ]
     #item 1988
     set tables {}
-    #item 19840001
-    set _col1984 $sorted
-    set _len1984 [ llength $_col1984 ]
-    set _ind1984 0
-    while { 1 } {
-        #item 19840002
-        if {$_ind1984 < $_len1984} {
-            
-        } else {
-            break
-        }
-        #item 19840004
-        set name [ lindex $_col1984 $_ind1984 ]
+    foreach name $sorted {
         #item 1986
         set class [ find_class $name ]
         lappend tables [ list $class $name ]
-        #item 19840003
-        incr _ind1984
     }
     #item 1987
     return $tables
@@ -1686,19 +1373,7 @@ proc core_debug_print { output field_selector } {
     puts $output "classes:"
     #item 2037
     print_list $classes $output
-    #item 20240001
-    set _col2024 $classes
-    set _len2024 [ llength $_col2024 ]
-    set _ind2024 0
-    while { 1 } {
-        #item 20240002
-        if {$_ind2024 < $_len2024} {
-            
-        } else {
-            break
-        }
-        #item 20240004
-        set cls [ lindex $_col2024 $_ind2024 ]
+    foreach cls $classes {
         #item 2038
         lassign $cls class name
         #item 2039
@@ -1710,19 +1385,7 @@ proc core_debug_print { output field_selector } {
         print_proc [ core_delete $class ]
         #item 2270
         set fields [ get_class_fields $class ]
-        #item 22680001
-        set _col2268 $fields
-        set _len2268 [ llength $_col2268 ]
-        set _ind2268 0
-        while { 1 } {
-            #item 22680002
-            if {$_ind2268 < $_len2268} {
-                
-            } else {
-                break
-            }
-            #item 22680004
-            set field [ lindex $_col2268 $_ind2268 ]
+        foreach field $fields {
             #item 2042
             set chunk [ core_update $field ]
             #item 2271
@@ -1732,8 +1395,6 @@ proc core_debug_print { output field_selector } {
                 #item 2274
                 print_proc $chunk
             }
-            #item 22680003
-            incr _ind2268
         }
         #item 2043
         print_proc \
@@ -1748,8 +1409,6 @@ proc core_debug_print { output field_selector } {
          [ core_can_delete $class ]
         print_proc \
          [ core_do_delete $class ]
-        #item 20240003
-        incr _ind2024
     }
 }
 
@@ -1793,19 +1452,7 @@ proc core_delete_body { class } {
     #item 2640
     set fields [ get_class_fields $class ]
     set indexes [ get_class_indexes $class ]
-    #item 26480001
-    set _col2648 $fields
-    set _len2648 [ llength $_col2648 ]
-    set _ind2648 0
-    while { 1 } {
-        #item 26480002
-        if {$_ind2648 < $_len2648} {
-            
-        } else {
-            break
-        }
-        #item 26480004
-        set field [ lindex $_col2648 $_ind2648 ]
+    foreach field $fields {
         #item 2649
         set type [ get_field2_type $field ]
         #item 26640001
@@ -1846,30 +1493,14 @@ proc core_delete_body { class } {
                 
             }
         }
-        #item 26480003
-        incr _ind2648
     }
-    #item 26610001
-    set _col2661 $indexes
-    set _len2661 [ llength $_col2661 ]
-    set _ind2661 0
-    while { 1 } {
-        #item 26610002
-        if {$_ind2661 < $_len2661} {
-            
-        } else {
-            break
-        }
-        #item 26610004
-        set index [ lindex $_col2661 $_ind2661 ]
+    foreach index $indexes {
         #item 2663
         set i_fields [ index_fields $index ]
         lappend body \
          [ list "action" "remove_from_index" \
          "index" $index \
          "fields" $i_fields ]
-        #item 26610003
-        incr _ind2661
     }
     #item 2656
     return $body
@@ -1881,27 +1512,13 @@ proc core_do_delete { class } {
     set chain [ lreverse $chain ]
     #item 2481
     set body {}
-    #item 26770001
-    set _col2677 $chain
-    set _len2677 [ llength $_col2677 ]
-    set _ind2677 0
-    while { 1 } {
-        #item 26770002
-        if {$_ind2677 < $_len2677} {
-            
-        } else {
-            break
-        }
-        #item 26770004
-        set cls [ lindex $_col2677 $_ind2677 ]
+    foreach cls $chain {
         #item 2679
         set part [ core_delete_body $cls ]
         set body [ concat $body $part ]
         #item 2478
         set fields [ get_class_fields $class ]
         set indexes [ get_class_indexes $class ]
-        #item 26770003
-        incr _ind2677
     }
     #item 2682
     set head \
@@ -1917,44 +1534,18 @@ proc core_insert { class fields_selector } {
     set chain [ inheritance_chain $class ]
     set indexed {}
     set all_fields {}
-    #item 16370001
-    set _col1637 $chain
-    set _len1637 [ llength $_col1637 ]
-    set _ind1637 0
-    while { 1 } {
-        #item 16370002
-        if {$_ind1637 < $_len1637} {
-            
-        } else {
-            break
-        }
-        #item 16370004
-        set cls [ lindex $_col1637 $_ind1637 ]
+    foreach cls $chain {
         #item 1639
         set fields [ select_fields $cls $fields_selector ]
         #item 1640
         set all_fields [ concat $all_fields $fields ]
         dict append indexed $cls $fields
-        #item 16370003
-        incr _ind1637
     }
     #item 1642
     set root [ lindex $chain 0 ]
     lappend body [ list \
      "action" "check_id" "class" $root ]
-    #item 17350001
-    set _col1735 $chain
-    set _len1735 [ llength $_col1735 ]
-    set _ind1735 0
-    while { 1 } {
-        #item 17350002
-        if {$_ind1735 < $_len1735} {
-            
-        } else {
-            break
-        }
-        #item 17350004
-        set cls [ lindex $_col1735 $_ind1735 ]
+    foreach cls $chain {
         #item 1737
         set fields [ dict get $indexed $cls ]
         #item 1739
@@ -1962,67 +1553,25 @@ proc core_insert { class fields_selector } {
          [ list "action" "insert_possible" \
          "class" $cls \
          "fields" $fields ]
-        #item 17350003
-        incr _ind1735
     }
     #item 1644
     lappend body \
      [ list "action" "assemble" \
      "indexed" $indexed \
      "all" $all_fields ]
-    #item 16510001
-    set _col1651 $chain
-    set _len1651 [ llength $_col1651 ]
-    set _ind1651 0
-    while { 1 } {
-        #item 16510002
-        if {$_ind1651 < $_len1651} {
-            
-        } else {
-            break
-        }
-        #item 16510004
-        set cls [ lindex $_col1651 $_ind1651 ]
+    foreach cls $chain {
         #item 1653
         set indexes [ get_class_indexes $cls ]
-        #item 16680001
-        set _col1668 $indexes
-        set _len1668 [ llength $_col1668 ]
-        set _ind1668 0
-        while { 1 } {
-            #item 16680002
-            if {$_ind1668 < $_len1668} {
-                
-            } else {
-                break
-            }
-            #item 16680004
-            set index [ lindex $_col1668 $_ind1668 ]
+        foreach index $indexes {
             #item 1654
             set i_fields [ index_fields $index ]
             lappend body \
              [ list "action" "add_to_index" \
              "index" $index \
              "fields" $i_fields ]
-            #item 16680003
-            incr _ind1668
         }
-        #item 16510003
-        incr _ind1651
     }
-    #item 16710001
-    set _col1671 $all_fields
-    set _len1671 [ llength $_col1671 ]
-    set _ind1671 0
-    while { 1 } {
-        #item 16710002
-        if {$_ind1671 < $_len1671} {
-            
-        } else {
-            break
-        }
-        #item 16710004
-        set field [ lindex $_col1671 $_ind1671 ]
+    foreach field $all_fields {
         #item 2263
         set op [ get_connect_type $field ]
         set link [ get_field2_link $field ]
@@ -2037,8 +1586,6 @@ proc core_insert { class fields_selector } {
              "field" $field \
              "link" $link ]
         }
-        #item 16710003
-        incr _ind1671
     }
     #item 2103
     set head \
@@ -2057,19 +1604,7 @@ proc core_insert_possible { class fields_selector } {
      [ list "proc" "insert_possible" "args" $fields ]
     #item 1706
     set indexes [ get_class_indexes $class ]
-    #item 17070001
-    set _col1707 $indexes
-    set _len1707 [ llength $_col1707 ]
-    set _ind1707 0
-    while { 1 } {
-        #item 17070002
-        if {$_ind1707 < $_len1707} {
-            
-        } else {
-            break
-        }
-        #item 17070004
-        set index [ lindex $_col1707 $_ind1707 ]
+    foreach index $indexes {
         #item 2100
         set ifields [ index_fields $index ]
         #item 1709
@@ -2077,22 +1612,8 @@ proc core_insert_possible { class fields_selector } {
          [ list "action" "index_not_exists" \
          "index" $index \
          "fields" $ifields "changed" "" ]
-        #item 17070003
-        incr _ind1707
     }
-    #item 17110001
-    set _col1711 $fields
-    set _len1711 [ llength $_col1711 ]
-    set _ind1711 0
-    while { 1 } {
-        #item 17110002
-        if {$_ind1711 < $_len1711} {
-            
-        } else {
-            break
-        }
-        #item 17110004
-        set field [ lindex $_col1711 $_ind1711 ]
+    foreach field $fields {
         #item 1713
         set type [ get_field2_type $field ]
         #item 1714
@@ -2105,8 +1626,6 @@ proc core_insert_possible { class fields_selector } {
         } else {
             
         }
-        #item 17110003
-        incr _ind1711
     }
     #item 2101
     lappend head "body" $body
@@ -2119,19 +1638,7 @@ proc core_pre_delete_inner { class } {
     set body {}
     #item 2356
     set fields [ get_class_fields $class ]
-    #item 23570001
-    set _col2357 $fields
-    set _len2357 [ llength $_col2357 ]
-    set _ind2357 0
-    while { 1 } {
-        #item 23570002
-        if {$_ind2357 < $_len2357} {
-            
-        } else {
-            break
-        }
-        #item 23570004
-        set field [ lindex $_col2357 $_ind2357 ]
+    foreach field $fields {
         #item 2359
         set link [ get_field2_link $field ]
         set own [ get_link_ownership $link ]
@@ -2185,8 +1692,6 @@ proc core_pre_delete_inner { class } {
         } else {
             
         }
-        #item 23570003
-        incr _ind2357
     }
     #item 2509
     set head [ list "proc" "pre_delete_inner" \
@@ -2199,25 +1704,11 @@ proc core_pre_delete_middle { class } {
     #item 2292
     set chain [ inheritance_chain $class ]
     set base [ lindex $chain 0 ]
-    #item 22930001
-    set _col2293 $chain
-    set _len2293 [ llength $_col2293 ]
-    set _ind2293 0
-    while { 1 } {
-        #item 22930002
-        if {$_ind2293 < $_len2293} {
-            
-        } else {
-            break
-        }
-        #item 22930004
-        set cls [ lindex $_col2293 $_ind2293 ]
+    foreach cls $chain {
         #item 2295
         lappend body [ list \
          "action" "pre_delete_inner" \
          "class" $cls ]
-        #item 22930003
-        incr _ind2293
     }
     #item 2349
     set head [ list "proc" "pre_delete_middle" \
@@ -2292,19 +1783,7 @@ proc core_update { field } {
              [ list "action" "check_change" "field" $field ]
             #item 2543
             set fields [ get_class_fields $class ]
-            #item 25440001
-            set _col2544 $fields
-            set _len2544 [ llength $_col2544 ]
-            set _ind2544 0
-            while { 1 } {
-                #item 25440002
-                if {$_ind2544 < $_len2544} {
-                    
-                } else {
-                    break
-                }
-                #item 25440004
-                set other [ lindex $_col2544 $_ind2544 ]
+            foreach other $fields {
                 #item 2546
                 if {$other == $field} {
                     
@@ -2320,22 +1799,8 @@ proc core_update { field } {
                         
                     }
                 }
-                #item 25440003
-                incr _ind2544
             }
-            #item 17790001
-            set _col1779 $indexes
-            set _len1779 [ llength $_col1779 ]
-            set _ind1779 0
-            while { 1 } {
-                #item 17790002
-                if {$_ind1779 < $_len1779} {
-                    
-                } else {
-                    break
-                }
-                #item 17790004
-                set index [ lindex $_col1779 $_ind1779 ]
+            foreach index $indexes {
                 #item 1793
                 set ifields [ index_fields $index ]
                 #item 2552
@@ -2350,8 +1815,6 @@ proc core_update { field } {
                 } else {
                     
                 }
-                #item 17790003
-                incr _ind1779
             }
             #item 1794
             if {$link == {}} {
@@ -2379,19 +1842,7 @@ proc core_update { field } {
                      "link" $link "target" $target ]
                 }
             }
-            #item 18250001
-            set _col1825 $indexes
-            set _len1825 [ llength $_col1825 ]
-            set _ind1825 0
-            while { 1 } {
-                #item 18250002
-                if {$_ind1825 < $_len1825} {
-                    
-                } else {
-                    break
-                }
-                #item 18250004
-                set index [ lindex $_col1825 $_ind1825 ]
+            foreach index $indexes {
                 #item 1828
                 set ifields [ index_fields $index ]
                 #item 2555
@@ -2404,26 +1855,12 @@ proc core_update { field } {
                 } else {
                     
                 }
-                #item 18250003
-                incr _ind1825
             }
             #item 1829
             lappend body \
              [ list "action" "replace" \
              "class" $class "field" $field ]
-            #item 18300001
-            set _col1830 $indexes
-            set _len1830 [ llength $_col1830 ]
-            set _ind1830 0
-            while { 1 } {
-                #item 18300002
-                if {$_ind1830 < $_len1830} {
-                    
-                } else {
-                    break
-                }
-                #item 18300004
-                set index [ lindex $_col1830 $_ind1830 ]
+            foreach index $indexes {
                 #item 1833
                 set ifields [ index_fields $index ]
                 #item 2558
@@ -2437,8 +1874,6 @@ proc core_update { field } {
                 } else {
                     
                 }
-                #item 18300003
-                incr _ind1830
             }
             #item 1834
             if {$link == {}} {
@@ -2510,25 +1945,9 @@ proc create_index_core { class_id index vertex_id } {
             report_error_vertex $vertex_id \
              "Repeating fields in index"
         } else {
-            #item 10360001
-            set _col1036 $fields
-            set _len1036 [ llength $_col1036 ]
-            set _ind1036 0
-            while { 1 } {
-                #item 10360002
-                if {$_ind1036 < $_len1036} {
-                    
-                } else {
-                    #item 1044
-                    set class_name [ get_class_name $class_id ]
-                    
-                    set index_name "${class_name}_[ join $fields "_" ]"
-                    #item 1043
-                    add_index $class_id $index_name $end $fields
-                    break
-                }
-                #item 10360004
-                set field [ lindex $_col1036 $_ind1036 ]
+            
+            set normal_1036 1
+            foreach field $fields {
                 #item 1038
                 set field_id [ find_field $class_id $field ]
                 #item 1039
@@ -2536,6 +1955,7 @@ proc create_index_core { class_id index vertex_id } {
                     #item 1041
                     report_error_vertex $vertex_id \
                      "Indexed field $field not found in class"
+                    set normal_1036 0
                     break
                 } else {
                     
@@ -2545,12 +1965,19 @@ proc create_index_core { class_id index vertex_id } {
                     #item 1352
                     report_error_vertex $vertex_id \
                      "Indexed field $field is a collection"
+                    set normal_1036 0
                     break
                 } else {
                     
                 }
-                #item 10360003
-                incr _ind1036
+            }
+            if {$normal_1036 == 1} {
+                #item 1044
+                set class_name [ get_class_name $class_id ]
+                
+                set index_name "${class_name}_[ join $fields "_" ]"
+                #item 1043
+                add_index $class_id $index_name $end $fields
             }
         }
     } else {
@@ -2573,19 +2000,7 @@ proc ensure_no_fields_reuse { class_id field_name edge } {
             add_field $field_name {link} $class_id
             #item 1166
             set class_links [ get_class_links $class_id ]
-            #item 11670001
-            set _col1167 $class_links
-            set _len1167 [ llength $_col1167 ]
-            set _ind1167 0
-            while { 1 } {
-                #item 11670002
-                if {$_ind1167 < $_len1167} {
-                    
-                } else {
-                    break
-                }
-                #item 11670004
-                set link_id [ lindex $_col1167 $_ind1167 ]
+            foreach link_id $class_links {
                 #item 1169
                 set src_table [ get_link_src_table $link_id ]
                 set dst_table [ get_link_dst_table $link_id ]
@@ -2600,8 +2015,6 @@ proc ensure_no_fields_reuse { class_id field_name edge } {
                 } else {
                     
                 }
-                #item 11670003
-                incr _ind1167
             }
         } else {
             #item 1195
@@ -2612,19 +2025,7 @@ proc ensure_no_fields_reuse { class_id field_name edge } {
                 set_field_properties $field {link}
                 #item 1166
                 set class_links [ get_class_links $class_id ]
-                #item 11670001
-                set _col1167 $class_links
-                set _len1167 [ llength $_col1167 ]
-                set _ind1167 0
-                while { 1 } {
-                    #item 11670002
-                    if {$_ind1167 < $_len1167} {
-                        
-                    } else {
-                        break
-                    }
-                    #item 11670004
-                    set link_id [ lindex $_col1167 $_ind1167 ]
+                foreach link_id $class_links {
                     #item 1169
                     set src_table [ get_link_src_table $link_id ]
                     set dst_table [ get_link_dst_table $link_id ]
@@ -2639,8 +2040,6 @@ proc ensure_no_fields_reuse { class_id field_name edge } {
                     } else {
                         
                     }
-                    #item 11670003
-                    incr _ind1167
                 }
             } else {
                 #item 1202
@@ -2649,19 +2048,7 @@ proc ensure_no_fields_reuse { class_id field_name edge } {
                 if {$first == "link"} {
                     #item 1166
                     set class_links [ get_class_links $class_id ]
-                    #item 11670001
-                    set _col1167 $class_links
-                    set _len1167 [ llength $_col1167 ]
-                    set _ind1167 0
-                    while { 1 } {
-                        #item 11670002
-                        if {$_ind1167 < $_len1167} {
-                            
-                        } else {
-                            break
-                        }
-                        #item 11670004
-                        set link_id [ lindex $_col1167 $_ind1167 ]
+                    foreach link_id $class_links {
                         #item 1169
                         set src_table [ get_link_src_table $link_id ]
                         set dst_table [ get_link_dst_table $link_id ]
@@ -2676,8 +2063,6 @@ proc ensure_no_fields_reuse { class_id field_name edge } {
                         } else {
                             
                         }
-                        #item 11670003
-                        incr _ind1167
                     }
                 } else {
                     #item 1204
@@ -2714,21 +2099,7 @@ proc ensure_simple_right { edge_id head } {
 proc find_base { class } {
     #item 1456
     set links [ get_class_links $class ]
-    #item 14570001
-    set _col1457 $links
-    set _len1457 [ llength $_col1457 ]
-    set _ind1457 0
-    while { 1 } {
-        #item 14570002
-        if {$_ind1457 < $_len1457} {
-            
-        } else {
-            #item 1465
-            return {}
-            break
-        }
-        #item 14570004
-        set link [ lindex $_col1457 $_ind1457 ]
+    foreach link $links {
         #item 1459
         set type [ get_link_type $link ]
         set src [ get_link_src_table $link ]
@@ -2738,13 +2109,12 @@ proc find_base { class } {
             set dst [ get_link_dst_table $link ]
             #item 1464
             return $dst
-            break
         } else {
             
         }
-        #item 14570003
-        incr _ind1457
     }
+    #item 1465
+    return {}
 }
 
 proc find_class { name } {
@@ -2769,19 +2139,7 @@ proc find_cycles { link traversed } {
     }
     #item 1961
     set base_links [ base_classes $dst ]
-    #item 19620001
-    set _col1962 $base_links
-    set _len1962 [ llength $_col1962 ]
-    set _ind1962 0
-    while { 1 } {
-        #item 19620002
-        if {$_ind1962 < $_len1962} {
-            
-        } else {
-            break
-        }
-        #item 19620004
-        set base_link [ lindex $_col1962 $_ind1962 ]
+    foreach base_link $base_links {
         #item 1964
         if {[find_cycles $base_link $traversed]} {
             #item 1967
@@ -2789,8 +2147,6 @@ proc find_cycles { link traversed } {
         } else {
             
         }
-        #item 19620003
-        incr _ind1962
     }
     #item 1968
     return 0
@@ -2801,19 +2157,7 @@ proc find_derived { class } {
     set result {}
     #item 1480
     set classes [ class_name_keys ]
-    #item 14810001
-    set _col1481 $classes
-    set _len1481 [ llength $_col1481 ]
-    set _ind1481 0
-    while { 1 } {
-        #item 14810002
-        if {$_ind1481 < $_len1481} {
-            
-        } else {
-            break
-        }
-        #item 14810004
-        set other_class [ lindex $_col1481 $_ind1481 ]
+    foreach other_class $classes {
         #item 1483
         set base [ find_base $other_class ]
         #item 1487
@@ -2823,8 +2167,6 @@ proc find_derived { class } {
         } else {
             
         }
-        #item 14810003
-        incr _ind1481
     }
     #item 1486
     return $result
@@ -2846,19 +2188,7 @@ proc gen_field_aux { class field } {
     set outgoing {}
     #item 1505
     set links [ get_class_links $class ]
-    #item 15060001
-    set _col1506 $links
-    set _len1506 [ llength $_col1506 ]
-    set _ind1506 0
-    while { 1 } {
-        #item 15060002
-        if {$_ind1506 < $_len1506} {
-            
-        } else {
-            break
-        }
-        #item 15060004
-        set link [ lindex $_col1506 $_ind1506 ]
+    foreach link $links {
         #item 1509
         set dst_table [ get_link_dst_table $link ]
         set src_table [ get_link_src_table $link ]
@@ -2888,8 +2218,6 @@ proc gen_field_aux { class field } {
                 
             }
         }
-        #item 15060003
-        incr _ind1506
     }
     #item 1521
     if {$outgoing == {}} {
@@ -2955,34 +2283,10 @@ proc gen_field_aux { class field } {
     set indexed_by {}
     #item 1553
     set indexes [ get_class_indexes $class ]
-    #item 15540001
-    set _col1554 $indexes
-    set _len1554 [ llength $_col1554 ]
-    set _ind1554 0
-    while { 1 } {
-        #item 15540002
-        if {$_ind1554 < $_len1554} {
-            
-        } else {
-            break
-        }
-        #item 15540004
-        set index [ lindex $_col1554 $_ind1554 ]
+    foreach index $indexes {
         #item 1556
         set ifields [ get_index_fields $index ]
-        #item 15580001
-        set _col1558 $ifields
-        set _len1558 [ llength $_col1558 ]
-        set _ind1558 0
-        while { 1 } {
-            #item 15580002
-            if {$_ind1558 < $_len1558} {
-                
-            } else {
-                break
-            }
-            #item 15580004
-            set ifield [ lindex $_col1558 $_ind1558 ]
+        foreach ifield $ifields {
             #item 1560
             if {$ifield == $name} {
                 #item 1563
@@ -2991,11 +2295,7 @@ proc gen_field_aux { class field } {
             } else {
                 
             }
-            #item 15580003
-            incr _ind1558
         }
-        #item 15540003
-        incr _ind1554
     }
     #item 2245
     if {$incoming == {}} {
@@ -3018,19 +2318,7 @@ proc generate_tables { dbase callbacks after_connections } {
     	select diagram_id
     	from diagrams
     } ]
-    #item 10460001
-    set _col1046 $diagrams
-    set _len1046 [ llength $_col1046 ]
-    set _ind1046 0
-    while { 1 } {
-        #item 10460002
-        if {$_ind1046 < $_len1046} {
-            
-        } else {
-            break
-        }
-        #item 10460004
-        set diagram_id [ lindex $_col1046 $_ind1046 ]
+    foreach diagram_id $diagrams {
         #item 1048
         if {[mwc::is_drakon $diagram_id]} {
             
@@ -3038,8 +2326,6 @@ proc generate_tables { dbase callbacks after_connections } {
             #item 1051
             add_diagram $dbase $diagram_id
         }
-        #item 10460003
-        incr _ind1046
     }
     #item 77
     #print_diagram
@@ -3078,19 +2364,7 @@ proc generate_trees { dbase } {
     	select diagram_id
     	from diagrams
     } ]
-    #item 27480001
-    set _col2748 $diagrams
-    set _len2748 [ llength $_col2748 ]
-    set _ind2748 0
-    while { 1 } {
-        #item 27480002
-        if {$_ind2748 < $_len2748} {
-            
-        } else {
-            break
-        }
-        #item 27480004
-        set diagram_id [ lindex $_col2748 $_ind2748 ]
+    foreach diagram_id $diagrams {
         #item 2750
         if {[mwc::is_drakon $diagram_id]} {
             
@@ -3098,8 +2372,6 @@ proc generate_trees { dbase } {
             #item 2753
             add_diagram $dbase $diagram_id
         }
-        #item 27480003
-        incr _ind2748
     }
     #item 2743
     #print_diagram
@@ -3110,23 +2382,9 @@ proc generate_trees { dbase } {
     #item 2762
     set connections \
     [connection_vertex1_keys]
-    #item 27630001
-    set _col2763 $connections
-    set _len2763 [ llength $_col2763 ]
-    set _ind2763 0
-    while { 1 } {
-        #item 27630002
-        if {$_ind2763 < $_len2763} {
-            
-        } else {
-            break
-        }
-        #item 27630004
-        set connection_id [ lindex $_col2763 $_ind2763 ]
+    foreach connection_id $connections {
         #item 2761
         build_tree_link $connection_id
-        #item 27630003
-        incr _ind2763
     }
     #item 2827
     set nodes \
@@ -3247,19 +2505,7 @@ proc get_target { link } {
 proc get_tnode_incoming { node_id edges } {
     #item 2945
     set result {}
-    #item 29470001
-    set _col2947 $edges
-    set _len2947 [ llength $_col2947 ]
-    set _ind2947 0
-    while { 1 } {
-        #item 29470002
-        if {$_ind2947 < $_len2947} {
-            
-        } else {
-            break
-        }
-        #item 29470004
-        set edge [ lindex $_col2947 $_ind2947 ]
+    foreach edge $edges {
         #item 2949
         lassign $edge id type src dst
         #item 2950
@@ -3269,8 +2515,6 @@ proc get_tnode_incoming { node_id edges } {
         } else {
             
         }
-        #item 29470003
-        incr _ind2947
     }
     #item 2946
     return $result
@@ -3279,19 +2523,7 @@ proc get_tnode_incoming { node_id edges } {
 proc get_tnode_outgoing { node_id edges } {
     #item 2931
     set result {}
-    #item 29330001
-    set _col2933 $edges
-    set _len2933 [ llength $_col2933 ]
-    set _ind2933 0
-    while { 1 } {
-        #item 29330002
-        if {$_ind2933 < $_len2933} {
-            
-        } else {
-            break
-        }
-        #item 29330004
-        set edge [ lindex $_col2933 $_ind2933 ]
+    foreach edge $edges {
         #item 2935
         lassign $edge id type src dst
         #item 2936
@@ -3301,8 +2533,6 @@ proc get_tnode_outgoing { node_id edges } {
         } else {
             
         }
-        #item 29330003
-        incr _ind2933
     }
     #item 2932
     return $result
@@ -3335,19 +2565,7 @@ proc get_tree_edges { } {
     #item 2834
     set links \
     [empty_link_type_keys]
-    #item 28350001
-    set _col2835 $links
-    set _len2835 [ llength $_col2835 ]
-    set _ind2835 0
-    while { 1 } {
-        #item 28350002
-        if {$_ind2835 < $_len2835} {
-            
-        } else {
-            break
-        }
-        #item 28350004
-        set link [ lindex $_col2835 $_ind2835 ]
+    foreach link $links {
         #item 2838
         set type [ get_empty_link_type $link ]
         set src [ get_empty_link_src $link ]
@@ -3355,8 +2573,6 @@ proc get_tree_edges { } {
         #item 2840
         lappend result [ list \
          $link $type $src $dst ]
-        #item 28350003
-        incr _ind2835
     }
     #item 2837
     return $result
@@ -3367,21 +2583,7 @@ proc get_tree_nodes { } {
     set result {}
     #item 2849
     set vertex_ids [ vertex_type_keys ]
-    #item 28500001
-    set _col2850 $vertex_ids
-    set _len2850 [ llength $_col2850 ]
-    set _ind2850 0
-    while { 1 } {
-        #item 28500002
-        if {$_ind2850 < $_len2850} {
-            
-        } else {
-            #item 2848
-            return $result
-            break
-        }
-        #item 28500004
-        set vertex_id [ lindex $_col2850 $_ind2850 ]
+    foreach vertex_id $vertex_ids {
         #item 2852
         set type [ get_vertex_type $vertex_id ]
         set text [ get_vertex_text $vertex_id ]
@@ -3415,9 +2617,9 @@ proc get_tree_nodes { } {
                 }
             }
         }
-        #item 28500003
-        incr _ind2850
     }
+    #item 2848
+    return $result
 }
 
 proc get_vertex_class { vertex_id } {
@@ -3450,19 +2652,7 @@ proc has_ref_count { class } {
     set master_arrow 0
     #item 2303
     set links [ get_class_links $class ]
-    #item 23010001
-    set _col2301 $links
-    set _len2301 [ llength $_col2301 ]
-    set _ind2301 0
-    while { 1 } {
-        #item 23010002
-        if {$_ind2301 < $_len2301} {
-            
-        } else {
-            break
-        }
-        #item 23010004
-        set link [ lindex $_col2301 $_ind2301 ]
+    foreach link $links {
         #item 2304
         set type [ get_link_type $link ]
         set dst [ get_link_dst_table $link ]
@@ -3481,8 +2671,6 @@ proc has_ref_count { class } {
         } else {
             
         }
-        #item 23010003
-        incr _ind2301
     }
     #item 2312
     return [ list \
@@ -3508,59 +2696,30 @@ proc index_fields { index } {
     set field_names [ get_index_fields $index ]
     #item 2087
     set result {}
-    #item 20890001
-    set _col2089 $field_names
-    set _len2089 [ llength $_col2089 ]
-    set _ind2089 0
-    while { 1 } {
-        #item 20890002
-        if {$_ind2089 < $_len2089} {
-            
-        } else {
-            break
-        }
-        #item 20890004
-        set name [ lindex $_col2089 $_ind2089 ]
+    foreach name $field_names {
         #item 2091
         set field [ find_field $class $name ]
         #item 2092
         lappend result $field
-        #item 20890003
-        incr _ind2089
     }
     #item 2088
     return $result
 }
 
 proc indexes_contain_field { indexes field } {
-    #item 25660001
-    set _col2566 $indexes
-    set _len2566 [ llength $_col2566 ]
-    set _ind2566 0
-    while { 1 } {
-        #item 25660002
-        if {$_ind2566 < $_len2566} {
-            
-        } else {
-            #item 2572
-            return 0
-            break
-        }
-        #item 25660004
-        set index [ lindex $_col2566 $_ind2566 ]
+    foreach index $indexes {
         #item 2568
         set ifields [ index_fields $index ]
         #item 2569
         if {[contains $ifields $field]} {
             #item 2573
             return 1
-            break
         } else {
             
         }
-        #item 25660003
-        incr _ind2566
     }
+    #item 2572
+    return 0
 }
 
 proc inheritance_chain { class } {
@@ -3590,21 +2749,7 @@ proc is_collection { field_id } {
     set name [ get_field_name $field_id ]
     #item 1359
     set links [ link_type_keys ]
-    #item 13600001
-    set _col1360 $links
-    set _len1360 [ llength $_col1360 ]
-    set _ind1360 0
-    while { 1 } {
-        #item 13600002
-        if {$_ind1360 < $_len1360} {
-            
-        } else {
-            #item 1369
-            return 0
-            break
-        }
-        #item 13600004
-        set link [ lindex $_col1360 $_ind1360 ]
+    foreach link $links {
         #item 1362
         set src [ get_link_src_table $link ]
         set src_field [ get_link_src_field $link ]
@@ -3613,13 +2758,12 @@ proc is_collection { field_id } {
         if {(($type == "paw") && ($src == $class_id)) && ($src_field == $name)} {
             #item 1370
             return 1
-            break
         } else {
             
         }
-        #item 13600003
-        incr _ind1360
     }
+    #item 1369
+    return 0
 }
 
 proc is_m2m_field { field } {
@@ -3847,48 +2991,20 @@ proc print_action { chunk indent } {
     puts -nonewline $indent
     #item 2178
     set keys [ dict keys $chunk ]
-    #item 21790001
-    set _col2179 $keys
-    set _len2179 [ llength $_col2179 ]
-    set _ind2179 0
-    while { 1 } {
-        #item 21790002
-        if {$_ind2179 < $_len2179} {
-            
-        } else {
-            break
-        }
-        #item 21790004
-        set key [ lindex $_col2179 $_ind2179 ]
+    foreach key $keys {
         #item 2181
         set value [ dict get $chunk $key ]
         #item 2186
         print_prop $key $value
-        #item 21790003
-        incr _ind2179
     }
     #item 2188
     puts ""
 }
 
 proc print_block { block indent } {
-    #item 24080001
-    set _col2408 $block
-    set _len2408 [ llength $_col2408 ]
-    set _ind2408 0
-    while { 1 } {
-        #item 24080002
-        if {$_ind2408 < $_len2408} {
-            
-        } else {
-            break
-        }
-        #item 24080004
-        set item [ lindex $_col2408 $_ind2408 ]
+    foreach item $block {
         #item 2410
         print_item $item "    $indent"
-        #item 24080003
-        incr _ind2408
     }
 }
 
@@ -3950,23 +3066,9 @@ proc print_item { item indent } {
 }
 
 proc print_list { list output } {
-    #item 20330001
-    set _col2033 $list
-    set _len2033 [ llength $_col2033 ]
-    set _ind2033 0
-    while { 1 } {
-        #item 20330002
-        if {$_ind2033 < $_len2033} {
-            
-        } else {
-            break
-        }
-        #item 20330004
-        set item [ lindex $_col2033 $_ind2033 ]
+    foreach item $list {
         #item 2035
         puts $output "    $item"
-        #item 20330003
-        incr _ind2033
     }
 }
 
@@ -3975,19 +3077,7 @@ proc print_proc { chunk } {
     set body {}
     #item 2144
     set keys [ dict keys $chunk ]
-    #item 21450001
-    set _col2145 $keys
-    set _len2145 [ llength $_col2145 ]
-    set _ind2145 0
-    while { 1 } {
-        #item 21450002
-        if {$_ind2145 < $_len2145} {
-            
-        } else {
-            break
-        }
-        #item 21450004
-        set key [ lindex $_col2145 $_ind2145 ]
+    foreach key $keys {
         #item 2147
         set value [ dict get $chunk $key ]
         #item 2149
@@ -3998,8 +3088,6 @@ proc print_proc { chunk } {
             #item 2153
             print_prop $key $value
         }
-        #item 21450003
-        incr _ind2145
     }
     #item 2189
     puts ""
@@ -4070,21 +3158,9 @@ proc remove { collection element } {
 proc report_error_class { name message } {
     #item 1898
     set vertexes [ vertex_type_keys ]
-    #item 18990001
-    set _col1899 $vertexes
-    set _len1899 [ llength $_col1899 ]
-    set _ind1899 0
-    while { 1 } {
-        #item 18990002
-        if {$_ind1899 < $_len1899} {
-            
-        } else {
-            #item 1908
-            error "Error in class $name."
-            break
-        }
-        #item 18990004
-        set vertex [ lindex $_col1899 $_ind1899 ]
+    
+    set normal_1899 1
+    foreach vertex $vertexes {
         #item 1901
         set text [ get_vertex_text $vertex ]
         set text2 [ get_vertex_text2 $vertex ]
@@ -4093,12 +3169,15 @@ proc report_error_class { name message } {
         if {(($type == "action") && ($text == $name)) || (($type == "shelf") && ($text2 == "class $name"))} {
             #item 1911
             report_error_vertex $vertex $message
+            set normal_1899 0
             break
         } else {
             
         }
-        #item 18990003
-        incr _ind1899
+    }
+    if {$normal_1899 == 1} {
+        #item 1908
+        error "Error in class $name."
     }
 }
 
@@ -4240,19 +3319,7 @@ proc select_fields { class field_selector } {
     set result {}
     #item 2076
     set fields [ get_class_fields $class ]
-    #item 20740001
-    set _col2074 $fields
-    set _len2074 [ llength $_col2074 ]
-    set _ind2074 0
-    while { 1 } {
-        #item 20740002
-        if {$_ind2074 < $_len2074} {
-            
-        } else {
-            break
-        }
-        #item 20740004
-        set field [ lindex $_col2074 $_ind2074 ]
+    foreach field $fields {
         #item 2196
         set type [ get_field2_type $field ]
         set indexes [ get_field2_indexes $field ]
@@ -4263,8 +3330,6 @@ proc select_fields { class field_selector } {
             #item 2080
             lappend result $field
         }
-        #item 20740003
-        incr _ind2074
     }
     #item 2073
     return $result
@@ -4325,19 +3390,7 @@ proc split_lines { text } {
     set lines [ split $text "\n" ]
     #item 947
     set result {}
-    #item 9490001
-    set _col949 $lines
-    set _len949 [ llength $_col949 ]
-    set _ind949 0
-    while { 1 } {
-        #item 9490002
-        if {$_ind949 < $_len949} {
-            
-        } else {
-            break
-        }
-        #item 9490004
-        set line [ lindex $_col949 $_ind949 ]
+    foreach line $lines {
         #item 956
         set trimmed [ string trim $line ]
         #item 951
@@ -4347,8 +3400,6 @@ proc split_lines { text } {
             #item 954
             lappend result $trimmed
         }
-        #item 9490003
-        incr _ind949
     }
     #item 948
     return $result
@@ -4359,19 +3410,7 @@ proc split_space { text } {
     set parts [ split $text " \t" ]
     #item 927
     set result {}
-    #item 9290001
-    set _col929 $parts
-    set _len929 [ llength $_col929 ]
-    set _ind929 0
-    while { 1 } {
-        #item 9290002
-        if {$_ind929 < $_len929} {
-            
-        } else {
-            break
-        }
-        #item 9290004
-        set part [ lindex $_col929 $_ind929 ]
+    foreach part $parts {
         #item 931
         if {$part == ""} {
             
@@ -4379,8 +3418,6 @@ proc split_space { text } {
             #item 934
             lappend result $part
         }
-        #item 9290003
-        incr _ind929
     }
     #item 928
     return $result

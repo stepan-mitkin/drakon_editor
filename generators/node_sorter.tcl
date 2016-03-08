@@ -106,24 +106,10 @@ proc complete_construction { } {
         #item 116
         set links [ $db eval {
         	select link_id from links } ]
-        #item 1180001
-        set _col118 $links
-        set _len118 [ llength $_col118 ]
-        set _ind118 0
-        while { 1 } {
-            #item 1180002
-            if {$_ind118 < $_len118} {
-                
-            } else {
-                break
-            }
-            #item 1180004
-            set link_id [ lindex $_col118 $_ind118 ]
+        foreach link_id $links {
             #item 119
             set dst [ get_link_dst $link_id ]
             add_incoming $dst
-            #item 1180003
-            incr _ind118
         }
     } else {
         #item 112
@@ -171,19 +157,7 @@ proc find_backward_recursive { node_id before } {
         set links [ get_node_links $node_id ]
         #item 238
         set new_before [ linsert $before end $node_id ]
-        #item 2340001
-        set _col234 $links
-        set _len234 [ llength $_col234 ]
-        set _ind234 0
-        while { 1 } {
-            #item 2340002
-            if {$_ind234 < $_len234} {
-                
-            } else {
-                break
-            }
-            #item 2340004
-            set link_id [ lindex $_col234 $_ind234 ]
+        foreach link_id $links {
             #item 235
             set dst [ get_link_dst $link_id ]
             #item 236
@@ -196,8 +170,6 @@ proc find_backward_recursive { node_id before } {
                 #item 239
                 find_backward_recursive $dst $new_before
             }
-            #item 2340003
-            incr _ind234
         }
     }
 }
@@ -362,25 +334,11 @@ proc remember_incoming { } {
     set nodes [ $db eval {
     	select node_id from nodes
     } ]
-    #item 3290001
-    set _col329 $nodes
-    set _len329 [ llength $_col329 ]
-    set _ind329 0
-    while { 1 } {
-        #item 3290002
-        if {$_ind329 < $_len329} {
-            
-        } else {
-            break
-        }
-        #item 3290004
-        set node_id [ lindex $_col329 $_ind329 ]
+    foreach node_id $nodes {
         #item 330
         set incoming_links [ get_unique_incoming $node_id ]
         #item 331
         lappend incoming $node_id $incoming_links
-        #item 3290003
-        incr _ind329
     }
 }
 
@@ -429,19 +387,7 @@ proc sort { } {
                 lappend result $current
                 #item 280
                 set links [ get_node_links $current ]
-                #item 2880001
-                set _col288 $links
-                set _len288 [ llength $_col288 ]
-                set _ind288 0
-                while { 1 } {
-                    #item 2880002
-                    if {$_ind288 < $_len288} {
-                        
-                    } else {
-                        break
-                    }
-                    #item 2880004
-                    set link_id [ lindex $_col288 $_ind288 ]
+                foreach link_id $links {
                     #item 296
                     if {[ is_link_backward $link_id ]} {
                         
@@ -450,8 +396,6 @@ proc sort { } {
                         set next [ get_link_dst $link_id ]
                         push stack $next
                     }
-                    #item 2880003
-                    incr _ind288
                 }
             } else {
                 

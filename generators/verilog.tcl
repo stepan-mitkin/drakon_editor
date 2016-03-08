@@ -567,44 +567,16 @@ proc build_reset_block { parameters onreset_extra indent_n } {
             #item 656
             set onreset_list \
             [ dict get $parameters setup ]
-            #item 6540001
-            set _col654 $onreset_list
-            set _len654 [ llength $_col654 ]
-            set _ind654 0
-            while { 1 } {
-                #item 6540002
-                if {$_ind654 < $_len654} {
-                    
-                } else {
-                    break
-                }
-                #item 6540004
-                set line [ lindex $_col654 $_ind654 ]
+            foreach line $onreset_list {
                 #item 657
                 append result "${indent_next}$line;\n"
-                #item 6540003
-                incr _ind654
             }
         } else {
             
         }
-        #item 6600001
-        set _col660 $onreset_extra
-        set _len660 [ llength $_col660 ]
-        set _ind660 0
-        while { 1 } {
-            #item 6600002
-            if {$_ind660 < $_len660} {
-                
-            } else {
-                break
-            }
-            #item 6600004
-            set line [ lindex $_col660 $_ind660 ]
+        foreach line $onreset_extra {
             #item 662
             append result "${indent_next}$line;\n"
-            #item 6600003
-            incr _ind660
         }
         #item 663
         append result "${indent}end else "
@@ -619,19 +591,7 @@ proc build_reset_expression { reset_list } {
     #item 511
     set signals \
     {}
-    #item 5120001
-    set _col512 $reset_list
-    set _len512 [ llength $_col512 ]
-    set _ind512 0
-    while { 1 } {
-        #item 5120002
-        if {$_ind512 < $_len512} {
-            
-        } else {
-            break
-        }
-        #item 5120004
-        set line [ lindex $_col512 $_ind512 ]
+    foreach line $reset_list {
         #item 514
         set signal \
         [ remove_comment $line ]
@@ -655,8 +615,6 @@ proc build_reset_expression { reset_list } {
         }
         #item 524
         lappend signals $signal
-        #item 5120003
-        incr _ind512
     }
     #item 525
     return [ join $signals " || " ]
@@ -666,19 +624,7 @@ proc build_sensitivity_list { sens_list } {
     #item 491
     set signals \
     {}
-    #item 4920001
-    set _col492 $sens_list
-    set _len492 [ llength $_col492 ]
-    set _ind492 0
-    while { 1 } {
-        #item 4920002
-        if {$_ind492 < $_len492} {
-            
-        } else {
-            break
-        }
-        #item 4920004
-        set line [ lindex $_col492 $_ind492 ]
+    foreach line $sens_list {
         #item 494
         set signal \
         [ remove_comment $line ]
@@ -702,8 +648,6 @@ proc build_sensitivity_list { sens_list } {
         }
         #item 504
         lappend signals $signal
-        #item 4920003
-        incr _ind492
     }
     #item 505
     return [ join $signals " or " ]
@@ -713,19 +657,7 @@ proc build_signal_declarations { keyword text } {
     #item 903
     set decls \
     {}
-    #item 9050001
-    set _col905 $text
-    set _len905 [ llength $_col905 ]
-    set _ind905 0
-    while { 1 } {
-        #item 9050002
-        if {$_ind905 < $_len905} {
-            
-        } else {
-            break
-        }
-        #item 9050004
-        set line [ lindex $_col905 $_ind905 ]
+    foreach line $text {
         #item 2042
         if {[ info exists comment ]} {
             #item 2041
@@ -763,8 +695,6 @@ proc build_signal_declarations { keyword text } {
             set decls \
             "${decls}${keyword} ${line};$comment\n"
         }
-        #item 9050003
-        incr _ind905
     }
     #item 904
     return $decls
@@ -1044,19 +974,7 @@ proc generate_kernel { db gdb filename } {
     [ $gdb eval {\
        select diagram_id\
        from diagrams } ]
-    #item 3120001
-    set _col312 $diagrams
-    set _len312 [ llength $_col312 ]
-    set _ind312 0
-    while { 1 } {
-        #item 3120002
-        if {$_ind312 < $_len312} {
-            
-        } else {
-            break
-        }
-        #item 3120004
-        set diagram_id [ lindex $_col312 $_ind312 ]
+    foreach diagram_id $diagrams {
         #item 314
         if {[mwc::is_drakon $diagram_id]} {
             #item 317
@@ -1065,8 +983,6 @@ proc generate_kernel { db gdb filename } {
         } else {
             
         }
-        #item 3120003
-        incr _ind312
     }
     #item 326
     set machines \
@@ -1077,19 +993,7 @@ proc generate_kernel { db gdb filename } {
     [ $gdb eval {\
        select diagram_id\
        from diagrams } ]
-    #item 3350001
-    set _col335 $diagrams
-    set _len335 [ llength $_col335 ]
-    set _ind335 0
-    while { 1 } {
-        #item 3350002
-        if {$_ind335 < $_len335} {
-            
-        } else {
-            break
-        }
-        #item 3350004
-        set diagram_id [ lindex $_col335 $_ind335 ]
+    foreach diagram_id $diagrams {
         #item 337
         if {[mwc::is_drakon $diagram_id]} {
             #item 340
@@ -1098,8 +1002,6 @@ proc generate_kernel { db gdb filename } {
         } else {
             
         }
-        #item 3350003
-        incr _ind335
     }
     #item 342
     set use_nogoto \
@@ -1153,59 +1055,19 @@ proc get_all_insertions { functions } {
     #item 1816
     set insertions \
     {}
-    #item 18170001
-    set _col1817 $functions
-    set _len1817 [ llength $_col1817 ]
-    set _ind1817 0
-    while { 1 } {
-        #item 18170002
-        if {$_ind1817 < $_len1817} {
-            
-        } else {
-            break
-        }
-        #item 18170004
-        set fun [ lindex $_col1817 $_ind1817 ]
+    foreach fun $functions {
         #item 1819
         lassign $fun \
           _ name _ body
         #item 1820
         set insertions_refs \
         [ get_insertions_refs $body ]
-        #item 18210001
-        set _col1821 $insertions_refs
-        set _len1821 [ llength $_col1821 ]
-        set _ind1821 0
-        while { 1 } {
-            #item 18210002
-            if {$_ind1821 < $_len1821} {
-                
-            } else {
-                break
-            }
-            #item 18210004
-            set ins_ref [ lindex $_col1821 $_ind1821 ]
+        foreach ins_ref $insertions_refs {
             #item 1823
             dict set insertions $ins_ref {}
-            #item 18210003
-            incr _ind1821
         }
-        #item 18170003
-        incr _ind1817
     }
-    #item 18240001
-    set _col1824 $functions
-    set _len1824 [ llength $_col1824 ]
-    set _ind1824 0
-    while { 1 } {
-        #item 18240002
-        if {$_ind1824 < $_len1824} {
-            
-        } else {
-            break
-        }
-        #item 18240004
-        set fun [ lindex $_col1824 $_ind1824 ]
+    foreach fun $functions {
         #item 1826
         lassign $fun \
           _ name _ body
@@ -1223,8 +1085,6 @@ proc get_all_insertions { functions } {
         } else {
             
         }
-        #item 18240003
-        incr _ind1824
     }
     while { 1 } {
         #item 1835
@@ -1374,19 +1234,7 @@ proc get_insertions_refs { body } {
     #item 1731
     set result \
     {}
-    #item 17320001
-    set _col1732 $body
-    set _len1732 [ llength $_col1732 ]
-    set _ind1732 0
-    while { 1 } {
-        #item 17320002
-        if {$_ind1732 < $_len1732} {
-            
-        } else {
-            break
-        }
-        #item 17320004
-        set line [ lindex $_col1732 $_ind1732 ]
+    foreach line $body {
         #item 1734
         if {[ regexp "##@@insertion:(.*)@@##" \
     $line _ name ]} {
@@ -1395,8 +1243,6 @@ proc get_insertions_refs { body } {
         } else {
             
         }
-        #item 17320003
-        incr _ind1732
     }
     #item 1739
     return $result
@@ -1420,19 +1266,7 @@ proc get_signal_names { text } {
     #item 883
     set lines \
     [ split "$text" "\n" ]
-    #item 8840001
-    set _col884 $lines
-    set _len884 [ llength $_col884 ]
-    set _ind884 0
-    while { 1 } {
-        #item 8840002
-        if {$_ind884 < $_len884} {
-            
-        } else {
-            break
-        }
-        #item 8840004
-        set line [ lindex $_col884 $_ind884 ]
+    foreach line $lines {
         #item 888
         regsub -all {//.*$} $line "" line
         #item 890
@@ -1453,8 +1287,6 @@ proc get_signal_names { text } {
             #item 895
             lappend names $line
         }
-        #item 8840003
-        incr _ind884
     }
     #item 887
     return $names
@@ -1489,19 +1321,7 @@ proc get_state_body { fhandle gdb functions state original_diagram vlog_state st
     #item 1627
     append result \
     "${indent}$vlog_state:\n"
-    #item 16310001
-    set _col1631 $functions
-    set _len1631 [ llength $_col1631 ]
-    set _ind1631 0
-    while { 1 } {
-        #item 16310002
-        if {$_ind1631 < $_len1631} {
-            
-        } else {
-            break
-        }
-        #item 16310004
-        set function [ lindex $_col1631 $_ind1631 ]
+    foreach function $functions {
         #item 1633
         lassign $function \
           diagram_id \
@@ -1509,8 +1329,6 @@ proc get_state_body { fhandle gdb functions state original_diagram vlog_state st
         #item 1634
         set funs($diagram_id) \
         $function
-        #item 16310003
-        incr _ind1631
     }
     #item 1635
     set cases \
@@ -1541,19 +1359,7 @@ proc get_state_body { fhandle gdb functions state original_diagram vlog_state st
         #item 1636
         set felse \
         $indent_2
-        #item 16370001
-        set _col1637 $cases
-        set _len1637 [ llength $_col1637 ]
-        set _ind1637 0
-        while { 1 } {
-            #item 16370002
-            if {$_ind1637 < $_len1637} {
-                
-            } else {
-                break
-            }
-            #item 16370004
-            set case [ lindex $_col1637 $_ind1637 ]
+        foreach case $cases {
             #item 1639
             set message \
             [ get_message $gdb $case ]
@@ -1581,8 +1387,6 @@ proc get_state_body { fhandle gdb functions state original_diagram vlog_state st
             #item 1645
             set felse \
             " else "
-            #item 16370003
-            incr _ind1637
         }
         #item 1646
         append result \
@@ -1669,19 +1473,7 @@ proc highlight { tokens } {
     set state "idle"
     #item 2172
     variable keywords
-    #item 21610001
-    set _col2161 $tokens
-    set _len2161 [ llength $_col2161 ]
-    set _ind2161 0
-    while { 1 } {
-        #item 21610002
-        if {$_ind2161 < $_len2161} {
-            
-        } else {
-            break
-        }
-        #item 21610004
-        set token [ lindex $_col2161 $_ind2161 ]
+    foreach token $tokens {
         #item 2214
         lassign $token type text
         #item 21560001
@@ -1770,8 +1562,6 @@ proc highlight { tokens } {
                 }
             }
         }
-        #item 21610003
-        incr _ind2161
     }
     #item 2227
     if {$state == "comment start"} {
@@ -1993,19 +1783,7 @@ proc make_indent { N } {
 }
 
 proc monkey_patch { direction fnames } {
-    #item 20910001
-    set _col2091 $fnames
-    set _len2091 [ llength $_col2091 ]
-    set _ind2091 0
-    while { 1 } {
-        #item 20910002
-        if {$_ind2091 < $_len2091} {
-            
-        } else {
-            break
-        }
-        #item 20910004
-        set fname [ lindex $_col2091 $_ind2091 ]
+    foreach fname $fnames {
         #item 2084
         if {$direction == "reverse"} {
             #item 2087
@@ -2022,8 +1800,6 @@ proc monkey_patch { direction fnames } {
             rename "${fname}_vlog" \
                    "$fname"
         }
-        #item 20910003
-        incr _ind2091
     }
 }
 
@@ -2305,19 +2081,7 @@ proc p.print_to_file { gdb fhandle functions header parameters inputs outputs in
     #item 1787
     set functions \
     {}
-    #item 17840001
-    set _col1784 $old_functions
-    set _len1784 [ llength $_col1784 ]
-    set _ind1784 0
-    while { 1 } {
-        #item 17840002
-        if {$_ind1784 < $_len1784} {
-            
-        } else {
-            break
-        }
-        #item 17840004
-        set function [ lindex $_col1784 $_ind1784 ]
+    foreach function $old_functions {
         #item 1788
         lassign $function \
           diagram_id \
@@ -2341,22 +2105,8 @@ proc p.print_to_file { gdb fhandle functions header parameters inputs outputs in
                $signature \
                $body ]
         }
-        #item 17840003
-        incr _ind1784
     }
-    #item 10220001
-    set _col1022 $functions
-    set _len1022 [ llength $_col1022 ]
-    set _ind1022 0
-    while { 1 } {
-        #item 10220002
-        if {$_ind1022 < $_len1022} {
-            
-        } else {
-            break
-        }
-        #item 10220004
-        set function [ lindex $_col1022 $_ind1022 ]
+    foreach function $functions {
         #item 1024
         lassign $function \
           diagram_id \
@@ -2406,30 +2156,14 @@ proc p.print_to_file { gdb fhandle functions header parameters inputs outputs in
                 puts $fhandle $declaration
             }
         }
-        #item 10220003
-        incr _ind1022
     }
-    #item 10370001
-    set _col1037 $machines
-    set _len1037 [ llength $_col1037 ]
-    set _ind1037 0
-    while { 1 } {
-        #item 10370002
-        if {$_ind1037 < $_len1037} {
-            
-        } else {
-            break
-        }
-        #item 10370004
-        set machine [ lindex $_col1037 $_ind1037 ]
+    foreach machine $machines {
         #item 1039
         print_machine_methods \
           $fhandle \
           $gdb \
           $machine \
           $functions
-        #item 10370003
-        incr _ind1037
     }
     #item 1040
     puts $fhandle ""
@@ -2451,24 +2185,10 @@ proc parse_block_parameters { parameters } {
     #item 433
     set result \
     {}
-    #item 4340001
-    set _col434 $parameters
-    set _len434 [ llength $_col434 ]
-    set _ind434 0
-    while { 1 } {
-        #item 4340002
-        if {$_ind434 < $_len434} {
-            
-        } else {
-            break
-        }
-        #item 4340004
-        set param [ lindex $_col434 $_ind434 ]
+    foreach param $parameters {
         #item 436
         lappend result \
           [ lindex $param 0 ]
-        #item 4340003
-        incr _ind434
     }
     #item 437
     return [ parse_parameters $result ]
@@ -2486,19 +2206,7 @@ proc parse_parameters { parameters } {
     #item 410
     set current_key \
     ""
-    #item 4110001
-    set _col411 $parameters
-    set _len411 [ llength $_col411 ]
-    set _ind411 0
-    while { 1 } {
-        #item 4110002
-        if {$_ind411 < $_len411} {
-            
-        } else {
-            break
-        }
-        #item 4110004
-        set param [ lindex $_col411 $_ind411 ]
+    foreach param $parameters {
         #item 1692
         set param \
         [ string trimleft $param " \t" ]
@@ -2568,8 +2276,6 @@ proc parse_parameters { parameters } {
                 }
             }
         }
-        #item 4110003
-        incr _ind411
     }
     #item 427
     return $result
@@ -2659,19 +2365,7 @@ proc print_machine_methods { fhandle gdb machine functions } {
         #item 1519
         set state_names_table \
         {}
-        #item 15200001
-        set _col1520 $states
-        set _len1520 [ llength $_col1520 ]
-        set _ind1520 0
-        while { 1 } {
-            #item 15200002
-            if {$_ind1520 < $_len1520} {
-                
-            } else {
-                break
-            }
-            #item 15200004
-            set state [ lindex $_col1520 $_ind1520 ]
+        foreach state $states {
             #item 2007
             set state \
             [ normalize_state_name $state ]
@@ -2693,8 +2387,6 @@ proc print_machine_methods { fhandle gdb machine functions } {
             #item 1526
             dict set states_rename_table \
               $state_wo_prefix $vlog_state_name
-            #item 15200003
-            incr _ind1520
         }
         #item 1527
         set vlog_halt_state_name \
@@ -2809,19 +2501,7 @@ proc print_machine_methods { fhandle gdb machine functions } {
             #item 1559
             set max_len \
             0
-            #item 15600001
-            set _col1560 $state_names_table
-            set _len1560 [ llength $_col1560 ]
-            set _ind1560 0
-            while { 1 } {
-                #item 15600002
-                if {$_ind1560 < $_len1560} {
-                    
-                } else {
-                    break
-                }
-                #item 15600004
-                set state [ lindex $_col1560 $_ind1560 ]
+            foreach state $state_names_table {
                 #item 2030
                 set state \
                 [ lindex $state 1]
@@ -2839,8 +2519,6 @@ proc print_machine_methods { fhandle gdb machine functions } {
                 } else {
                     
                 }
-                #item 15600003
-                incr _ind1560
             }
             #item 1567
             puts $fhandle [ join [ list \
@@ -2854,19 +2532,7 @@ proc print_machine_methods { fhandle gdb machine functions } {
             
             puts $fhandle \
             "${indent_next}case ($state_var)"
-            #item 15690001
-            set _col1569 $state_names_table
-            set _len1569 [ llength $_col1569 ]
-            set _ind1569 0
-            while { 1 } {
-                #item 15690002
-                if {$_ind1569 < $_len1569} {
-                    
-                } else {
-                    break
-                }
-                #item 15690004
-                set s [ lindex $_col1569 $_ind1569 ]
+            foreach s $state_names_table {
                 #item 1572
                 set vlog_state_name \
                 [ lindex $s 0 ]
@@ -2884,8 +2550,6 @@ proc print_machine_methods { fhandle gdb machine functions } {
                 "$vlog_state_name: " \
                 "$state_var_str = " \
                 "\"${ascii_name}\";" ]]
-                #item 15690003
-                incr _ind1569
             }
             #item 1576
             if {$has_final_state} {
@@ -2929,19 +2593,7 @@ proc print_machine_methods { fhandle gdb machine functions } {
         #item 1586
         lappend body \
         "case ($state_var)"
-        #item 15870001
-        set _col1587 $states
-        set _len1587 [ llength $_col1587 ]
-        set _ind1587 0
-        while { 1 } {
-            #item 15870002
-            if {$_ind1587 < $_len1587} {
-                
-            } else {
-                break
-            }
-            #item 15870004
-            set state [ lindex $_col1587 $_ind1587 ]
+        foreach state $states {
             #item 2008
             set norm_state \
             [ normalize_state_name $state ]
@@ -2964,8 +2616,6 @@ proc print_machine_methods { fhandle gdb machine functions } {
                   $state_var \
                   $states_rename_table \
                   1 ]
-            #item 15870003
-            incr _ind1587
         }
         #item 1595
         append body " "
@@ -3022,19 +2672,7 @@ proc process_insertions_refs { insertions body } {
     #item 1746
     set result \
     {}
-    #item 17470001
-    set _col1747 $body
-    set _len1747 [ llength $_col1747 ]
-    set _ind1747 0
-    while { 1 } {
-        #item 17470002
-        if {$_ind1747 < $_len1747} {
-            
-        } else {
-            break
-        }
-        #item 17470004
-        set line [ lindex $_col1747 $_ind1747 ]
+    foreach line $body {
         #item 1749
         if {[ regexp "##@@insertion:(.*)@@##" \
     $line _ name ]} {
@@ -3067,8 +2705,6 @@ proc process_insertions_refs { insertions body } {
             #item 1752
             lappend result $line
         }
-        #item 17470003
-        incr _ind1747
     }
     #item 1754
     return $result
@@ -3088,19 +2724,7 @@ proc rename_states { state_var states_rename_table body } {
     #item 1275
     set result \
     {}
-    #item 12770001
-    set _col1277 $body
-    set _len1277 [ llength $_col1277 ]
-    set _ind1277 0
-    while { 1 } {
-        #item 12770002
-        if {$_ind1277 < $_len1277} {
-            
-        } else {
-            break
-        }
-        #item 12770004
-        set line [ lindex $_col1277 $_ind1277 ]
+    foreach line $body {
         #item 1279
         set needs_rename \
         [ regexp \
@@ -3129,8 +2753,6 @@ proc rename_states { state_var states_rename_table body } {
         }
         #item 1285
         lappend result $line
-        #item 12770003
-        incr _ind1277
     }
     #item 1276
     return $result
@@ -3173,19 +2795,7 @@ proc transform_shelf { keyword operator body } {
         set operator \
         " $operator "
     }
-    #item 5530001
-    set _col553 $body
-    set _len553 [ llength $_col553 ]
-    set _ind553 0
-    while { 1 } {
-        #item 5530002
-        if {$_ind553 < $_len553} {
-            
-        } else {
-            break
-        }
-        #item 5530004
-        set line [ lindex $_col553 $_ind553 ]
+    foreach line $body {
         #item 555
         regsub -all "##@@shelfstart@@##" "$line" "$keyword" line_new
         #item 556
@@ -3194,8 +2804,6 @@ proc transform_shelf { keyword operator body } {
         regsub -all "##@@shelfend@@##" "$line_new" ";" line
         #item 558
         lappend text $line
-        #item 5530003
-        incr _ind553
     }
     #item 559
     return $text
@@ -3243,19 +2851,7 @@ proc trim_lines { lines trim_chars } {
     #item 2117
     set result \
     {}
-    #item 21150001
-    set _col2115 $lines
-    set _len2115 [ llength $_col2115 ]
-    set _ind2115 0
-    while { 1 } {
-        #item 21150002
-        if {$_ind2115 < $_len2115} {
-            
-        } else {
-            break
-        }
-        #item 21150004
-        set line [ lindex $_col2115 $_ind2115 ]
+    foreach line $lines {
         #item 2118
         set line \
         [string trim \
@@ -3263,8 +2859,6 @@ proc trim_lines { lines trim_chars } {
           $trim_chars ]
         #item 2119
         lappend result $line
-        #item 21150003
-        incr _ind2115
     }
     #item 2120
     return $result

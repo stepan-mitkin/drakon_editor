@@ -542,24 +542,10 @@ proc p.build_declaration { name signature } {
     #item 103
     unpack $signature type access parameters returns
     set param_names {}
-    #item 1050001
-    set _col105 $parameters
-    set _len105 [ llength $_col105 ]
-    set _ind105 0
-    while { 1 } {
-        #item 1050002
-        if {$_ind105 < $_len105} {
-            
-        } else {
-            break
-        }
-        #item 1050004
-        set parameter [ lindex $_col105 $_ind105 ]
+    foreach parameter $parameters {
         #item 104
         set pname [ lindex $parameter 0 ]
         lappend param_names $pname
-        #item 1050003
-        incr _ind105
     }
     #item 107
     set param_string [ join $param_names ", " ]
@@ -572,8 +558,14 @@ proc p.continue { } {
 }
 
 proc p.declare { type name value } {
-    #item 656
-    return "$type $name = $value;"
+    #item 1099
+    if {$value == ""} {
+        #item 1102
+        return "$type $name;"
+    } else {
+        #item 656
+        return "$type $name = $value;"
+    }
 }
 
 proc p.not { operand } {
@@ -643,19 +635,7 @@ proc p.print_proc { fhandle procedure class_name } {
     append header "$name\("
     #item 1021
     set i 0
-    #item 10190001
-    set _col1019 $parameters
-    set _len1019 [ llength $_col1019 ]
-    set _ind1019 0
-    while { 1 } {
-        #item 10190002
-        if {$_ind1019 < $_len1019} {
-            
-        } else {
-            break
-        }
-        #item 10190004
-        set parameter [ lindex $_col1019 $_ind1019 ]
+    foreach parameter $parameters {
         #item 1024
         if {$i == 0} {
             
@@ -668,8 +648,6 @@ proc p.print_proc { fhandle procedure class_name } {
         append header $arg
         #item 1022
         incr i
-        #item 10190003
-        incr _ind1019
     }
     #item 1031
     append header "\)"
@@ -748,23 +726,9 @@ proc pass { } {
 }
 
 proc print_procs { fhandle procedures class_name } {
-    #item 9630001
-    set _col963 $procedures
-    set _len963 [ llength $_col963 ]
-    set _ind963 0
-    while { 1 } {
-        #item 9630002
-        if {$_ind963 < $_len963} {
-            
-        } else {
-            break
-        }
-        #item 9630004
-        set procedure [ lindex $_col963 $_ind963 ]
+    foreach procedure $procedures {
         #item 965
         p.print_proc $fhandle $procedure $class_name
-        #item 9630003
-        incr _ind963
     }
 }
 

@@ -132,19 +132,7 @@ proc attach.to.icon { id } {
     lassign \
     [man.icon.box $id] \
     left top right bottom
-    #item 7220001
-    set _col722 $man_vers
-    set _len722 [ llength $_col722 ]
-    set _ind722 0
-    while { 1 } {
-        #item 7220002
-        if {$_ind722 < $_len722} {
-            
-        } else {
-            break
-        }
-        #item 7220004
-        set line_id [ lindex $_col722 $_ind722 ]
+    foreach line_id $man_vers {
         #item 727
         lassign \
         [man.line.coords $line_id] \
@@ -179,22 +167,8 @@ proc attach.to.icon { id } {
                 }
             }
         }
-        #item 7220003
-        incr _ind722
     }
-    #item 8340001
-    set _col834 $man_hors
-    set _len834 [ llength $_col834 ]
-    set _ind834 0
-    while { 1 } {
-        #item 8340002
-        if {$_ind834 < $_len834} {
-            
-        } else {
-            break
-        }
-        #item 8340004
-        set line_id [ lindex $_col834 $_ind834 ]
+    foreach line_id $man_hors {
         #item 838
         lassign \
         [man.line.coords $line_id] \
@@ -229,31 +203,15 @@ proc attach.to.icon { id } {
                 }
             }
         }
-        #item 8340003
-        incr _ind834
     }
 }
 
 proc attach.to.icons { } {
     #item 674
     set ids [ man.icons ]
-    #item 6910001
-    set _col691 $ids
-    set _len691 [ llength $_col691 ]
-    set _ind691 0
-    while { 1 } {
-        #item 6910002
-        if {$_ind691 < $_len691} {
-            
-        } else {
-            break
-        }
-        #item 6910004
-        set id [ lindex $_col691 $_ind691 ]
+    foreach id $ids {
         #item 675
         attach.to.icon $id
-        #item 6910003
-        incr _ind691
     }
     #item 672
     return [ success.status ]
@@ -262,19 +220,7 @@ proc attach.to.icons { } {
 proc check.dangling { } {
     #item 930
     set icon_ids [ man.icons ]
-    #item 9330001
-    set _col933 $icon_ids
-    set _len933 [ llength $_col933 ]
-    set _ind933 0
-    while { 1 } {
-        #item 9330002
-        if {$_ind933 < $_len933} {
-            
-        } else {
-            break
-        }
-        #item 9330004
-        set icon_id [ lindex $_col933 $_ind933 ]
+    foreach icon_id $icon_ids {
         #item 944
         if {[ man.icon.type $icon_id ] == "knot"} {
             #item 947
@@ -300,8 +246,6 @@ proc check.dangling { } {
         } else {
             
         }
-        #item 9330003
-        incr _ind933
     }
     #item 932
     return [ success.status ]
@@ -310,19 +254,7 @@ proc check.dangling { } {
 proc check.on.one.line { } {
     #item 1216
     set icon_ids [ man.icons ]
-    #item 12180001
-    set _col1218 $icon_ids
-    set _len1218 [ llength $_col1218 ]
-    set _ind1218 0
-    while { 1 } {
-        #item 12180002
-        if {$_ind1218 < $_len1218} {
-            
-        } else {
-            break
-        }
-        #item 12180004
-        set icon_id [ lindex $_col1218 $_ind1218 ]
+    foreach icon_id $icon_ids {
         #item 1223
         set left [ man.icon.left $icon_id ]
         set top [ man.icon.top $icon_id ]
@@ -331,8 +263,6 @@ proc check.on.one.line { } {
         #item 1251
         check.segments.on.line $left $right 0
         check.segments.on.line $top $bottom 1
-        #item 12180003
-        incr _ind1218
     }
     #item 1217
     return [ success.status ]
@@ -399,21 +329,7 @@ proc connected.check { } {
     set first [ first.not.comment $icon_ids ]
     #item 1257
     traverse $first
-    #item 12590001
-    set _col1259 $icon_ids
-    set _len1259 [ llength $_col1259 ]
-    set _ind1259 0
-    while { 1 } {
-        #item 12590002
-        if {$_ind1259 < $_len1259} {
-            
-        } else {
-            #item 1258
-            return 1
-            break
-        }
-        #item 12590004
-        set icon_id [ lindex $_col1259 $_ind1259 ]
+    foreach icon_id $icon_ids {
         #item 1261
         if {([ man.marked $icon_id ]) || ([ man.icon.type $icon_id ] == "commentin")} {
             
@@ -425,29 +341,16 @@ proc connected.check { } {
             report.error {} $message
             #item 1278
             return 0
-            break
         }
-        #item 12590003
-        incr _ind1259
     }
+    #item 1258
+    return 1
 }
 
 proc cut.segments { segments top bottom } {
     #item 468
     set output {}
-    #item 4700001
-    set _col470 $segments
-    set _len470 [ llength $_col470 ]
-    set _ind470 0
-    while { 1 } {
-        #item 4700002
-        if {$_ind470 < $_len470} {
-            
-        } else {
-            break
-        }
-        #item 4700004
-        set segment [ lindex $_col470 $_ind470 ]
+    foreach segment $segments {
         #item 472
         lassign $segment item_id x y1 y2 a
         #item 473
@@ -484,8 +387,6 @@ proc cut.segments { segments top bottom } {
             #item 488
             lappend output $lower
         }
-        #item 4700003
-        incr _ind470
     }
     #item 469
     return $output
@@ -542,25 +443,11 @@ proc cut.simple { segment top bottom ua la } {
 proc export.errors { diagram_id } {
     #item 1049
     variable errors
-    #item 10500001
-    set _col1050 $errors
-    set _len1050 [ llength $_col1050 ]
-    set _ind1050 0
-    while { 1 } {
-        #item 10500002
-        if {$_ind1050 < $_len1050} {
-            
-        } else {
-            break
-        }
-        #item 10500004
-        set err [ lindex $_col1050 $_ind1050 ]
+    foreach err $errors {
         #item 1082
         lassign $err item_id message
         #item 1052
         graph::p.error $diagram_id $item_id $message
-        #item 10500003
-        incr _ind1050
     }
 }
 
@@ -635,19 +522,7 @@ proc export.result { db diagram_id } {
     variable man_vers
     #item 1101
     set icon_ids [ array names man_icons ]
-    #item 11020001
-    set _col1102 $man_vers
-    set _len1102 [ llength $_col1102 ]
-    set _ind1102 0
-    while { 1 } {
-        #item 11020002
-        if {$_ind1102 < $_len1102} {
-            
-        } else {
-            break
-        }
-        #item 11020004
-        set line_id [ lindex $_col1102 $_ind1102 ]
+    foreach line_id $man_vers {
         #item 1104
         lassign $man_lines($line_id) item_id x y1 y2 a
         #item 1106
@@ -660,22 +535,8 @@ proc export.result { db diagram_id } {
         insert into edges (edge_id, diagram_id, vertex1, vertex2, head, vertical, items)
         values (:line_id, :diagram_id, :begin, :end, :head, 1, :item_id)
         }
-        #item 11020003
-        incr _ind1102
     }
-    #item 11070001
-    set _col1107 $man_hors
-    set _len1107 [ llength $_col1107 ]
-    set _ind1107 0
-    while { 1 } {
-        #item 11070002
-        if {$_ind1107 < $_len1107} {
-            
-        } else {
-            break
-        }
-        #item 11070004
-        set line_id [ lindex $_col1107 $_ind1107 ]
+    foreach line_id $man_hors {
         #item 1109
         lassign $man_lines($line_id) item_id y x1 x2 a
         #item 1111
@@ -688,26 +549,10 @@ proc export.result { db diagram_id } {
         insert into edges (edge_id, diagram_id, vertex1, vertex2, head, vertical, items)
         values (:line_id, :diagram_id, :begin, :end, :head, 0, :item_id)
         }
-        #item 11070003
-        incr _ind1107
     }
-    #item 11300001
-    set _col1130 $icon_ids
-    set _len1130 [ llength $_col1130 ]
-    set _ind1130 0
-    while { 1 } {
-        #item 11300002
-        if {$_ind1130 < $_len1130} {
-            
-        } else {
-            break
-        }
-        #item 11300004
-        set icon_id [ lindex $_col1130 $_ind1130 ]
+    foreach icon_id $icon_ids {
         #item 1204
         export.icon $db $diagram_id $icon_id
-        #item 11300003
-        incr _ind1130
     }
 }
 
@@ -751,28 +596,13 @@ proc extract.manhattan { db diagram_id } {
 }
 
 proc first.not.comment { icon_ids } {
-    #item 13300001
-    set _col1330 $icon_ids
-    set _len1330 [ llength $_col1330 ]
-    set _ind1330 0
-    while { 1 } {
-        #item 13300002
-        if {$_ind1330 < $_len1330} {
-            
-        } else {
-            #item 1337
-            return -1
-            break
-        }
-        #item 13300004
-        set icon_id [ lindex $_col1330 $_ind1330 ]
+    foreach icon_id $icon_ids {
         #item 1332
         if {[ man.icon.type $icon_id ] == "commentin"} {
             
         } else {
             #item 1336
             return $icon_id
-            break
         }
         #item 1335
         set left [ man.icon.left $icon_id ]
@@ -785,11 +615,10 @@ proc first.not.comment { icon_ids } {
         } else {
             #item 1336
             return $icon_id
-            break
         }
-        #item 13300003
-        incr _ind1330
     }
+    #item 1337
+    return -1
 }
 
 proc get.only { one two three four } {
@@ -850,19 +679,7 @@ proc icons.cut.lines { } {
     set xx [ array names stor_ver ]
     set yy [ array names stor_hor ]
     set ids [ array names stor_icons ]
-    #item 4400001
-    set _col440 $ids
-    set _len440 [ llength $_col440 ]
-    set _ind440 0
-    while { 1 } {
-        #item 4400002
-        if {$_ind440 < $_len440} {
-            
-        } else {
-            break
-        }
-        #item 4400004
-        set item_id [ lindex $_col440 $_ind440 ]
+    foreach item_id $ids {
         #item 437
         set item $stor_icons($item_id)
         #item 442
@@ -875,8 +692,6 @@ proc icons.cut.lines { } {
         icons.cut.segments $top $bottom $left $right stor_ver
         #item 446
         icons.cut.segments $left $right $top $bottom stor_hor
-        #item 4400003
-        incr _ind440
     }
 }
 
@@ -885,19 +700,7 @@ proc icons.cut.segments { top bottom left right array_name } {
     upvar $array_name lines
     #item 453
     set xs [ array names lines ]
-    #item 4540001
-    set _col454 $xs
-    set _len454 [ llength $_col454 ]
-    set _ind454 0
-    while { 1 } {
-        #item 4540002
-        if {$_ind454 < $_len454} {
-            
-        } else {
-            break
-        }
-        #item 4540004
-        set x [ lindex $_col454 $_ind454 ]
+    foreach x $xs {
         #item 456
         if {($x >= $left) && ($x <= $right)} {
             #item 460
@@ -909,8 +712,6 @@ proc icons.cut.segments { top bottom left right array_name } {
         } else {
             
         }
-        #item 4540003
-        incr _ind454
     }
 }
 
@@ -1014,19 +815,7 @@ proc insert.knots { } {
     #item 898
     variable man_hors
     variable man_vers
-    #item 8840001
-    set _col884 $man_vers
-    set _len884 [ llength $_col884 ]
-    set _ind884 0
-    while { 1 } {
-        #item 8840002
-        if {$_ind884 < $_len884} {
-            
-        } else {
-            break
-        }
-        #item 8840004
-        set line_id [ lindex $_col884 $_ind884 ]
+    foreach line_id $man_vers {
         #item 899
         lassign \
         [man.line.coords $line_id] \
@@ -1049,22 +838,8 @@ proc insert.knots { } {
         } else {
             
         }
-        #item 8840003
-        incr _ind884
     }
-    #item 9070001
-    set _col907 $man_hors
-    set _len907 [ llength $_col907 ]
-    set _ind907 0
-    while { 1 } {
-        #item 9070002
-        if {$_ind907 < $_len907} {
-            
-        } else {
-            break
-        }
-        #item 9070004
-        set line_id [ lindex $_col907 $_ind907 ]
+    foreach line_id $man_hors {
         #item 912
         lassign \
         [man.line.coords $line_id] \
@@ -1087,8 +862,6 @@ proc insert.knots { } {
         } else {
             
         }
-        #item 9070003
-        incr _ind907
     }
 }
 
@@ -1145,19 +918,7 @@ proc line.cuts.items { ver_item y hor_items } {
     } else {
         #item 549
         set output {}
-        #item 5510001
-        set _col551 $hor_items
-        set _len551 [ llength $_col551 ]
-        set _ind551 0
-        while { 1 } {
-            #item 5510002
-            if {$_ind551 < $_len551} {
-                
-            } else {
-                break
-            }
-            #item 5510004
-            set hor_item [ lindex $_col551 $_ind551 ]
+        foreach hor_item $hor_items {
             #item 553
             lassign \
             [segment.cut.segment $x $hor_item] \
@@ -1176,8 +937,6 @@ proc line.cuts.items { ver_item y hor_items } {
                 #item 561
                 lappend output $right
             }
-            #item 5510003
-            incr _ind551
         }
         #item 550
         return $output
@@ -1191,56 +950,14 @@ proc lines.cut { ver_name hor_name } {
     #item 529
     set xs [ array names ver ]
     set ys [ array names hor ]
-    #item 5300001
-    set _col530 $xs
-    set _len530 [ llength $_col530 ]
-    set _ind530 0
-    while { 1 } {
-        #item 5300002
-        if {$_ind530 < $_len530} {
-            
-        } else {
-            break
-        }
-        #item 5300004
-        set x [ lindex $_col530 $_ind530 ]
-        #item 5360001
-        set _col536 $ver($x)
-        set _len536 [ llength $_col536 ]
-        set _ind536 0
-        while { 1 } {
-            #item 5360002
-            if {$_ind536 < $_len536} {
-                
-            } else {
-                break
-            }
-            #item 5360004
-            set ver_item [ lindex $_col536 $_ind536 ]
-            #item 5330001
-            set _col533 $ys
-            set _len533 [ llength $_col533 ]
-            set _ind533 0
-            while { 1 } {
-                #item 5330002
-                if {$_ind533 < $_len533} {
-                    
-                } else {
-                    break
-                }
-                #item 5330004
-                set y [ lindex $_col533 $_ind533 ]
+    foreach x $xs {
+        foreach ver_item $ver($x) {
+            foreach y $ys {
                 #item 534
                 set hor_items [ line.cuts.items $ver_item $y $hor($y) ]
                 set hor($y) $hor_items
-                #item 5330003
-                incr _ind533
             }
-            #item 5360003
-            incr _ind536
         }
-        #item 5300003
-        incr _ind530
     }
 }
 
@@ -1264,93 +981,23 @@ proc make.man.store { } {
     set xs [ array names stor_ver ]
     set ys [ array names stor_hor ]
     set icon_ids [ array names stor_icons ]
-    #item 6530001
-    set _col653 $xs
-    set _len653 [ llength $_col653 ]
-    set _ind653 0
-    while { 1 } {
-        #item 6530002
-        if {$_ind653 < $_len653} {
-            
-        } else {
-            break
-        }
-        #item 6530004
-        set x [ lindex $_col653 $_ind653 ]
-        #item 6560001
-        set _col656 $stor_ver($x)
-        set _len656 [ llength $_col656 ]
-        set _ind656 0
-        while { 1 } {
-            #item 6560002
-            if {$_ind656 < $_len656} {
-                
-            } else {
-                break
-            }
-            #item 6560004
-            set item [ lindex $_col656 $_ind656 ]
+    foreach x $xs {
+        foreach item $stor_ver($x) {
             #item 655
             man.insert.vertical $item
-            #item 6560003
-            incr _ind656
         }
-        #item 6530003
-        incr _ind653
     }
-    #item 6580001
-    set _col658 $ys
-    set _len658 [ llength $_col658 ]
-    set _ind658 0
-    while { 1 } {
-        #item 6580002
-        if {$_ind658 < $_len658} {
-            
-        } else {
-            break
-        }
-        #item 6580004
-        set y [ lindex $_col658 $_ind658 ]
-        #item 6610001
-        set _col661 $stor_hor($y)
-        set _len661 [ llength $_col661 ]
-        set _ind661 0
-        while { 1 } {
-            #item 6610002
-            if {$_ind661 < $_len661} {
-                
-            } else {
-                break
-            }
-            #item 6610004
-            set item [ lindex $_col661 $_ind661 ]
+    foreach y $ys {
+        foreach item $stor_hor($y) {
             #item 660
             man.insert.horizontal $item
-            #item 6610003
-            incr _ind661
         }
-        #item 6580003
-        incr _ind658
     }
-    #item 6630001
-    set _col663 $icon_ids
-    set _len663 [ llength $_col663 ]
-    set _ind663 0
-    while { 1 } {
-        #item 6630002
-        if {$_ind663 < $_len663} {
-            
-        } else {
-            break
-        }
-        #item 6630004
-        set icon_id [ lindex $_col663 $_ind663 ]
+    foreach icon_id $icon_ids {
         #item 665
         set icon $stor_icons($icon_id)
         #item 666
         man.insert.icon $icon
-        #item 6630003
-        incr _ind663
     }
 }
 
@@ -1738,53 +1385,25 @@ proc merge.lines { } {
     variable stor_hor
     #item 144
     set ys [ array names stor_hor ]
-    #item 1460001
-    set _col146 $ys
-    set _len146 [ llength $_col146 ]
-    set _ind146 0
-    while { 1 } {
-        #item 1460002
-        if {$_ind146 < $_len146} {
-            
-        } else {
-            break
-        }
-        #item 1460004
-        set y [ lindex $_col146 $_ind146 ]
+    foreach y $ys {
         #item 148
         set items $stor_hor($y)
         #item 149
         set items2 [ merge.on.1.line $items ]
         #item 150
         set stor_hor($y) $items2
-        #item 1460003
-        incr _ind146
     }
     #item 158
     variable stor_ver
     #item 157
     set xs [ array names stor_ver ]
-    #item 1590001
-    set _col159 $xs
-    set _len159 [ llength $_col159 ]
-    set _ind159 0
-    while { 1 } {
-        #item 1590002
-        if {$_ind159 < $_len159} {
-            
-        } else {
-            break
-        }
-        #item 1590004
-        set x [ lindex $_col159 $_ind159 ]
+    foreach x $xs {
         #item 161
         set items $stor_ver($x)
         #item 162
         set items2 [ merge.on.1.line $items ]
         #item 163
         set stor_ver($x) $items2
-        #item 1590003
-        incr _ind159
     }
     #item 305
     return [ success.status ]
@@ -1797,19 +1416,7 @@ proc merge.on.1.line { items } {
     set output {}
     #item 184
     set current {}
-    #item 1820001
-    set _col182 $sorted
-    set _len182 [ llength $_col182 ]
-    set _ind182 0
-    while { 1 } {
-        #item 1820002
-        if {$_ind182 < $_len182} {
-            
-        } else {
-            break
-        }
-        #item 1820004
-        set item [ lindex $_col182 $_ind182 ]
+    foreach item $sorted {
         #item 185
         if {$current == {}} {
             #item 188
@@ -1827,8 +1434,6 @@ proc merge.on.1.line { items } {
                 lappend output $to_add
             }
         }
-        #item 1820003
-        incr _ind182
     }
     #item 392
     lappend output $current

@@ -80,44 +80,18 @@ proc delete { item_id } {
     #item 1676
     unset t_items($item_id)
     unset t_item_shadows($item_id)
-    #item 16770001
-    set _col1677 $roles
-    set _len1677 [ llength $_col1677 ]
-    set _ind1677 0
-    while { 1 } {
-        #item 16770002
-        if {$_ind1677 < $_len1677} {
-            
-        } else {
-            break
-        }
-        #item 16770004
-        set role [ lindex $_col1677 $_ind1677 ]
+    foreach role $roles {
         #item 1773
         set shadow_id $shadows($role)
         #item 1679
         unset t_shadows($shadow_id)
-        #item 16770003
-        incr _ind1677
     }
 }
 
 proc filter_hit { shadows x y } {
     #item 1527
     set result {}
-    #item 15260001
-    set _col1526 $shadows
-    set _len1526 [ llength $_col1526 ]
-    set _ind1526 0
-    while { 1 } {
-        #item 15260002
-        if {$_ind1526 < $_len1526} {
-            
-        } else {
-            break
-        }
-        #item 15260004
-        set shadow_id [ lindex $_col1526 $_ind1526 ]
+    foreach shadow_id $shadows {
         #item 1530
         set rect [ get_shadow_by_id $shadow_id ]
         #item 1531
@@ -129,8 +103,6 @@ proc filter_hit { shadows x y } {
         } else {
             
         }
-        #item 15260003
-        incr _ind1526
     }
     #item 1528
     return $result
@@ -154,19 +126,7 @@ proc find_allied { shadow_id direction delta allied } {
         set axis_or [ opposite_orientation $direction ]
         #item 1561
         set mytype [ get_shadow_type $shadow_id ]
-        #item 12720001
-        set _col1272 [ get_aligned $direction ]
-        set _len1272 [ llength $_col1272 ]
-        set _ind1272 0
-        while { 1 } {
-            #item 12720002
-            if {$_ind1272 < $_len1272} {
-                
-            } else {
-                break
-            }
-            #item 12720004
-            set other [ lindex $_col1272 $_ind1272 ]
+        foreach other [ get_aligned $direction ] {
             #item 1273
             if {$shadow_id == $other} {
                 
@@ -186,8 +146,6 @@ proc find_allied { shadow_id direction delta allied } {
                     
                 }
             }
-            #item 12720003
-            incr _ind1272
         }
     }
 }
@@ -200,26 +158,12 @@ proc get_affected_items { } {
     set shadows [ array names t_marked ]
     #item 1776
     set result {}
-    #item 17780001
-    set _col1778 $shadows
-    set _len1778 [ llength $_col1778 ]
-    set _ind1778 0
-    while { 1 } {
-        #item 17780002
-        if {$_ind1778 < $_len1778} {
-            
-        } else {
-            break
-        }
-        #item 17780004
-        set shadow_id [ lindex $_col1778 $_ind1778 ]
+    foreach shadow_id $shadows {
         #item 1775
         set shadow $t_shadows($shadow_id)
         set item_id [ lindex $shadow 7 ]
         #item 1780
         lappend result $item_id
-        #item 17780003
-        incr _ind1778
     }
     #item 1777
     return $result
@@ -459,25 +403,11 @@ proc mouse_move { delta_x delta_y } {
         #item 1648
         set all [ concat $itemsx $itemsy ]
         set items [ lsort -unique $all ]
-        #item 7630001
-        set _col763 $items
-        set _len763 [ llength $_col763 ]
-        set _ind763 0
-        while { 1 } {
-            #item 7630002
-            if {$_ind763 < $_len763} {
-                
-            } else {
-                break
-            }
-            #item 7630004
-            set item_id [ lindex $_col763 $_ind763 ]
+        foreach item_id $items {
             #item 766
             set resized [ get_item $item_id ]
             mv::update_item $item_id $resized
             mv::add_changed $item_id
-            #item 7630003
-            incr _ind763
         }
     }
 }
@@ -613,19 +543,7 @@ proc shadows_for_direction { shadows direction delta } {
     if {$delta == 0} {
         
     } else {
-        #item 12070001
-        set _col1207 $shadows
-        set _len1207 [ llength $_col1207 ]
-        set _ind1207 0
-        while { 1 } {
-            #item 12070002
-            if {$_ind1207 < $_len1207} {
-                
-            } else {
-                break
-            }
-            #item 12070004
-            set shadow_id [ lindex $_col1207 $_ind1207 ]
+        foreach shadow_id $shadows {
             #item 1209
             set type [ get_shadow_type $shadow_id ]
             #item 1208
@@ -635,8 +553,6 @@ proc shadows_for_direction { shadows direction delta } {
             } else {
                 
             }
-            #item 12070003
-            incr _ind1207
         }
     }
     #item 1205

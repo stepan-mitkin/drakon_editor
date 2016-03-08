@@ -80,6 +80,7 @@ function alternative_select(value, expected)
 end
 
 function arrayToString(array)
+    local i
     -- item 267
     local result = ""
     local current
@@ -90,6 +91,7 @@ function arrayToString(array)
         if i <= #array then
             
         else
+            normal_ = 0
             break
         end
         -- item 269
@@ -152,6 +154,7 @@ function descComparer(left, right)
 end
 
 function fibonacci(n)
+    local i
     -- item 185
     local result = {0}
     -- item 1610001
@@ -172,6 +175,7 @@ function fibonacci(n)
                 if i <= n then
                     
                 else
+                    normal_ = 0
                     break
                 end
                 -- item 172
@@ -202,6 +206,47 @@ function foreachDemo()
     printListForeach(sequence)
     -- item 156
     print()
+    -- item 437
+    test_early(20, 60)
+    -- item 438
+    test_early(35, 70)
+    -- item 439
+    test_early(4, 0)
+end
+
+function foreach_early_exit(value)
+    -- item 436
+    local found
+    local normal_419
+    normal_419 = 1
+    for _, x in pairs({10, 20, 30}) do
+        -- item 423
+        if x == value then
+            -- item 427
+            found = x
+            normal_419 = 0
+            break
+        else
+            
+        end
+    end
+    if normal_419 == 1 then
+        -- item 426
+        found = 0
+    end
+    for _, x in pairs({40, 20, 70}) do
+        -- item 435
+        local m = x / 2
+        -- item 430
+        if m == value then
+            -- item 434
+            return x + found
+        else
+            
+        end
+    end
+    -- item 433
+    return 0
 end
 
 function output(text)
@@ -219,6 +264,7 @@ function printListArrow(collection)
         if i <= #collection then
             
         else
+            normal_ = 0
             break
         end
         -- item 125
@@ -239,6 +285,7 @@ function printListBackward(collection)
         if n > 0 then
             
         else
+            normal_ = 0
             break
         end
         -- item 312
@@ -252,6 +299,7 @@ function printListBackward(collection)
 end
 
 function printListFor(collection)
+    local j
     -- item 348
     local i
     -- item 142
@@ -263,6 +311,7 @@ function printListFor(collection)
         if j <= #collection then
             
         else
+            normal_ = 0
             break
         end
         -- item 353
@@ -280,6 +329,7 @@ function printListFor(collection)
         if i <= #collection then
             
         else
+            normal_ = 0
             break
         end
         -- item 183
@@ -342,6 +392,7 @@ function quicksort(comparer, collection, first, last)
                 if i < last then
                     
                 else
+                    normal_ = 0
                     break
                 end
                 -- item 232
@@ -487,6 +538,18 @@ function swap(array, leftIndex, rightIndex)
     -- item 251
     array[leftIndex] = right
     array[rightIndex ] = left
+end
+
+function test_early(value, expected)
+    -- item 445
+    local actual = foreach_early_exit(value)
+    -- item 446
+    if actual == expected then
+        
+    else
+        -- item 449
+        error ("foreach_early_exit failed")
+    end
 end
 
 

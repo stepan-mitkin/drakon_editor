@@ -37,25 +37,11 @@ proc build.called.list { } {
     set callers [ get.callers ]
     #item 182
     set called {}
-    #item 1840001
-    set _col184 $callers
-    set _len184 [ llength $_col184 ]
-    set _ind184 0
-    while { 1 } {
-        #item 1840002
-        if {$_ind184 < $_len184} {
-            
-        } else {
-            break
-        }
-        #item 1840004
-        set caller [ lindex $_col184 $_ind184 ]
+    foreach caller $callers {
         #item 186
         set this_called [ get.called $caller ]
         #item 187
         set called [ concat $called $this_called ]
-        #item 1840003
-        incr _ind184
     }
     #item 183
     return [ lsort -unique -integer $called ]
@@ -97,34 +83,10 @@ proc build.graph { } {
     		set names($diagram_id) $name
     	}
     }
-    #item 730001
-    set _col73 $diagrams
-    set _len73 [ llength $_col73 ]
-    set _ind73 0
-    while { 1 } {
-        #item 730002
-        if {$_ind73 < $_len73} {
-            
-        } else {
-            break
-        }
-        #item 730004
-        set called [ lindex $_col73 $_ind73 ]
+    foreach called $diagrams {
         #item 77
         set called_name $names($called)
-        #item 750001
-        set _col75 $diagrams
-        set _len75 [ llength $_col75 ]
-        set _ind75 0
-        while { 1 } {
-            #item 750002
-            if {$_ind75 < $_len75} {
-                
-            } else {
-                break
-            }
-            #item 750004
-            set caller [ lindex $_col75 $_ind75 ]
+        foreach caller $diagrams {
             #item 79
             set tokens \
             [get.tokens $db $caller $is_tcl]
@@ -135,11 +97,7 @@ proc build.graph { } {
             } else {
                 
             }
-            #item 750003
-            incr _ind75
         }
-        #item 730003
-        incr _ind73
     }
     #item 176
     set caller_procs [ get.callers ]
@@ -245,19 +203,7 @@ proc lex { text is_tcl } {
     set parts [ split $text $split_chars ]
     #item 96
     set output {}
-    #item 1010001
-    set _col101 $parts
-    set _len101 [ llength $_col101 ]
-    set _ind101 0
-    while { 1 } {
-        #item 1010002
-        if {$_ind101 < $_len101} {
-            
-        } else {
-            break
-        }
-        #item 1010004
-        set part [ lindex $_col101 $_ind101 ]
+    foreach part $parts {
         #item 98
         if {$part == ""} {
             
@@ -265,8 +211,6 @@ proc lex { text is_tcl } {
             #item 103
             lappend output $part
         }
-        #item 1010003
-        incr _ind101
     }
     #item 97
     return $output

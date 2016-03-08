@@ -100,6 +100,40 @@ def foreach_demo():
     print_list_foreach(sequence)
     #item 179
     print("")
+    #item 283
+    test_early(20, 60)
+    #item 284
+    test_early(35, 70)
+    #item 285
+    test_early(4, 0)
+
+
+def foreach_early_exit(value):
+    
+    normal_255 = 1
+    for x in [10, 20, 30]:
+        #item 259
+        if x == value:
+            #item 263
+            found = x
+            normal_255 = 0
+            break
+        else:
+            pass
+    if normal_255 == 1:
+        #item 262
+        found = 0
+    for x in [40, 20, 70]:
+        #item 271
+        m = x / 2
+        #item 266
+        if m == value:
+            #item 270
+            return x + found
+        else:
+            pass
+    #item 269
+    return 0
 
 
 def main():
@@ -295,6 +329,17 @@ def strings_are_sorted(array):
             raise Exception( "Collection is not sorted:\n" + str(array))
             return None
     
+
+
+def test_early(value, expected):
+    #item 278
+    actual = foreach_early_exit(value)
+    #item 279
+    if actual == expected:
+        pass
+    else:
+        #item 282
+        raise Exception("foreach_early_exit failed")
 
 
 def write(item):
