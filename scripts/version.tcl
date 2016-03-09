@@ -12,5 +12,5 @@ proc version_string { } {
 }
 
 proc version_tag { } {
-	return "dev"
+	return "RC1"
 }
