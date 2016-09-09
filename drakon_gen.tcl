@@ -58,6 +58,8 @@ proc print_usage { } {
 	puts "Options:"
 	puts "-in <filename>          The input filename."
 	puts "-out <dir>              The output directory. Optional."
+	puts "or:"
+	puts "tclsh8.6 drakon_gen.tcl -folder some_folder -ext js"
 }
 
 namespace eval mw {
@@ -85,44 +87,76 @@ proc get_argument { name optional } {
 }
 
 proc run { src_filename dst_filename } {
-	#catch {
-		set result [ mod::open db $src_filename drakon ]
-		set message [ lindex $result 1 ]
-		
-		if { $message != "" } {
-			puts $message
-			exit 1
+
+	mod::close db
+
+	set result [ mod::open db $src_filename drakon ]
+	set message [ lindex $result 1 ]
+	
+	if { $message != "" } {
+		puts $message
+		exit 1
+	}
+	
+	mwc::init db
+	
+	set success [ gen::generate_no_gui $dst_filename]
+	if { !$success } {
+		exit 1
+	}
+}
+
+
+proc file_time { file } {
+	if { [ file exists $file ] } {
+		return [ file mtime $file ]
+	} else {
+		return 0
+	}
+}
+
+proc get_files { dir pattern } {
+	set files [ glob -nocomplain -directory $dir $pattern ]
+	return $files
+}
+
+set folder [ get_argument -folder 1 ]
+set folder [ file normalize $folder ]
+if { $folder != "" } {
+	set ext [ get_argument -ext 0 ]
+
+	puts "Building \"$ext\" files: \"$folder\""
+
+	set files [ get_files $folder *.drn ]
+
+	
+
+	set dst_mask ".$ext"
+	foreach file $files {
+		set dst [ string map [list .drn $dst_mask] $file ]
+		set dst_time [ file_time $dst ]
+		set drn_time [ file_time $file ]
+
+		if { $dst_time < $drn_time } {
+			puts $file
+			run $file $dst
 		}
-		
-		mwc::init db
-		
-		gen::generate_no_gui $dst_filename
-	#} message
+	}	
+	
+} else {
 
-	#if { $message != "" } {
-	#	puts $message
-	#	exit 1
-	#}
+	set in [ get_argument -in 0 ]
+	set out [ get_argument -out 1 ]
+
+	set src_filename [ file normalize $in ]
+	if { $out == "" } {
+		set out [ file dirname $in ]
+	}
+
+	set out_dir [ file normalize $out ]
+
+	set name [ file tail $src_filename ]
+	set dst_filename [ file join $out_dir $name ]
+
+	run $src_filename $dst_filename
 }
-
-
-set in [ get_argument -in 0 ]
-set out [ get_argument -out 1 ]
-
-set src_filename [ file normalize $in ]
-if { $out == "" } {
-	set out [ file dirname $in ]
-}
-
-set out_dir [ file normalize $out ]
-
-set name [ file tail $src_filename ]
-set dst_filename [ file join $out_dir $name ]
-
-run $src_filename $dst_filename
-
-
-
-
-
-

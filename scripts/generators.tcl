@@ -131,6 +131,7 @@ proc generate_no_gui { dst_filename } {
 			}
 		}
 	}
+	
 
 	set error_list [ graph::get_error_list ]
 
@@ -1461,7 +1462,7 @@ proc generate_function { gdb diagram_id callbacks nogoto to } {
 }
 
 proc tree_nogoto { gdb diagram_id callbacks name } {
-	puts "solving as tree: $name"
+	#puts "solving as tree: $name"
 	set start_vertex [ find_start_vertex $gdb $diagram_id ]
 	set start_item [ p.vertex_item $gdb $start_vertex ]
 	set roots [ list $start_vertex ]
@@ -1628,7 +1629,7 @@ proc try_nogoto { gdb diagram_id callbacks name } {
 	set log [ expr { $name == "xxxx" } ]
 	add_to_graph $gdb $db $start_vertex $log
 	
-	puts "solving: $name"
+	#puts "solving: $name"
 	set tree [ nogoto::generate $db $start_item ]
 		
 	if { $tree == "" } {
