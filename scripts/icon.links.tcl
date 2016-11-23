@@ -25,6 +25,9 @@ array set link_types {
 array set code_to_type {}
 
 foreach name [ array names link_types ] {
+	if {$name == "parallel"} {
+		continue
+	}	
 	lassign $link_types($name) code make
 	set code_to_type($code) [ list $name $make ]
 	
