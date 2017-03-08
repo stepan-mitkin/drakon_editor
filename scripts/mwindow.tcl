@@ -1,6 +1,6 @@
 # Main window.
 
-
+# Changed Sections: canvas_motion, canvas_rdown, canvas_lup, canvas_wheel
 
 namespace eval mw {
 
@@ -1299,6 +1299,7 @@ proc edit { } {
 proc canvas_scrolled { window } {
 	set x [ $window canvasx 0 ]
 	set y [ $window canvasy 0 ]
+	
 	mwc::scroll $x $y
 }
 
@@ -1345,24 +1346,42 @@ proc canvas_motion { window x y s } {
 	set cy [ $window canvasy $y ]
 	
 	mw::remember_mouse $x $y
-
-	set args [ list $x $y $cx $cy $dx $dy ]
+	
+	### Modification ###
+	set args [ list $x $y $cx $cy $dx $dy $window ]
+	
+	# Choosing what to do on button presses
 	
 	set shift [ shift_pressed $s ]
 	if { [ mw::left_button_pressed $s ] } {
 		if { [ mw::right_button_pressed $s ] } {
 			set movement [ expr { abs($dx) + abs($dy) } ]
 			incr right_moved $movement
-			scroll_canvas $window $dx $dy		
+			
+			# If both buttons are pressed
+			
+
+			scroll_canvas $window $dx $dy
+			
 		} else {
+		
+			# If only Left is pressed
 			mwc::lmove $args
 		}
+		
 	} elseif { [ mw::middle_button_pressed $s ] } {
+	
+		# If the middle button is pressed
 		scroll_canvas $window $dx $dy
+		
 	} elseif { ![ mw::right_button_pressed $s ] } {
+	
+		# If the right button is NOT pressed (?)
 		mwc::hover $cx $cy $shift
 	}
-}
+	### End ###
+}	
+
 
 proc scroll_canvas { canvas dx dy } {
 	$canvas xview scroll [ expr -$dx ] units
@@ -1591,15 +1610,43 @@ proc canvas_rdown { window x y } {
 	set cx [ $window canvasx $x ]
 	set cy [ $window canvasy $y ]
 	
+	### Modification ###
+	mw::remember_mouse $x $y
+	### End ###
+	
 	mwc::rdown $cx $cy
 }
 
 proc canvas_lup { window x y } {
-	set cx [ $window canvasx $x ]
-	set cy [ $window canvasy $y ]
+
+	### Modification ###
+	variable right_moved
+	variable canvas
+	variable mouse_x0
+	variable mouse_y0
 	
-	set args [ list $x $y $cx $cy ]
+	if { 1 == 1 } { 
+		set x $mouse_x0
+		set y $mouse_x0
+		set cx [ $canvas canvasx $x ]
+		set cy [ $canvas canvasy $y ]
+		
+		
+	} else {
+	
+		set cx [ $window canvasx $x ]
+		set cy [ $window canvasy $y ]
+	}
+	
+	set args [ list $x $y $cx $cy $window $canvas ]
 	mwc::lup $args
+	
+	
+	
+	
+	
+	canvas_scrolled $canvas
+	### End ###
 }
 
 proc canvas_rclick { window x y }	 {
@@ -1673,13 +1720,16 @@ proc canvas_wheel { window delta s } {
 	set amount [ normalize_wheel $delta ]
 	set x0 [ $window canvasx 0 ]
 	set y0 [ $window canvasy 0 ]	
-
+	
+	### Modification ###
 	if { [ shift_pressed $s ] } {
-		set x1 [ expr { $x0 + $amount } ]
-		set y1 $y0
-		$window xview scroll $amount units
+		
+		set x1 $x0
+		set y1 [ expr { $y0 + $amount } ]
+		$window yview scroll $amount units
 		mwc::scroll $x1 $y1
-	} elseif { [ control_pressed $s ] } {
+		
+	} else {
 		set cw $canvas_width
 		set ch $canvas_height
 		if { $amount > 0 } {
@@ -1687,12 +1737,8 @@ proc canvas_wheel { window delta s } {
 		} else {
 			mwc::change_zoom_up $cw $ch
 		}
-	} else {
-		set x1 $x0
-		set y1 [ expr { $y0 + $amount } ]
-		$window yview scroll $amount units
-		mwc::scroll $x1 $y1
 	}
+	### End ###
 	
 	insp::reset
 } 
