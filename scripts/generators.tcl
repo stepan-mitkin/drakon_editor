@@ -336,13 +336,20 @@ proc get_clean_type { text } {
 }
 
 proc has_operator_chars { text } {
-	set map {, . \[ . \] . \( . \) . \" . \' .}
+	set map {, . \[ . \] . \( . \) . \" . \' . \{ . \} .}
 	set mapped [ string map $map $text ]
 	set pattern "*\\.*"
 	return [string match $pattern $mapped ]
 }
 
 proc get_variable_name { line var_keyword } {
+	
+	set trimmed [ string trim $line ]
+
+	if { [has_operator_chars $trimmed ] } {
+		return ""
+	}	
+	
 	set parts [ split $line "=" ]
 	if { [ llength $parts ] < 2 } {
 		return ""
@@ -351,11 +358,8 @@ proc get_variable_name { line var_keyword } {
 	set first [ lindex $parts 0 ]
 	set first [ string trim $first ]
 	
-	if {[llength $first ] > 1} {
-		return ""
-	}
 	
-	if { [has_operator_chars $first ] } {
+	if {[llength $first ] > 1} {
 		return ""
 	}
 	
@@ -403,7 +407,8 @@ proc clean_proc { lines indent} {
 
 
 
-proc clean_lambda { lines } {
+proc clean_lambda { lines keys } {
+	lassign $keys field_ass lambda_start lambda_end
 	set first [lindex $lines 0]
 	set second [lindex $lines 1]
 	set body_lines [lrange $lines 1 end]
@@ -417,30 +422,29 @@ proc clean_lambda { lines } {
 	if { [llength $body_lines] == 1} {
 		set rest_text "    $second"
 	} elseif { $second == "return" } {
-		set rest_text [ clean_struct $body_lines ":" "    "]
+		set rest_text [ clean_struct $body_lines $keys "    "]
 	} else {
 		set rest_text [ clean_proc $body_lines "    "]
 	}
-	return "$left = function\($vars_str\) \{\n$rest_text\n\}"
+	return "$left = function\($vars_str\) $lambda_start\n$rest_text\n$lambda_end"
 }
 
 proc clean_struct_field { line field_ass } {
-	set first [ string first " " $line ]
-	if { $first == -1} {
-		set first [ string first "\t" $line ]
-	}
+	set first [ string first ":" $line ]
 	if {$first == -1} {
 		error "Field name is missing in line: $line"
 	}
+	incr first
 	set value [ string range $line $first end]
 	set value [ string trim $value]
-	incr first -1
+	incr first -2
 	set name [ string range $line 0 $first ]
 	set name [ string trim $name]
 	return "$name $field_ass $value"
 }
 
-proc clean_struct { lines field_ass indent} {
+proc clean_struct { lines keys indent} {
+	set field_ass [ lindex $keys 0 ]
 	set first [lindex $lines 0]
 	set rest [lrange $lines 1 end]
 	set rest_lines {}
@@ -452,7 +456,7 @@ proc clean_struct { lines field_ass indent} {
 	return "$indent${first} \{\n$indent    $rest_text\n$indent\}"
 }
 
-proc rewrite_clean_text { text field_ass} {
+proc rewrite_clean_text { text keys} {
 	set clean_type [ get_clean_type $text]
 	if { $clean_type == "" } {
 		return $text
@@ -461,9 +465,9 @@ proc rewrite_clean_text { text field_ass} {
 	if { $type == "proc" } {
 		return [ clean_proc $lines ""]		
 	} elseif {$type == "lambda"} {
-		return [ clean_lambda $lines ]
+		return [ clean_lambda $lines $keys ]
 	} else {
-		return [ clean_struct $lines $field_ass ""]
+		return [ clean_struct $lines $keys ""]
 	}
 }
 
@@ -2440,7 +2444,7 @@ proc get_param_names { parameters } {
 	return $params	
 }
 
-proc print_variables { fhandle variables diagram_id signature var_keyword } {	
+proc print_variables { variables diagram_id signature var_keyword } {	
 	lassign $signature type access parameters returns
 	set params [ get_param_names $parameters ]
 	if {[dict exists $variables $diagram_id ]} {
@@ -2455,9 +2459,10 @@ proc print_variables { fhandle variables diagram_id signature var_keyword } {
 		if { $vars != {} } {
 			set vars_str [join $vars ", " ]
 			set line "    $var_keyword $vars_str"
-			puts $fhandle $line
+			return $line
 		}
 	}
+	return ""
 }
 
 }

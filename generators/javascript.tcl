@@ -243,10 +243,12 @@ proc generate { db gdb filename is_clean} {
     set diagrams [ $gdb eval {
         select diagram_id from diagrams } ]
     
+    set keys {":" "\{" "\}"}
+    
     foreach diagram_id $diagrams {
 		if {$is_clean} {
 			extract_variables $gdb $diagram_id
-			gen::rewrite_clean $gdb $diagram_id ":"			
+			gen::rewrite_clean $gdb $diagram_id $keys
 		}
         gen::fix_graph_for_diagram $gdb $callbacks 1 $diagram_id
     }
@@ -421,7 +423,10 @@ proc p.print_to_file { fhandle functions header footer machine_decl machine_ctrs
 			puts $fhandle ""
 			set declaration [ build_declaration $name $signature ]
 			puts $fhandle $declaration
-			gen::print_variables $fhandle $variables $diagram_id $signature "var"
+			set vars [gen::print_variables $variables $diagram_id $signature "var"]
+			if {$vars != "" } {
+				puts $fhandle $vars
+			}
 			set lines [ gen::indent $body 1 ]
 			puts $fhandle $lines
 			puts $fhandle "\}"

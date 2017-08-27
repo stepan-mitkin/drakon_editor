@@ -71,7 +71,7 @@ function doSomething(first, second, third) {
 }
 
 function lambas() {
-    var lam, lam2, lam3, p, someVar
+    var lam, lam2, lam3, someVar
     // item 419
     someVar = 900
     // item 412
