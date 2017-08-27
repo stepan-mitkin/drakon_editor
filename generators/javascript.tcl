@@ -1,5 +1,6 @@
 
-gen::add_generator Javascript gen_js::generate
+gen::add_generator Javascript gen_js::generate_js
+gen::add_generator DrakonJS gen_js::generate_clean_js
 
 namespace eval gen_js {
 
@@ -20,6 +21,17 @@ while 	with 	yield
 }
 
 variable handlers {}
+
+variable variables {}
+
+proc extract_variables { gdb diagram_id } {
+	variable variables
+	set vars [ gen::extract_variables $gdb $diagram_id  "var" ]
+	if {$vars != "" } {
+		lappend variables $diagram_id
+		lappend variables $vars
+	}
+}
 
 
 proc highlight { tokens } {
@@ -199,8 +211,20 @@ proc for_declare { item_id first second } {
 	return ""
 }
 
-proc generate { db gdb filename } {
+proc generate_js { db gdb filename } {
+	generate $db $gdb $filename 0
+}
+
+proc generate_clean_js { db gdb filename } {
+	generate $db $gdb $filename 1
+}
+
+
+proc generate { db gdb filename is_clean} {
     # prepare
+    
+	variable variables
+	set variables {}    
     
 	set callbacks [ make_callbacks ]
 	lassign [ gen::scan_file_description $db { header footer } ] header footer
@@ -220,6 +244,10 @@ proc generate { db gdb filename } {
         select diagram_id from diagrams } ]
     
     foreach diagram_id $diagrams {
+		if {$is_clean} {
+			extract_variables $gdb $diagram_id
+			gen::rewrite_clean $gdb $diagram_id ":"			
+		}
         gen::fix_graph_for_diagram $gdb $callbacks 1 $diagram_id
     }
 
@@ -369,10 +397,7 @@ proc build_declaration { name signature } {
         set result "function $name\("
     }
     
-	set params {}
-	foreach parameter $parameters {
-		lappend params [ lindex $parameter 0 ]
-	}
+	set params [ gen::get_param_names $parameters ]
 	set params_list [ join $params ", " ]
 	append result $params_list
 	append result "\) \{"
@@ -380,6 +405,7 @@ proc build_declaration { name signature } {
 }
 
 proc p.print_to_file { fhandle functions header footer machine_decl machine_ctrs } {
+	variable variables
 	if { $header != "" } {
 		puts $fhandle $header
 	}
@@ -395,6 +421,7 @@ proc p.print_to_file { fhandle functions header footer machine_decl machine_ctrs
 			puts $fhandle ""
 			set declaration [ build_declaration $name $signature ]
 			puts $fhandle $declaration
+			gen::print_variables $fhandle $variables $diagram_id $signature "var"
 			set lines [ gen::indent $body 1 ]
 			puts $fhandle $lines
 			puts $fhandle "\}"

@@ -247,6 +247,272 @@ proc fix_graph_stage_1_core { gdb callbacks append_semicolon diagram_id do_selec
 	p.clean_tech_vertices $gdb $diagram_id
 }
 
+
+proc get_trimmed_lines { text } {
+	set raw_lines [ split $text "\n" ]
+	set lines {}
+	foreach raw_line $raw_lines {
+		set line [string trim $raw_line]
+		if { $line != "" } {
+			lappend lines $line
+		}
+	}
+	return $lines	
+}
+
+proc get_raw_lines { text } {
+	set raw_lines [ split $text "\n" ]
+	set lines {}
+	foreach raw_line $raw_lines {
+		set line [string trim $raw_line]
+		if { $line != "" } {
+			lappend lines $raw_line
+		}
+	}
+	return $lines	
+}
+
+proc starts_with_operator { text } {
+	set first [ string index $text 0 ]
+	set map {, . \[ . \] . \( . \) . \" . \' . - . + . / . * . : . % . ^ .}	
+	set mapped [ string map $map $first ]
+	if {$mapped == "."} {
+		return 1
+	}
+	return 0
+}
+
+proc is_lambda { line } {
+	set parts [ split $line "=" ]
+	if {[llength $parts] != 2} {
+		return 0
+	}
+	set second [string trim [ lindex $parts 1 ]]
+	set part0 [ lindex $second 0]
+	if {$part0 == "function"} {
+		return 1
+	}
+	
+	return 0
+}
+
+proc get_clean_type { text } {
+	set raw_lines [ get_raw_lines $text ]
+	if { [llength $raw_lines] < 2 } {
+		return {}
+	}
+	set first_whitespace "\[ \t\]*"	
+	set lines {}
+	set first 1
+
+	foreach raw $raw_lines {
+		if {!$first && ![string match $first_whitespace $raw]} {
+			return {}
+		}
+		set first 0
+		
+		set line [string trim $raw]
+		
+		if {[starts_with_operator $line]} {
+			return {}
+		}
+		
+		lappend lines $line
+	}
+	
+	set first [ lindex $lines 0 ]
+	
+	if { $first == "return" } {
+		set type "struct"
+	} elseif { [string match "*=" $first ] } {
+		set type "struct"
+	} elseif { [is_lambda $first ] } {
+		set type "lambda"
+	} else {
+		set type "proc"
+	}	
+	
+	return [list $type $lines]
+}
+
+proc has_operator_chars { text } {
+	set map {, . \[ . \] . \( . \) . \" . \' .}
+	set mapped [ string map $map $text ]
+	set pattern "*\\.*"
+	return [string match $pattern $mapped ]
+}
+
+proc get_variable_name { line var_keyword } {
+	set parts [ split $line "=" ]
+	if { [ llength $parts ] < 2 } {
+		return ""
+	}
+	
+	set first [ lindex $parts 0 ]
+	set first [ string trim $first ]
+	
+	if {[llength $first ] > 1} {
+		return ""
+	}
+	
+	if { [has_operator_chars $first ] } {
+		return ""
+	}
+	
+	return $first	
+}
+
+proc get_variables_from_item { text var_keyword } {
+	set result {}
+	set lines [ get_trimmed_lines $text ]
+	foreach line $lines {
+		set var_name [ get_variable_name $line $var_keyword ]
+		if { $var_name != "" } {
+			lappend result $var_name
+		}
+	}
+	return $result
+}
+
+proc get_item_text { gdb diagram_id item_id } {
+	lassign [ $gdb eval {
+		select text
+		from items
+		where diagram_id = :diagram_id
+		and item_id = :item_id
+	} ] text
+	return $text
+}
+
+proc set_item_text { gdb diagram_id item_id text} {
+	$gdb eval {
+		update items
+		set text = :text
+		where diagram_id = :diagram_id
+		and item_id = :item_id
+	}
+}
+
+proc clean_proc { lines indent} {
+	set first [lindex $lines 0]
+	set rest [lrange $lines 1 end]
+	set result "$indent${first}\(\n$indent    "
+	set rest_text [ join $rest ",\n$indent    "]
+	return $result${rest_text}\n$indent\)
+}
+
+
+
+proc clean_lambda { lines } {
+	set first [lindex $lines 0]
+	set second [lindex $lines 1]
+	set body_lines [lrange $lines 1 end]
+	
+	set parts [ split $first "=" ]
+	set left [ string trim [ lindex $parts 0 ]]
+	set right [ lindex $parts 1 ]
+	set vars [ lrange $right 1 end]
+	set vars_str [ join $vars ", " ]
+	set body "    ${second}\(\n        "
+	if { [llength $body_lines] == 1} {
+		set rest_text "    $second"
+	} elseif { $second == "return" } {
+		set rest_text [ clean_struct $body_lines ":" "    "]
+	} else {
+		set rest_text [ clean_proc $body_lines "    "]
+	}
+	return "$left = function\($vars_str\) \{\n$rest_text\n\}"
+}
+
+proc clean_struct_field { line field_ass } {
+	set first [ string first " " $line ]
+	if { $first == -1} {
+		set first [ string first "\t" $line ]
+	}
+	if {$first == -1} {
+		error "Field name is missing in line: $line"
+	}
+	set value [ string range $line $first end]
+	set value [ string trim $value]
+	incr first -1
+	set name [ string range $line 0 $first ]
+	set name [ string trim $name]
+	return "$name $field_ass $value"
+}
+
+proc clean_struct { lines field_ass indent} {
+	set first [lindex $lines 0]
+	set rest [lrange $lines 1 end]
+	set rest_lines {}
+	foreach line $rest {
+		set formatted [ clean_struct_field $line $field_ass]
+		lappend rest_lines $formatted
+	}
+	set rest_text [ join $rest_lines ",\n$indent    "]
+	return "$indent${first} \{\n$indent    $rest_text\n$indent\}"
+}
+
+proc rewrite_clean_text { text field_ass} {
+	set clean_type [ get_clean_type $text]
+	if { $clean_type == "" } {
+		return $text
+	}
+	lassign $clean_type type lines
+	if { $type == "proc" } {
+		return [ clean_proc $lines ""]		
+	} elseif {$type == "lambda"} {
+		return [ clean_lambda $lines ]
+	} else {
+		return [ clean_struct $lines $field_ass ""]
+	}
+}
+
+proc rewrite_clean_for_item { gdb vertex_id field_ass } {
+	set text [ p.vertex_text $gdb $vertex_id ]	
+	set text2 [ rewrite_clean_text $text $field_ass ]
+	
+	$gdb eval {
+		update vertices
+		set text = :text2
+		where vertex_id = :vertex_id
+	}
+}
+
+proc rewrite_clean { gdb diagram_id field_ass } {
+	set actions [ $gdb eval {
+		select vertex_id
+		from vertices
+		where type = 'action' 
+			and diagram_id = :diagram_id } ]
+	
+	foreach vertex_id $actions {
+		rewrite_clean_for_item $gdb $vertex_id $field_ass
+	}
+}
+
+proc extract_variables { gdb diagram_id var_keyword } {	
+	set vars  [get_variables_from_diagram $gdb $diagram_id $var_keyword]
+	return $vars
+}
+
+proc get_variables_from_diagram { gdb diagram_id var_keyword } {
+	set actions [ $gdb eval {
+		select item_id
+		from items
+		where diagram_id = :diagram_id
+		and (type = 'action' or type = 'loopstart')
+	} ]
+
+	set variables {}
+	foreach item_id $actions {
+		set text [get_item_text $gdb $diagram_id $item_id]
+		set vars [ get_variables_from_item $text $var_keyword ]
+		set variables [ concat $variables $vars ]
+	}
+	
+	return [lsort -unique $variables ]
+}
+
 proc fix_graph_for_diagram { gdb callbacks append_semicolon diagram_id } {
 
 
@@ -2166,6 +2432,33 @@ proc get_optional_callback { map action } {
 	return [ get_value $map $action ]
 }
 
+proc get_param_names { parameters } {
+	set params {}
+	foreach parameter $parameters {
+		lappend params [ lindex $parameter 0 ]
+	}
+	return $params	
+}
+
+proc print_variables { fhandle variables diagram_id signature var_keyword } {	
+	lassign $signature type access parameters returns
+	set params [ get_param_names $parameters ]
+	if {[dict exists $variables $diagram_id ]} {
+		set vars_all [ dict get $variables $diagram_id ]
+		set vars {}
+		foreach var $vars_all {
+			if { ![contains $params $var] } {
+				lappend vars $var
+			}
+		}
+		
+		if { $vars != {} } {
+			set vars_str [join $vars ", " ]
+			set line "    $var_keyword $vars_str"
+			puts $fhandle $line
+		}
+	}
+}
 
 }
 
