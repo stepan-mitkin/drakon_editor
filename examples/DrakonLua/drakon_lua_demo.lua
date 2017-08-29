@@ -20,8 +20,8 @@ function doSomething(first, second, third)
     fifth = second + 10
     third = third or ""
     -- item 372
-    x37 = fourth
-     + fifth * 2
+    x37 = fourth -
+    	fifth * 2
     -- item 371
     moo = {
         x = 10 + math.cos(first),
@@ -58,7 +58,7 @@ function doSomething(first, second, third)
     end
 end
 
-function lambas()
+function lambdas()
     local lam, lam2, lam3, someVar
     -- item 419
     someVar = 900
@@ -102,7 +102,7 @@ function main()
         {x=60000}
     )
     -- item 418
-    lambas()
+    lambdas()
     -- item 387
     print("bye")
 end

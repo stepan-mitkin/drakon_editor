@@ -2,11 +2,8 @@
 "use strict;"
 
 
-// We use the "closure" namespace pattern here.
-// But it is not necessary.
-var Demo = {};
 
-(function(ns, undefined) { // Begin of namespace
+function Demo() {
 
 
 
@@ -32,8 +29,8 @@ function doSomething(first, second, third) {
     fifth = second + 10
     third = third || ""
     // item 372
-    x37 = fourth
-     + fifth * 2
+    x37 = fourth +
+     fifth * 3
     // item 371
     moo = {
         x : 10 + Math.cos(first),
@@ -70,7 +67,7 @@ function doSomething(first, second, third) {
     }
 }
 
-function lambas() {
+function lambdas() {
     var lam, lam2, lam3, someVar
     // item 419
     someVar = 900
@@ -104,7 +101,7 @@ function lambas() {
     console.log(p)
 }
 
-ns.main = function() {
+function main() {
     // item 310
     console.log("hello")
     // item 386
@@ -114,7 +111,7 @@ ns.main = function() {
         {x:60000}
     )
     // item 418
-    lambas()
+    lambdas()
     // item 387
     console.log("bye")
 }
@@ -122,7 +119,10 @@ ns.main = function() {
 
 // Your code at the end of the file.
 
-})(Demo); // End of namespace
+this.main = main
+
+} // End of namespace
 
 
-Demo.main();
+var demo = new Demo()
+demo.main()

@@ -272,10 +272,11 @@ proc get_raw_lines { text } {
 	return $lines	
 }
 
-proc starts_with_operator { text } {
-	set first [ string index $text 0 ]
-	set map {, . \[ . \] . \( . \) . \" . \' . - . + . / . * . : . % . ^ .}	
-	set mapped [ string map $map $first ]
+proc ends_with_operator { text } {
+	set trimmed [ string trim $text ]
+	set last [ string range $trimmed end end ]
+	set map {, . \{ . \( . - . + . / . * . : . % . ^ .}
+	set mapped [ string map $map $last ]
 	if {$mapped == "."} {
 		return 1
 	}
@@ -313,7 +314,7 @@ proc get_clean_type { text } {
 		
 		set line [string trim $raw]
 		
-		if {[starts_with_operator $line]} {
+		if {[ends_with_operator $line]} {
 			return {}
 		}
 		
