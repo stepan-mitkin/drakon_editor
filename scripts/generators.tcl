@@ -345,12 +345,6 @@ proc has_operator_chars { text } {
 
 proc get_variable_name { line var_keyword } {
 	
-	set trimmed [ string trim $line ]
-
-	if { [has_operator_chars $trimmed ] } {
-		return ""
-	}	
-	
 	set parts [ split $line "=" ]
 	if { [ llength $parts ] < 2 } {
 		return ""
@@ -358,6 +352,10 @@ proc get_variable_name { line var_keyword } {
 	
 	set first [ lindex $parts 0 ]
 	set first [ string trim $first ]
+
+	if { [has_operator_chars $first ] } {
+		return ""
+	}	
 	
 	
 	if {[llength $first ] > 1} {
