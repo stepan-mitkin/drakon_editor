@@ -196,6 +196,114 @@ proc fix_graph_stage_1 { gdb callbacks append_semicolon diagram_id } {
 	fix_graph_stage_1_core $gdb $callbacks $append_semicolon $diagram_id 1
 }
 
+
+proc extract_rules { gdb } {
+	set diagrams [ $gdb eval {
+		select diagram_id from diagrams } ]
+	
+	set rules {}
+	
+	foreach diagram_id $diagrams {
+		set drules [ fix_diagram_for_rules $gdb $diagram_id ]
+		set rules [ concat $rules $drules ]
+	}
+	
+	return $rules
+}
+
+
+proc get_start_info { gdb diagram_id } {
+	lassign [ $gdb eval {
+		select start_icon, params_icon
+		from branches 
+		where diagram_id = :diagram_id
+			and ordinal = 1
+	} ] start_icon params_icon
+
+	set name [ $gdb onecolumn { select name from diagrams where diagram_id = :diagram_id } ]
+
+
+	if { $params_icon == "" } {
+		set params_text ""
+	} else {
+		set params_text [ $gdb onecolumn {
+			select text from vertices where vertex_id = :params_icon } ]
+	}
+	
+	set start_item [ find_start_item $gdb $diagram_id ]	
+
+	return [list $start_icon $params_icon $name $params_text $start_item ]
+}
+
+
+
+proc extract_paths { gdb diagram_id } {
+	
+	set start_info [ get_start_info $gdb $diagram_id ]
+	lassign $start_info start_icon params_icon name params_text start_item
+	puts "$start_icon $params_icon $name $params_text $start_item"
+	
+	set signature [ list $name $params_text ]
+	
+	return [extract_paths_from_icon $gdb $start_icon {} ]
+}
+
+
+proc extract_paths_from_icon { gdb $diagram_id vertex_id path } {
+	
+	return {}
+	
+	
+	lassign [ $gdb eval {
+		select text, type, item_id
+		from vertices
+		where vertex_id = :vertex_id } ] text type item_id
+			
+	if {$type == "beginend"} {
+		return $path
+	} elseif { $type == "action" } {
+		set item [ list "action" $text ]
+		lappend $path $item
+	} elseif { $type == "if"} {
+		
+	} else {
+		report_error $diagram_id $item_id "Unsupported item type"
+		return {}
+	}
+
+}
+
+proc fix_diagram_for_rules { gdb diagram_id } {
+	
+	
+	set loops [ $gdb eval {
+		select vertex_id
+		from vertices
+		where type = 'loopstart' 
+			and diagram_id = :diagram_id } ]	
+			
+	if { $loops != {} } {
+		report_error $diagram_id "" "Rules cannot have loops"
+		return
+	}
+	
+	set selects [ $gdb eval {
+		select vertex_id
+		from vertices
+		where type = 'select' 
+			and diagram_id = :diagram_id } ]
+
+	foreach select $selects {
+		p.rewire_select $gdb $select $callbacks
+	}	
+	
+	p.clean_tech_vertices $gdb $diagram_id
+	
+	set paths [ extract_paths $gdb $diagram_id ]
+	
+	return $paths
+}
+
 proc fix_graph_stage_1_core { gdb callbacks append_semicolon diagram_id do_selects } {
 
 	set shelf_proc [ get_callback $callbacks shelf ]
@@ -1676,31 +1784,15 @@ proc generate_function { gdb diagram_id callbacks nogoto to } {
 	set commentator [ get_callback $callbacks comment ]
 	set enforce_nogoto [ get_optional_callback $callbacks enforce_nogoto ]
 
-	lassign [ $gdb eval {
-		select start_icon, params_icon
-		from branches 
-		where diagram_id = :diagram_id
-			and ordinal = 1
-	} ] start_icon params_icon
+	set start_info [ get_start_info $gdb $diagram_id ]
+	lassign $start_info start_icon params_icon name params_text start_item
 
-	set name [ $gdb onecolumn { select name from diagrams where diagram_id = :diagram_id } ]
-
-
-	if { $params_icon == "" } {
-		set params_text ""
-	} else {
-		set params_text [ $gdb onecolumn {
-			select text from vertices where vertex_id = :params_icon } ]
-	}
 
 	set signature [ $extract_signature $params_text $name ]
 	lassign $signature errorMessage real_sign
 	if { $errorMessage != "" } {
 		report_error $diagram_id {} $errorMessage
 	}
-	
-	set start_item [ find_start_item $gdb $diagram_id ]
-
 
 	set tree ""
 	
