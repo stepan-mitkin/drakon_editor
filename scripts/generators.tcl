@@ -197,18 +197,52 @@ proc fix_graph_stage_1 { gdb callbacks append_semicolon diagram_id } {
 }
 
 
+proc convert_rule { signature path } {
+	set state "condition"
+	set conditions {}
+	set actions {}
+	foreach item $path {
+		if { $state == "condition" } {
+			lassign $item type
+			
+			if { $type == "if" } {
+				lappend conditions $item
+			} else {
+				lappend actions $item
+				set state "action"
+			}
+		} else {
+			lappend actions $item
+		}
+	}
+	return [ list signature $signature conditions $conditions actions $actions ]
+}
+
+proc convert_rules {} {
+	variable paths
+	set result {}
+	foreach path $paths {
+		lassign $path signature steps
+		set rule [ convert_rule $signature $steps ]
+		lappend result $rule
+	}
+	return $result
+}
+
 proc extract_rules { gdb } {
+	variable paths
+	set paths {}	
+	
 	set diagrams [ $gdb eval {
 		select diagram_id from diagrams } ]
 	
 	set rules {}
 	
 	foreach diagram_id $diagrams {
-		set drules [ fix_diagram_for_rules $gdb $diagram_id ]
-		set rules [ concat $rules $drules ]
+		fix_diagram_for_rules $gdb $diagram_id
 	}
 	
-	return $rules
+	return [convert_rules]
 }
 
 
@@ -235,40 +269,68 @@ proc get_start_info { gdb diagram_id } {
 	return [list $start_icon $params_icon $name $params_text $start_item ]
 }
 
+variable paths {}
 
 
 proc extract_paths { gdb diagram_id } {
-	
 	set start_info [ get_start_info $gdb $diagram_id ]
 	lassign $start_info start_icon params_icon name params_text start_item
-	puts "$start_icon $params_icon $name $params_text $start_item"
 	
 	set signature [ list $name $params_text ]
 	
-	return [extract_paths_from_icon $gdb $start_icon {} ]
+	set next [ p.link_dst $gdb $start_icon 1 ]
+	extract_paths_from_icon $gdb $diagram_id $signature $next {}
 }
 
+proc path_is_ok_to_save { path } {
+	if { [llength $path ] < 2 } {
+		return 0
+	}
+	set last [ lindex $path end ]
+	lassign $last type
+	if {$type == "action"} {
+		return 1
+	} else {
+		return 0
+	}
+}
 
-proc extract_paths_from_icon { gdb $diagram_id vertex_id path } {
-	
-	return {}
-	
-	
+proc extract_paths_from_icon { gdb diagram_id signature vertex_id path } {
+	variable paths
 	lassign [ $gdb eval {
-		select text, type, item_id
+		select text, type, item_id, b
 		from vertices
-		where vertex_id = :vertex_id } ] text type item_id
-			
+		where vertex_id = :vertex_id } ] text type item_id swapped
 	if {$type == "beginend"} {
-		return $path
+		if {[path_is_ok_to_save $path]} {
+			lappend paths [ list $signature $path ]
+		}
 	} elseif { $type == "action" } {
 		set item [ list "action" $text ]
-		lappend $path $item
+		set one [ p.link_dst $gdb $vertex_id 1 ]
+		lappend path $item
+		extract_paths_from_icon $gdb $diagram_id $signature $one $path
 	} elseif { $type == "if"} {
-		
+		set one [ p.link_dst $gdb $vertex_id 1 ]
+		set two [ p.link_dst $gdb $vertex_id 2 ]
+		if { $swapped } {
+			set neg1 0
+			set neg2 1
+		} else {
+			set neg1 1
+			set neg2 0
+		}
+		set item1 [ list "if" $text $neg1 ]
+		set item2 [ list "if" $text $neg2 ]
+		set path1 $path
+		set path2 $path
+		lappend path1 $item1 
+		lappend path2 $item2
+		extract_paths_from_icon $gdb $diagram_id $signature $one $path1
+		extract_paths_from_icon $gdb $diagram_id $signature $two $path2
 	} else {
 		report_error $diagram_id $item_id "Unsupported item type"
-		return {}
+		return
 	}
 
 }
@@ -299,9 +361,7 @@ proc fix_diagram_for_rules { gdb diagram_id } {
 	
 	p.clean_tech_vertices $gdb $diagram_id
 	
-	set paths [ extract_paths $gdb $diagram_id ]
-	
-	return $paths
+	extract_paths $gdb $diagram_id
 }
 
 proc fix_graph_stage_1_core { gdb callbacks append_semicolon diagram_id do_selects } {

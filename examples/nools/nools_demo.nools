@@ -1,0 +1,57 @@
+rule "Name is Jan - 1" {
+    when {
+        person: Person person.name == 'Jan';
+    }
+    then {
+        assert(new Jans(person.id))
+    }
+}
+
+rule "Tall Jans - 2" {
+    when {
+        person: Person person.name == 'Jan';
+        not(person2: Person person2.height < 180);
+    }
+    then {
+        console.log("Found tall Jan")
+        console.log("Found tall Jan")
+    }
+}
+
+rule "Many paths - 3" {
+    when {
+        Foo ff;
+        Bar bb;
+        person: Person person.name == 'Jan';
+    }
+    then {
+        console.log("Found tall Jan")
+        console.log("Found tall Jan2")
+    }
+}
+
+rule "Many paths - 4" {
+    when {
+        Foo ff;
+        Bar bb;
+        not(person: Person person.name == 'Jan');
+        not(person2: Person person2.height < 180);
+    }
+    then {
+        console.log("Found tall Jan")
+        console.log("Found tall Jan2")
+    }
+}
+
+rule "Many paths - 5" {
+    when {
+        Foo ff;
+        Bar bb;
+        not(person: Person person.name == 'Jan');
+        person2: Person person2.height < 180;
+    }
+    then {
+        console.log("no way")
+    }
+}
+
