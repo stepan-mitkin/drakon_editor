@@ -77,6 +77,7 @@ proc print_variables { fhandle params } {
 
 proc print_condition { fhandle condition } {
 	lassign $condition type text neg
+	puts [ hl::to_tokens $text]
 	if {$neg} {
 		puts $fhandle "        not($text);"
 	} else {
