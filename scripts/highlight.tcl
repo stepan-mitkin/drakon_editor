@@ -151,7 +151,7 @@ proc lex { text } {
         }
     }
     #item 446
-    set long "!=<>"
+    set long "!=<>|&"
     #item 428
     set state "idle"
     set tokens3 {}
