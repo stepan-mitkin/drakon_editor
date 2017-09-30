@@ -197,41 +197,11 @@ proc fix_graph_stage_1 { gdb callbacks append_semicolon diagram_id } {
 }
 
 
-proc convert_rule { signature path } {
-	set state "condition"
-	set conditions {}
-	set actions {}
-	foreach item $path {
-		if { $state == "condition" } {
-			lassign $item type
-			
-			if { $type == "if" } {
-				lappend conditions $item
-			} else {
-				lappend actions $item
-				set state "action"
-			}
-		} else {
-			lappend actions $item
-		}
-	}
-	return [ list signature $signature conditions $conditions actions $actions ]
-}
-
-proc convert_rules {} {
-	variable paths
-	set result {}
-	foreach path $paths {
-		lassign $path signature steps
-		set rule [ convert_rule $signature $steps ]
-		lappend result $rule
-	}
-	return $result
-}
-
 proc extract_rules { gdb } {
 	variable paths
+	variable paths2
 	set paths {}	
+	set paths2 {}
 	
 	set diagrams [ $gdb eval {
 		select diagram_id from diagrams } ]
@@ -241,8 +211,65 @@ proc extract_rules { gdb } {
 	foreach diagram_id $diagrams {
 		fix_diagram_for_rules $gdb $diagram_id
 	}
+
+	split_interleaving_paths
 	
-	return [convert_rules]
+	return [lsort -unique $paths2]
+}
+
+proc split_interleaving_paths {} {
+	variable paths
+	
+	foreach path $paths {
+		lassign $path signature steps
+		split_interleaving $signature $steps 0 "if" {} {}
+	}	
+}
+
+
+proc finish_split_path { signature conditions actions } {
+	variable paths2
+	
+	set diagram_id [ lindex $signature 2 ]
+	if { [llength $actions] == 0 } {
+		return
+	}
+
+	if { [llength $conditions] == 0 } {
+		report_error $diagram_id {} "There must be a condition before an action"
+		return
+	}		
+	
+	set path [ list signature $signature conditions $conditions actions $actions ]
+	lappend paths2 $path
+}
+
+proc split_interleaving { signature steps i state conditions actions } {
+	if { $i >= [llength $steps] } {
+		finish_split_path $signature $conditions $actions
+	} else {
+		set item [ lindex $steps $i ]
+		set type [ lindex $item 0 ]
+		incr i
+		if {$state == "if"} {
+			if {$type == "if"} {
+				lappend conditions $item
+				split_interleaving $signature $steps $i "if" $conditions $actions
+			} else {
+				lappend actions $item
+				split_interleaving $signature $steps $i "action" $conditions $actions				
+			}
+		} else {
+			if {$type == "if"} {
+				finish_split_path $signature $conditions $actions
+				lappend conditions $item
+				split_interleaving $signature $steps $i "if" $conditions {}
+			} else {
+				lappend actions $item
+				split_interleaving $signature $steps $i "action" $conditions $actions				
+			}			
+		}	
+	}
 }
 
 
@@ -270,29 +297,17 @@ proc get_start_info { gdb diagram_id } {
 }
 
 variable paths {}
+variable paths2 {}
 
 
 proc extract_paths { gdb diagram_id } {
 	set start_info [ get_start_info $gdb $diagram_id ]
 	lassign $start_info start_icon params_icon name params_text start_item
 	
-	set signature [ list $name $params_text ]
+	set signature [ list $name $params_text $diagram_id ]
 	
 	set next [ p.link_dst $gdb $start_icon 1 ]
 	extract_paths_from_icon $gdb $diagram_id $signature $next {}
-}
-
-proc path_is_ok_to_save { path } {
-	if { [llength $path ] < 2 } {
-		return 0
-	}
-	set last [ lindex $path end ]
-	lassign $last type
-	if {$type == "action"} {
-		return 1
-	} else {
-		return 0
-	}
 }
 
 proc extract_paths_from_icon { gdb diagram_id signature vertex_id path } {
@@ -302,9 +317,7 @@ proc extract_paths_from_icon { gdb diagram_id signature vertex_id path } {
 		from vertices
 		where vertex_id = :vertex_id } ] text type item_id swapped
 	if {$type == "beginend"} {
-		if {[path_is_ok_to_save $path]} {
-			lappend paths [ list $signature $path ]
-		}
+		lappend paths [ list $signature $path ]
 	} elseif { $type == "action" } {
 		set item [ list "action" $text ]
 		set one [ p.link_dst $gdb $vertex_id 1 ]

@@ -1,4 +1,88 @@
-rule "Name is Jan - 1" {
+rule "Interleaving - 1" {
+    when {
+        Foo ff;
+        Bar bb;
+        person: Person person.name == 'Dow Jones';
+    }
+    then {
+        console.log("Upper")
+        console.log("Lower")
+    }
+}
+
+rule "Interleaving - 2" {
+    when {
+        Foo ff;
+        Bar bb;
+        not(person: Person person.name == 'Dow Jones');
+        person2: Person person2.height < 180;
+    }
+    then {
+        console.log("no way")
+    }
+}
+
+rule "Interleaving - 3" {
+    when {
+        Foo ff;
+        Bar bb;
+        not(person: Person person.name == 'Dow Jones');
+        not(person2: Person person2.height < 180);
+    }
+    then {
+        console.log("Lower")
+    }
+}
+
+rule "Interleaving - 4" {
+    when {
+        Foo ff;
+        Bar bb;
+        not(person: Person person.name == 'Dow Jones');
+    }
+    then {
+        console.log("Middle")
+    }
+}
+
+rule "Many paths - 5" {
+    when {
+        Foo ff;
+        Bar bb;
+        person: Person person.name == 'Jan Jon';
+    }
+    then {
+        console.log("Found tall Jan")
+        console.log("Found tall Jan2")
+    }
+}
+
+rule "Many paths - 6" {
+    when {
+        Foo ff;
+        Bar bb;
+        not(person: Person person.name == 'Jan Jon');
+        person2: Person person2.height < 180;
+    }
+    then {
+        console.log("no way")
+    }
+}
+
+rule "Many paths - 7" {
+    when {
+        Foo ff;
+        Bar bb;
+        not(person: Person person.name == 'Jan Jon');
+        not(person2: Person person2.height < 180);
+    }
+    then {
+        console.log("Found tall Jan")
+        console.log("Found tall Jan2")
+    }
+}
+
+rule "Name is Jan - 8" {
     when {
         person: Person person.name == 'Jan';
     }
@@ -7,7 +91,7 @@ rule "Name is Jan - 1" {
     }
 }
 
-rule "Tall Jans - 2" {
+rule "Tall Jans - 9" {
     when {
         person: Person person.name == 'Jan';
         not(person2: Person person2.height < 180);
@@ -15,43 +99,6 @@ rule "Tall Jans - 2" {
     then {
         console.log("Found tall Jan")
         console.log("Found tall Jan")
-    }
-}
-
-rule "Many paths - 3" {
-    when {
-        Foo ff;
-        Bar bb;
-        person: Person person.name == 'Jan';
-    }
-    then {
-        console.log("Found tall Jan")
-        console.log("Found tall Jan2")
-    }
-}
-
-rule "Many paths - 4" {
-    when {
-        Foo ff;
-        Bar bb;
-        not(person: Person person.name == 'Jan');
-        not(person2: Person person2.height < 180);
-    }
-    then {
-        console.log("Found tall Jan")
-        console.log("Found tall Jan2")
-    }
-}
-
-rule "Many paths - 5" {
-    when {
-        Foo ff;
-        Bar bb;
-        not(person: Person person.name == 'Jan');
-        person2: Person person2.height < 180;
-    }
-    then {
-        console.log("no way")
     }
 }
 
