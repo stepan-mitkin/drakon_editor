@@ -242,7 +242,8 @@ proc must_negate { conditions } {
 }
 
 proc make_var { param } {
-    return [ join $param ": " ]
+    lassign $param type name
+    return "$name: $type"
 }
 
 proc get_lines { text } {

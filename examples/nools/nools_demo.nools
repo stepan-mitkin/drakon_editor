@@ -1,47 +1,51 @@
-rule "Either Jan Jon or car owner - 1" {
+rule "Either Jon or car owner - 1" {
     when {
-        Person: person person.name == 'Jan Jon';
+        person: Person person.name == 'Jon';
     }
     then {
-        console.log("Found Jan Jon or car owner")
+        console.log('Found Jan Jon or car owner');
     }
 }
 
-rule "Either Jan Jon or car owner - 2" {
+rule "Either Jon or car owner - 2" {
     when {
-        Person: person;
-        Car: car person.name != 'Jan Jon' && car.owner == person;
+        person: Person;
+        car: Car person.name != 'Jon' && car.owner == person;
     }
     then {
-        console.log("Not Jan, but a car owner")
-        console.log("Found Jan Jon or car owner")
+        console.log(
+	'Not Jon, but a car owner',
+	person,
+	car
+);
+        console.log('Found Jan Jon or car owner');
     }
 }
 
-rule "Either Jan Jon or car owner - 3" {
+rule "Either Jon or car owner - 3" {
     when {
-        Person: person person.name != 'Jan Jon';
+        person: Person person.name != 'Jon';
     }
     then {
-        console.log("Not a Jan Jon")
+        console.log('Not a Jon', person);
     }
 }
 
 rule "Name is Jan - 4" {
     when {
-        Person: person person.name == 'Jan';
+        person: Person person.name == 'Jan';
     }
     then {
-        console.log("found Jan")
+        console.log('found Jan', person);
     }
 }
 
 rule "Tall Jans - 5" {
     when {
-        Person: person person.name == 'Jan' && person.height >= 180;
+        person: Person person.name == 'Jan' && person.height >= 180;
     }
     then {
-        console.log("Found tall Jan")
+        console.log('Found tall Jan', person);
     }
 }
 
