@@ -259,6 +259,8 @@ proc generate { db gdb filename is_clean} {
     
 	set use_nogoto 1
 	set functions [ gen::generate_functions $db $gdb $callbacks $use_nogoto ]
+	
+	set functions [ build_tasks $functions ]
 
 	if { [ graph::errors_occured ] } { return }
 
@@ -418,6 +420,7 @@ proc p.print_to_file { fhandle functions header footer machine_decl machine_ctrs
     puts $fhandle $machine_decl
 	foreach function $functions {
 		lassign $function diagram_id name signature body
+		set name [ normalize_name $name ]
 		set type [ lindex $signature 0 ]
 		if { $type != "comment" } {
 			puts $fhandle ""
