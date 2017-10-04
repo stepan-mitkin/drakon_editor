@@ -16,8 +16,10 @@ function Quadric_c() {
 function Quadric_discriminant() {
     // item 41
     var b = this.b()
+    var a = this.a()
+    var c = this.c()
     // item 40
-    return b * b - 4 * this.a() * this.c()
+    return b * b - 4 * a * c
 }
 
 function Quadric_numberOfRoots() {
@@ -43,9 +45,12 @@ function Quadric_x1() {
         // item 53
         return null
     } else {
+        // item 60
+        var b = this.b()
+        var a = this.a()
+        var discriminant = this.discriminant()
         // item 54
-        return (-this.b() + Math.sqrt(this.discriminant())) /
-         (2 * this.a())
+        return (-b + Math.sqrt(discriminant)) / (2 * a)
     }
 }
 
@@ -55,9 +60,12 @@ function Quadric_x2() {
         // item 58
         return null
     } else {
-        // item 59
-        return (-this.b() - Math.sqrt(this.discriminant())) /
-         (2 * this.a())
+        // item 62
+        var b = this.b()
+        var a = this.a()
+        var discriminant = this.discriminant()
+        // item 61
+        return (-b - Math.sqrt(discriminant)) / (2 * a)
     }
 }
 
@@ -87,11 +95,7 @@ function Quadric() {
         return this._c
     }
     this._discriminant = null
-    this.discriminant = function(newValue) {
-        if (typeof newValue != "undefined") {
-            this._discriminant = newValue
-            return
-        }
+    this.discriminant = function() {
         var value = this._discriminant
         if (value != null) {
             return value
@@ -101,11 +105,7 @@ function Quadric() {
         return value
     }
     this._numberOfRoots = null
-    this.numberOfRoots = function(newValue) {
-        if (typeof newValue != "undefined") {
-            this._numberOfRoots = newValue
-            return
-        }
+    this.numberOfRoots = function() {
         var value = this._numberOfRoots
         if (value != null) {
             return value
@@ -115,11 +115,7 @@ function Quadric() {
         return value
     }
     this._x1 = null
-    this.x1 = function(newValue) {
-        if (typeof newValue != "undefined") {
-            this._x1 = newValue
-            return
-        }
+    this.x1 = function() {
         var value = this._x1
         if (value != null) {
             return value
@@ -129,11 +125,7 @@ function Quadric() {
         return value
     }
     this._x2 = null
-    this.x2 = function(newValue) {
-        if (typeof newValue != "undefined") {
-            this._x2 = newValue
-            return
-        }
+    this.x2 = function() {
         var value = this._x2
         if (value != null) {
             return value

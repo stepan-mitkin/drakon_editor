@@ -505,16 +505,19 @@ proc build_task_proc { task } {
         set is_empty [ get_property_is_empty $prop_id ]
         #item 123
         lappend body "this._$prop = null"
-        lappend body "this.$prop = function\(newValue\) \{"
-        lappend body "    if \(typeof newValue != \"undefined\"\) \{"
-        lappend body "        this._$prop = newValue"
-        lappend body "        return"  
-        lappend body "    \}"
         #item 120
         if {$is_empty} {
+            #item 128
+            lappend body "this.$prop = function\(newValue\) \{"
+            lappend body "    if \(typeof newValue != \"undefined\"\) \{"
+            lappend body "        this._$prop = newValue"
+            lappend body "        return"  
+            lappend body "    \}"
             #item 126
             lappend body "    return this._$prop"
         } else {
+            #item 129
+            lappend body "this.$prop = function\(\) \{"
             #item 125
             lappend body "    var value = this._$prop"
             lappend body "    if \(value != null\) \{"
