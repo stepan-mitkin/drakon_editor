@@ -109,8 +109,16 @@ proc lex { text } {
                 #item 407
                 set state "string"
             } else {
-                #item 404
-                lappend tokens2 $token
+                #item 464
+                if {$text == "\""} {
+                    #item 467
+                    set buffer $text
+                    #item 466
+                    set state "dstring"
+                } else {
+                    #item 404
+                    lappend tokens2 $token
+                }
             }
         } else {
             #item 3920002
@@ -137,16 +145,48 @@ proc lex { text } {
                 }
             } else {
                 #item 3920003
-                if {$state == "escaping"} {
-                    
+                if {$state == "dstring"} {
+                    #item 4740001
+                    if {$text == "\""} {
+                        #item 481
+                        append buffer $text
+                        #item 482
+                        add_token tokens2 "string" $buffer
+                        #item 483
+                        set state "idle"
+                    } else {
+                        #item 4740002
+                        if {$text == "\\"} {
+                            #item 484
+                            append buffer $text
+                            #item 485
+                            set state "descaping"
+                        } else {
+                            #item 486
+                            append buffer $text
+                        }
+                    }
                 } else {
                     #item 3920004
-                    error "Unexpected switch value: $state"
+                    if {$state == "descaping"} {
+                        #item 470
+                        append buffer $text
+                        #item 471
+                        set state "dstring"
+                    } else {
+                        #item 3920005
+                        if {$state == "escaping"} {
+                            
+                        } else {
+                            #item 3920006
+                            error "Unexpected switch value: $state"
+                        }
+                        #item 426
+                        append buffer $text
+                        #item 427
+                        set state "string"
+                    }
                 }
-                #item 426
-                append buffer $text
-                #item 427
-                set state "string"
             }
         }
     }
@@ -193,7 +233,7 @@ proc lex { text } {
 proc make_oper_list { } {
     #item 59
     set ops {
-    	"," "." ";" ":" "\(" "\)" "\{" "\}" "@" "|"
+    	"," "." ";" ":" "\(" "\)" "\{" "\}" "|" "@"
     	"\[" "\]" "'" "\\" "\"" "/" "+" "-" "*" "!"
     	"#" "$" "%" "^" "&" "=" ">" "<" "?" "~" "`"
     }

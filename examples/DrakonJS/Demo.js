@@ -68,7 +68,7 @@ function doSomething(first, second, third) {
 }
 
 function lambdas() {
-    var lam, lam2, lam3, someVar
+    var lam, lam2, lam3, p, someVar
     // item 419
     someVar = 900
     // item 412

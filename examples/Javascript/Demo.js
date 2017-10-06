@@ -2,11 +2,7 @@
 "use strict;"
 
 
-// We use the "closure" namespace pattern here.
-// But it is not necessary.
-var Demo = {};
-
-(function(ns, undefined) { // Begin of namespace
+function Demo() {
 
 
 
@@ -169,7 +165,7 @@ function foreachWithKeys(collection) {
     printArray(list);
 }
 
-ns.main = function() {
+function main() {
     // item 310
     alt_select_test();
     // item 189
@@ -506,7 +502,10 @@ function twoLoopsInOneFunction() {
 
 // Your code at the end of the file.
 
-})(Demo); // End of namespace
+	this.main = main
+}
+
+var obj = new Demo()
 
 
-Demo.main();
+obj.main()

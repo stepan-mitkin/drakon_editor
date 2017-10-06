@@ -10,17 +10,23 @@
 	  <p>See the console output</p>
 	  
 	<script>
+	// One line
+	var roots = Quadric_roots(8, -6, 1)
+	console.log(roots)		
+		
+	// Variable by variable
 	var equation = new Quadric()
 	equation.a(8)
 	equation.b(-6)
 	equation.c(1)
 	console.log("a", equation.a(), "b", equation.b(), "c", equation.c())
-	console.log("number of roots", equation.numberOfRoots())
-	console.log("x1", equation.x1())
-	console.log("x2", equation.x2())
+	var x1 = equation.roots()[0]
+	var x2 = equation.roots()[1]
+	console.log("x1", x1)
+	console.log("x2", x2)
 	
-	var check1 = equation.x1() * equation.x1() * equation.a() + equation.x1() * equation.b() + equation.c()
-	var check2 = equation.x2() * equation.x2() * equation.a() + equation.x2() * equation.b() + equation.c()
+	var check1 = x1 * x1 * equation.a() + x1 * equation.b() + equation.c()
+	var check2 = x2 * x2 * equation.a() + x2 * equation.b() + equation.c()
 	console.log("check1", check1, "check2", check2)
 	</script>
   </body>
