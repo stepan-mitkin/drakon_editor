@@ -50,6 +50,8 @@ function Quadric() {
     this.a = function(newValue) {
         if (typeof newValue != "undefined") {
             this._a = newValue
+            this._discriminant = null
+            this._roots = null
             return
         }
         return this._a
@@ -58,6 +60,8 @@ function Quadric() {
     this.b = function(newValue) {
         if (typeof newValue != "undefined") {
             this._b = newValue
+            this._discriminant = null
+            this._roots = null
             return
         }
         return this._b
@@ -66,6 +70,8 @@ function Quadric() {
     this.c = function(newValue) {
         if (typeof newValue != "undefined") {
             this._c = newValue
+            this._discriminant = null
+            this._roots = null
             return
         }
         return this._c

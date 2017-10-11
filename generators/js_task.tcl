@@ -53,6 +53,14 @@ proc reset_db {  } {
     array unset f_property_signature
     array set f_property_signature {}
 
+    variable f_property_all_vars
+    array unset f_property_all_vars
+    array set f_property_all_vars {}
+
+    variable f_property_dep_vars
+    array unset f_property_dep_vars
+    array set f_property_dep_vars {}
+
     variable i_task_name
     array unset i_task_name
     array set i_task_name {}
@@ -414,6 +422,30 @@ proc set_property_signature { id signature } {
     variable f_property_signature
     set f_property_signature($id) $signature
 }
+proc get_property_all_vars { id } {
+    variable f_property_all_vars
+    if { [ info exists f_property_all_vars($id) ] } {
+        return $f_property_all_vars($id)
+    } else {
+        return {}
+    }
+}
+proc set_property_all_vars { id all_vars } {
+    variable f_property_all_vars
+    set f_property_all_vars($id) $all_vars
+}
+proc get_property_dep_vars { id } {
+    variable f_property_dep_vars
+    if { [ info exists f_property_dep_vars($id) ] } {
+        return $f_property_dep_vars($id)
+    } else {
+        return {}
+    }
+}
+proc set_property_dep_vars { id dep_vars } {
+    variable f_property_dep_vars
+    set f_property_dep_vars($id) $dep_vars
+}
 ######### Private #########
 variable g_del_list
 array set g_del_list {}
@@ -443,6 +475,10 @@ variable f_property_vars
 array set f_property_vars {}
 variable f_property_signature
 array set f_property_signature {}
+variable f_property_all_vars
+array set f_property_all_vars {}
+variable f_property_dep_vars
+array set f_property_dep_vars {}
 variable i_task_name
 array set i_task_name {}
 variable i_property_task_name
@@ -555,8 +591,29 @@ proc property_do_delete { id } {
     if { [ info exists f_property_signature($id) ] } {
         unset f_property_signature($id)
     }
+    variable f_property_all_vars
+    if { [ info exists f_property_all_vars($id) ] } {
+        unset f_property_all_vars($id)
+    }
+    variable f_property_dep_vars
+    if { [ info exists f_property_dep_vars($id) ] } {
+        unset f_property_dep_vars($id)
+    }
     variable f_property_rcount
     unset f_property_rcount($id)
+}
+
+proc add_clear_deps { prop_id output_name } {
+    #item 460
+    upvar 1 $output_name output
+    #item 461
+    set dep_vars [ get_property_dep_vars $prop_id ]
+    #item 464
+    set dep_vars [ lsort -unique $dep_vars ]
+    foreach var $dep_vars {
+        #item 465
+        lappend output "        this._$var = null"
+    }
 }
 
 proc add_dog { tokens } {
@@ -624,6 +681,9 @@ proc build_task_proc { task } {
             lappend body "this.$prop = function\(newValue\) \{"
             lappend body "    if \(typeof newValue != \"undefined\"\) \{"
             lappend body "        this._$prop = newValue"
+            #item 454
+            add_clear_deps $prop_id body
+            #item 453
             lappend body "        return"  
             lappend body "    \}"
             #item 126
@@ -717,6 +777,8 @@ proc build_tasks { functions } {
             set empty [ get_property_is_empty $prop_id ]
             set body [ get_property_body $prop_id ]
             set algo [ make_algo_name $task $prop_name ]
+            #item 480
+            find_all_vars $task_id $prop_id
             #item 345
             if {$empty} {
                 
@@ -783,6 +845,28 @@ proc enrich_body { task_id prop_id task names } {
     set vars [ lsort -unique $vars ]
     #item 327
     set_property_vars $prop_id $vars
+}
+
+proc find_all_vars { task_id prop_id } {
+    #item 473
+    set vars [ find_vars $task_id $prop_id ]
+    set dst_name [ get_property_name $prop_id ]
+    #item 479
+    set_property_all_vars $prop_id $vars
+    foreach src_name $vars {
+        #item 474
+        set src_id [ find_property_by_task_name $task_id $src_name ]
+        set dep_vars [ get_property_dep_vars $src_id ]
+        #item 481
+        if {$dst_name == $src_name} {
+            
+        } else {
+            #item 476
+            lappend dep_vars $dst_name
+        }
+        #item 475
+        set_property_dep_vars $src_id $dep_vars
+    }
 }
 
 proc find_vars { task_id prop_id } {
@@ -938,7 +1022,9 @@ proc make_invoker { task_id prop_id } {
     set task [ get_task_name $task_id ]
     set prop [ get_property_name $prop_id ]
     #item 387
-    set vars [ find_vars $task_id $prop_id ]
+    set vars [ get_property_all_vars $prop_id ]
+    #item 466
+    set_property_all_vars $prop_id $vars
     #item 376
     set args [ format_args $vars ]
     #item 374
