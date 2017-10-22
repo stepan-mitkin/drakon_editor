@@ -4,12 +4,14 @@ variable yes_entry
 variable no_entry
 variable end_entry
 variable scheme_combo
+variable language_combo
 variable element_combo
 variable color_entry
 variable cnvs
 variable colors
 
 variable window ""
+variable restart_required 0
 
 variable element_list {
 	"Icon background"
@@ -37,6 +39,10 @@ variable scheme_list {
 	"Colored night"
 }
 
+variable language_list {
+	"English"
+	"Russian"
+}
 
 variable strict {
 	background 	"#C3E7EF"
@@ -253,9 +259,27 @@ proc color_changed { color } {
 	
 }
 
+proc on_language { } {
+	variable yes_entry
+	variable no_entry
+	variable end_entry
+	variable language_combo
+	
+	if {$language_combo == "English"} {
+		set yes_entry "Yes"
+		set no_entry "No"
+		set end_entry "End"
+	} else {
+		set yes_entry "Да"
+		set no_entry "Нет"
+		set end_entry "Конец"		
+	}
+}
+
 proc init { win data } {
 	variable element_list
 	variable scheme_list
+	variable language_list
 	variable cnvs
 	
 	reset
@@ -264,6 +288,10 @@ proc init { win data } {
 	wm title $win [ mc2 "Global settings" ]
 	
 	set root [ ttk::frame $win.root -padding "5 5 5 5" ]
+
+	set language_frame [ ttk::frame $root.language_frame ]
+	set language_label [ ttk::label $language_frame.lang_label -text "Language:" -width 30 ]
+	set language_entry [ ttk::combobox $language_frame.lang_combo -values [lsort $language_list ] -state readonly -textvariable gprops::language_combo ]
 
 	set yes_frame [ ttk::frame $root.yes_frame ]
 	set yes_label [ ttk::label $yes_frame.lang_label -text [ mc2 "Label for \\\"Yes\\\" exit:" ] -width 30 ]
@@ -301,7 +329,8 @@ proc init { win data } {
 	set cancel [ ttk::button $lower.cancel -command gprops::close -text [ mc2 "Cancel" ] ]
 
 	pack $root -expand yes -fill both
-	
+
+	pack $language_frame -fill x
 	pack $yes_frame -fill x
 	pack $no_frame -fill x
 	pack $end_frame -fill x
@@ -315,6 +344,9 @@ proc init { win data } {
 	pack $canvas -pady 10
 	
 	pack $lower -fill x -side bottom
+
+	pack $language_label -side left
+	pack $language_entry -side left -padx 10
 	
 	pack $yes_label -side left
 	pack $yes_entry -side left -padx 10
@@ -343,6 +375,7 @@ proc init { win data } {
 
 	bind $win <Return> gprops::ok
 	bind $win <Escape> gprops::close
+	bind $language_entry <<ComboboxSelected>> gprops::on_language
 
 	focus $yes_entry
 }
@@ -353,12 +386,14 @@ proc show_dialog { } {
 	variable yes_entry
 	variable no_entry
 	variable end_entry
+	variable language_combo
 	
 	set window .gprops
 	
 	set yes_entry [ texts::get "yes" ]
 	set no_entry [ texts::get "no" ]
 	set end_entry [ texts::get "end" ]
+	set language_combo [ texts::get "language" ]
 
 	ui::modal_window $window gprops::init foo
 }
@@ -369,18 +404,34 @@ proc ok { } {
 	variable yes_entry
 	variable no_entry
 	variable end_entry
+	variable language_combo
 	
 	texts::put "yes" $yes_entry
 	texts::put "no" $no_entry
 	texts::put "end" $end_entry
 	
+	set old_language [ texts::get "language" ]
+	set restart_required 0
+	if {$old_language != $language_combo} {
+		set restart_required 1
+	}
+	
+	
+	texts::put "language" $language_combo
+	
 	app_settings::set_prop drakon_editor "yes" $yes_entry
 	app_settings::set_prop drakon_editor "no" $no_entry
 	app_settings::set_prop drakon_editor "end" $end_entry
+	app_settings::set_prop drakon_editor "language" $language_combo
 	
 	save_colors
 	
 	destroy $window
+	
+	if {$restart_required} {
+		set message [ mc2 "Please restart the application" ]
+		tk_messageBox -parent . -message $message -type ok
+	}
 }
 
 proc close { } {

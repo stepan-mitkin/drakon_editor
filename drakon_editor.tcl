@@ -304,12 +304,27 @@ proc usefile { filename } {
 
 }
 
-### main ###
-
-foreach prop { "yes" "no" "end" } {
-	texts::put $prop [app_settings::get_prop drakon_editor $prop ]
+proc start_up { argc argv } {
+	
+	if { $argc > 0 } {
+		set filename [ lindex $argv 0 ]
+		ds::usefile $filename
+	} else {
+		ui::show_intro
+	}
 }
 
+
+proc localize_texts {} {
+	foreach prop { "yes" "no" "end" "language" } {
+		texts::put $prop [app_settings::get_prop drakon_editor $prop ]
+	}	
+}
+
+### main ###
+
+texts::init
+localize_texts
 gprops::load_from_settings
 
 mw::create_ui
@@ -317,9 +332,4 @@ mw::init_popup
 ui::wait_for_main
 update
 
-if { $argc > 0 } {
-	set filename [ lindex $argv 0 ]
-	ds::usefile $filename
-} else {
-	ui::show_intro
-}
+start_up $argc $argv

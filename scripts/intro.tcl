@@ -22,7 +22,7 @@ proc intro.init { window data } {
   image create photo intro_image -format GIF -file $script_path/images/drakon_editor.gif
   
   ttk::frame $window.root.greeting
-  ttk::label $window.root.greeting.text -text [ mc2 "DRAKON Editor does not have a \\\"Save\\\" button. All your changes get saved right after you have done them.\nThat is why DRAKON Editor always needs a file to work with." ]
+  ttk::label $window.root.greeting.text -text [ mc2 "DRAKON Editor does not have a \"Save\" button. All your changes get saved right after you have done them.\nThat is why DRAKON Editor always needs a file to work with." ]
   ttk::label $window.root.greeting.logo -image intro_image
 
   pack $window.root.greeting.logo -side left
@@ -143,5 +143,69 @@ proc intro.destroy { } {
     destroy .
   }
 }
+
+
+variable language_combo "English"
+variable language_list { "English" "Russian" }
+variable argc_var 0
+variable argv_var ""
+
+proc choose_language.init { window data } {
+	global script_path
+	variable language_list
+
+	wm title $window "Choose language"
+
+	
+	set root [ ttk::frame $window.root -padding "5 5 5 5" ]
+
+	set language_frame [ ttk::frame $root.language_frame ]
+	set language_label [ ttk::label $language_frame.lang_label -text "Language:" -width 30 ]
+	set language_entry [ ttk::combobox $language_frame.lang_combo -values [lsort $language_list ] -state readonly -textvariable ui::language_combo ]
+
+
+	set lower [ ttk::frame $root.lower -padding "0 20 0 0" ]
+	set ok [ ttk::button $lower.ok -command ui::choose_language.ok -text "Ok" ]
+	set cancel [ ttk::button $lower.cancel -command exit -text "Cancel" ]
+
+	pack $root -expand yes -fill both
+
+	pack $language_frame -fill x
+	
+	pack $lower -fill x -side bottom
+
+	pack $language_label -side left
+	pack $language_entry -side left -padx 10
+	
+	pack $cancel -padx 10 -pady 10 -side right	
+	pack $ok -padx 10 -pady 10 -side right
+
+
+	bind $window <Escape> exit
+	bind $window <Return> ui::choose_language.ok
+
+
+}
+
+
+proc choose_language.ok {} {
+	variable argc_var
+	variable argv_var	
+	variable language_combo
+	app_settings::set_prop drakon_editor "language" $language_combo	
+	destroy .choose_language
+	localize_texts
+	start_up $argc_var $argv_var
+}
+
+
+proc show_choose_language { argc argv } {
+	variable argc_var
+	variable argv_var
+	set argc_var argc	
+	set argv_var argv
+	modal_window .choose_language choose_language.init {}
+}
+
 
 }

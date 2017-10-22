@@ -45,10 +45,17 @@ namespace eval texts {
 
 
 array set resources [ list \
-	yes [ mc2 "Yes" ] \
-	no  [ mc2 "No"  ] \
-	end [ mc2 "End" ] ]
+	language "English" \
+	yes "Yes" \
+	no  "No"  \
+	end "End" ]
 
+
+proc init {} {
+	put yes [ mc2 "Yes" ]
+	put no  [ mc2 "No"  ]
+	put end [ mc2 "End" ]
+}
 
 proc get { id } {
 	variable resources
