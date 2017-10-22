@@ -209,7 +209,7 @@ proc generate { db gdb filename } {
 	set hfile [ replace_extension $filename "d" ]
 	
 	# Open the output file and write the code.
-	set f [ open $hfile w ]
+	set f [ open_output_file $hfile ]
 	catch {
 		print_to_file $f $functions $header $footer
 	} error_message

@@ -273,7 +273,7 @@ proc generate { db gdb filename } {
 
 	set hfile [ replace_extension $filename "erl" ]
 	set module [ file tail [ string map {".drn" ""} $filename ] ]
-	set f [ open $hfile w ]
+	set f [ open_output_file $hfile ]
 	catch {
 		p.print_to_file $gdb $f $functions $header $footer $module $machine $standalone
 	} error_message

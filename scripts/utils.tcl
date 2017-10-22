@@ -802,6 +802,7 @@ proc open_files { filenames mode } {
 	foreach filename $filenames {
 		if { [ catch {
 			set handle [ open $filename $mode ]
+			fconfigure $handle -encoding "utf-8"
 			lappend handles $handle
 		} message ] } {
 			close_files $handles
@@ -1063,4 +1064,10 @@ proc get_optional { dictionary key } {
         #item 390
         return ""
     }
+}
+
+proc open_output_file { filename } {	
+	set handle [ open $filename w ]
+	fconfigure $handle -encoding "utf-8"
+	return $handle
 }

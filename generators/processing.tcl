@@ -37,7 +37,7 @@ proc generate { db gdb filename } {
 
 
 	set hfile [ replace_extension $filename "pde" ]
-	set f [ open $hfile w ]
+	set f [ open_output_file $hfile ]
 	catch {
 		p.print_to_file $f $functions $header $footer
 	} error_message

@@ -369,7 +369,7 @@ proc generate { db gdb filename } {
 
 
 	set hfile [ replace_extension $filename "tcl" ]
-	set f [ open $hfile w ]
+	set f [ open_output_file $hfile ]
 	catch {
 	
 	

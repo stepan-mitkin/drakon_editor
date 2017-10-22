@@ -267,7 +267,7 @@ proc generate { db gdb filename is_clean} {
     # write output
     
 	set hfile [ replace_extension $filename "js" ]
-	set f [ open $hfile w ]
+	set f [ open_output_file $hfile ]
 	catch {
 		p.print_to_file $f $functions $header $footer $machine_decl $machine_ctrs
 	} error_message

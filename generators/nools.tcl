@@ -38,7 +38,7 @@ proc generate { db gdb filename } {
 	if { [ graph::errors_occured ] } { return }
 
 	set hfile [ replace_extension $filename "nools" ]
-	set f [ open $hfile w ]
+	set f [ open_output_file $hfile ]
 	catch {
 		print_to_file $f $rules
 	} error_message
