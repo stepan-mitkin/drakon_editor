@@ -92,4 +92,4 @@ See notes about Tcl instalation in [How to use release version of DRAKON Editor]
 
 3. Run `drakon_editor.tcl` 
 
-4. By default Russion version of DRAKON Editor will be launched. If you need to launch English version of DRAKON Editor then delete folder `/msgs`
+
