@@ -35,6 +35,8 @@ proc loopend.box { x y w h a b } {
 
 
 proc loopend.icons { text text2 color x y w h a b } {
+	variable loop_add
+	set w [ expr { $w + $loop_add } ]	
 	lassign [ get_colors $color $colors::for_bg ] fg bg tc
 	set h2 [ expr { $h / 1.5 } ]
 	set middle [ expr { $y + $h - $h2 } ]
