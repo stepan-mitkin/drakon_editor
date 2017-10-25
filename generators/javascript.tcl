@@ -172,7 +172,7 @@ proc change_state { next_state machine_name } {
         return "self.state = null;"
     } else {
         #item 1835
-        return "self.state = ${machine_name}_state_${next_state};"
+        return "self.state = \"${next_state}\""
     }
 }
 
@@ -236,7 +236,9 @@ proc generate { db gdb filename is_clean} {
     variable handlers
     set handlers [ append_sm_names $gdb ]
     set machine_ctrs [ make_machine_ctrs $gdb $machines ]
-    set machine_decl [ make_machine_declares $machines ]	
+
+    #set machine_decl [ make_machine_declares $machines ]	
+    set machine_decl {}
 	
 	# fix
 	
@@ -308,17 +310,42 @@ proc get_function { gdb name state message} {
     }
 }
 
+proc make_normal_state_method { name state message } {
+	return "${name}_${state}_${message}"
+}
+
+proc make_default_state_method { name state } {
+	return "${name}_${state}_default"
+}
+
+proc diagram_exists { gdb name } {
+	set id [ $gdb onecolumn {
+		select diagram_id
+		from diagrams
+		where name = :name }]
+	
+	if {$id == ""} {
+		return 0
+	} else {
+		return 1
+	}
+}
+
+
+
 proc make_machine_ctr { gdb name states param_names messages } {
     set lines {}
     
-    foreach state $states {
-        foreach message $messages {
-            set fun [ get_function $gdb $name $state $message ]
-            lappend lines \
-             "${name}_state_${state}.$message = $fun;"            
-        }
-        lappend lines "${name}_state_${state}.state_name = \"$state\";"
-    }
+    if {0} {
+		foreach state $states {
+			foreach message $messages {
+				set fun [ get_function $gdb $name $state $message ]
+				lappend lines \
+				 "${name}_state_${state}.$message = $fun;"            
+			}
+			lappend lines "${name}_state_${state}.state_name = \"$state\";"
+		}
+	}
     
     
     set params [ lrange $param_names 1 end ]
@@ -330,13 +357,41 @@ proc make_machine_ctr { gdb name states param_names messages } {
      "  this.type_name = \"$name\";"
 
     set first [ lindex $states 0 ]
-    lappend lines "  this.state = ${name}_state_${first};"
+    lappend lines "  this.state = \"${first}\";"
     
     foreach message $messages {
         lappend lines \
          "  this.$message = function\($params_str\) \{"
+        
         lappend lines \
-         "    this.state.$message\(this, $params_str\);"
+         "    var _state_ = this.state"
+        set first 1
+        foreach state $states {
+			if {$first} {
+				lappend lines \
+				 "    if \(_state_ == \"$state\"\) \{"
+			} else {
+				lappend lines \
+				 "    else if \(_state_ == \"$state\"\) \{"				
+			}
+			set method [make_normal_state_method $name $state $message ]
+			if {[diagram_exists $gdb $method ]} {
+				lappend lines \
+				 "      ${method}(this, $params_str\)"
+			} else {
+				set method [make_default_state_method $name $state]
+				if {[diagram_exists $gdb $method ]} {
+					lappend lines \
+					 "      ${method}(this, $params_str\)"
+				}				
+			}
+			
+			lappend lines \
+			 "    \}"				
+			
+			set first 0
+		}
+        
         lappend lines \
          "  \}"
     }
