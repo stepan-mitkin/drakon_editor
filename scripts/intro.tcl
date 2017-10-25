@@ -22,7 +22,7 @@ proc intro.init { window data } {
   image create photo intro_image -format GIF -file $script_path/images/drakon_editor.gif
   
   ttk::frame $window.root.greeting
-  ttk::label $window.root.greeting.text -text [ mc2 "DRAKON Editor does not have a \"Save\" button. All your changes get saved right after you have done them.\nThat is why DRAKON Editor always needs a file to work with." ]
+  ttk::label $window.root.greeting.text -text [ mc2 "DRAKON Editor does not have a \\\"Save\\\" button. All your changes get saved right after you have done them.\nThat is why DRAKON Editor always needs a file to work with." ]
   ttk::label $window.root.greeting.logo -image intro_image
 
   pack $window.root.greeting.logo -side left

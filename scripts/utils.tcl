@@ -1001,7 +1001,7 @@ proc append_not_empty { list_name item } {
 
 proc mc2 { text } {
 	if { [texts::get "language"] == "English" } {
-		return $text
+		return [ uplevel 1 "set mc2_tmp_var \"$text\"" ]
 	}
 	set translated [ mc $text ]
 	return [ uplevel 1 "set mc2_tmp_var \"$translated\"" ]
