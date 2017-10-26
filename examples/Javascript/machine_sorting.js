@@ -66,21 +66,167 @@ function BubleSorter_NotSwapped_init(self, array) {
     self.state = "NotSwapped"
 }
 
+function Partitioner_CleanUp(self, data) {
+    
+}
+
+function Partitioner_Processing_default(self, data) {
+    // item 324
+    self.state = "Processing"
+}
+
+function Partitioner_Processing_goNext(self, data) {
+    // item 322
+    if (self.left > self.right) {
+        // item 354
+        self.result = self.right + 1
+        self.done = true
+        // item 332
+        swapItems(
+        	self.array,
+        	self.end,
+        	self.result
+        )
+        // item 333
+        self.state = null;
+    } else {
+        // item 325
+        var right = self.array[self.right]
+        // item 327
+        if (right < self.midValue) {
+            // item 329
+            swapItems(
+            	self.array,
+            	self.left,
+            	self.right
+            )
+            // item 330
+            self.left++
+        } else {
+            // item 331
+            self.right--
+        }
+        // item 307
+        self.state = "Processing"
+    }
+}
+
+function Partitioner_Start_default(self, data) {
+    // item 313
+    self.state = "Start"
+}
+
+function Partitioner_Start_init(self, data) {
+    // item 314
+    self.array = data.array
+    self.end = data.end
+    // item 304
+    self.mid = Math.floor(
+    	(data.begin + data.end) / 2
+    )
+    // item 326
+    self.midValue = self.array[self.mid]
+    // item 315
+    swapItems(
+    	self.array,
+    	self.mid,
+    	data.end
+    )
+    // item 316
+    self.left = data.begin
+    self.right = data.end - 1
+    // item 298
+    self.state = "Processing"
+}
+
+function QuickSorter_CleanUp(self, array) {
+    
+}
+
+function QuickSorter_Processing_default(self, array) {
+    // item 388
+    self.state = "Processing"
+}
+
+function QuickSorter_Processing_goNext(self, array) {
+    // item 386
+    if (self.tasks.length == 0) {
+        // item 435
+        self.done = true
+        // item 397
+        self.state = null;
+    } else {
+        // item 389
+        var task = self.tasks.pop()
+        // item 425
+        var mid = partition(
+        	self.array,
+        	task.begin,
+        	task.end
+        )
+        // item 426
+        addTask(self, task.begin, mid - 1)
+        // item 427
+        addTask(self, mid + 1, task.end)
+        // item 371
+        self.state = "Processing"
+    }
+}
+
+function QuickSorter_Start_default(self, array) {
+    // item 377
+    self.state = "Start"
+}
+
+function QuickSorter_Start_init(self, array) {
+    // item 378
+    self.array = array
+    self.tasks = []
+    // item 368
+    addTask(
+    	self,
+    	0,
+    	array.length - 1
+    )
+    // item 364
+    self.state = "Processing"
+}
+
+function addTask(self, begin, end) {
+    // item 409
+    var count = end - begin + 1
+    // item 4100001
+    if (count < 2) {
+        
+    } else {
+        // item 4100002
+        if (count == 2) {
+            // item 421
+            if (self.array[begin] > self.array[end]) {
+                // item 424
+                swapItems(
+                	self.array,
+                	begin,
+                	end
+                )
+            } else {
+                
+            }
+        } else {
+            // item 407
+            self.tasks.push({
+            	begin: begin,
+            	end: end
+            })
+        }
+    }
+}
+
 function bubbleSort(array) {
     // item 126
     var machine = new BubleSorter()
-    // item 127
-    machine.init(array)
-    while (true) {
-        // item 128
-        if (machine.done) {
-            break;
-        } else {
-            
-        }
-        // item 132
-        machine.goNext()
-    }
+    // item 289
+    runMachine(machine, array)
 }
 
 function move(self) {
@@ -89,25 +235,83 @@ function move(self) {
     self.currentIndex(i2)
 }
 
+function partition(array, begin, end) {
+    // item 340
+    var machine = new Partitioner()
+    // item 352
+    var data = {
+    	array: array, 
+    	begin: begin,
+    	end: end
+    }
+    // item 341
+    runMachine(machine, data)
+    // item 351
+    return machine.result
+}
+
+function quickSort(array) {
+    // item 433
+    var machine = new QuickSorter()
+    // item 434
+    runMachine(machine, array)
+}
+
+function runMachine(machine, data) {
+    // item 284
+    machine.init(data)
+    while (true) {
+        // item 285
+        if (machine.done) {
+            break;
+        } else {
+            
+        }
+        // item 288
+        machine.goNext()
+    }
+}
+
 function swap(self) {
-    // item 211
-    var current = self.currentValue()
-    var next = self.nextValue()
-    // item 212
-    var array = self.array()
-    // item 213
-    array[self.currentIndex()] = next
-    array[self.nextIndex()] = current
+    // item 251
+    swapItems(
+    	self.array(),
+    	self.currentIndex(),
+    	self.nextIndex()
+    )
+}
+
+function swapItems(array, red, black) {
+    // item 249
+    var redValue = array[red]
+    var blackValue = array[black]
+    // item 250
+    array[red] = blackValue
+    array[black] = redValue
+}
+
+function testPartition(array) {
+    // item 347
+    var old = array.slice()
+    // item 348
+    var mid = partition(array, 0, array.length - 1)
+    // item 349
+    console.log(old, mid, array)
+    // item 350
+    console.log()
 }
 
 function testSort(array) {
     // item 225
-    var old = array.slice()
+    var a1 = array.slice()
+    var a2 = array.slice()
     // item 226
-    bubbleSort(array)
+    bubbleSort(a1)
+    quickSort(a2)
     // item 227
-    console.log(old)
     console.log(array)
+    console.log("bubble", a1)
+    console.log("quick ", a2)
     // item 228
     console.log()
 }
@@ -235,6 +439,48 @@ function BubleSorter() {
       BubleSorter_AfterSwap_default(this, array)
     }
   }
+}function Partitioner() {
+  this.type_name = "Partitioner";
+  this.state = "Start";
+  this.goNext = function(data) {
+    var _state_ = this.state
+    if (_state_ == "Start") {
+      Partitioner_Start_default(this, data)
+    }
+    else if (_state_ == "Processing") {
+      Partitioner_Processing_goNext(this, data)
+    }
+  }
+  this.init = function(data) {
+    var _state_ = this.state
+    if (_state_ == "Start") {
+      Partitioner_Start_init(this, data)
+    }
+    else if (_state_ == "Processing") {
+      Partitioner_Processing_default(this, data)
+    }
+  }
+}function QuickSorter() {
+  this.type_name = "QuickSorter";
+  this.state = "Start";
+  this.goNext = function(array) {
+    var _state_ = this.state
+    if (_state_ == "Start") {
+      QuickSorter_Start_default(this, array)
+    }
+    else if (_state_ == "Processing") {
+      QuickSorter_Processing_goNext(this, array)
+    }
+  }
+  this.init = function(array) {
+    var _state_ = this.state
+    if (_state_ == "Start") {
+      QuickSorter_Start_init(this, array)
+    }
+    else if (_state_ == "Processing") {
+      QuickSorter_Processing_default(this, array)
+    }
+  }
 }
 
 testSort([])
@@ -242,3 +488,28 @@ testSort([1, 1, 1, 1, 1])
 testSort([1, 2, 3, 4, 5])
 testSort([5, 4, 3, 2, 1])
 testSort([13, 30, 1, 3, 5, 2, 3])
+
+testSort([1, 1, 1, 1])
+testSort([1, 1, 1, 1, 1])
+
+testSort([5, 4, 3, 2])
+testSort([2, 2, 2, 3])
+testSort([3, 3, 3, 2])
+testSort([3, 5, 1, 2])
+
+
+
+testPartition([1, 1, 1])
+testPartition([1, 2, 3])
+testPartition([5, 4, 3])
+testPartition([2, 2, 3])
+testPartition([3, 3, 2])
+testPartition([3, 5, 2])
+
+testPartition([1, 1, 1, 1])
+testPartition([1, 1, 1, 1, 1])
+
+testPartition([5, 4, 3, 2])
+testPartition([2, 2, 2, 3])
+testPartition([3, 3, 3, 2])
+testPartition([3, 5, 1, 2])
