@@ -11,11 +11,12 @@ cp -r ../images .
 cp -r ../examples .
 cp -r ../generators .
 cp -r ../structure .
+cp -r ../msgs .
 cp -r ../docs .
 mkdir tmp
 cp ../drakon_editor.tcl .
 cp ../drakon_gen.tcl .
 cp ../readme.html .
-zip -r ../drakon_editor1.27.zip *
+zip -r ../drakon_editor1.29.zip *
 cd ..
 rm -rf release
