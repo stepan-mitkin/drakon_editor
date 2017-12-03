@@ -310,29 +310,6 @@ proc get_function { gdb name state message} {
     }
 }
 
-proc make_normal_state_method { name state message } {
-	return "${name}_${state}_${message}"
-}
-
-proc make_default_state_method { name state } {
-	return "${name}_${state}_default"
-}
-
-proc diagram_exists { gdb name } {
-	set id [ $gdb onecolumn {
-		select diagram_id
-		from diagrams
-		where name = :name }]
-	
-	if {$id == ""} {
-		return 0
-	} else {
-		return 1
-	}
-}
-
-
-
 proc make_machine_ctr { gdb name states param_names messages } {
     set lines {}
     
@@ -367,29 +344,34 @@ proc make_machine_ctr { gdb name states param_names messages } {
          "    var _state_ = this.state"
         set first 1
         foreach state $states {
-			if {$first} {
-				lappend lines \
-				 "    if \(_state_ == \"$state\"\) \{"
+
+			set call ""
+			set method [gen::make_normal_state_method $name $state $message ]
+			if {[gen::diagram_exists $gdb $method ]} {
+				set call "      ${method}(this, $params_str\)"
 			} else {
-				lappend lines \
-				 "    else if \(_state_ == \"$state\"\) \{"				
-			}
-			set method [make_normal_state_method $name $state $message ]
-			if {[diagram_exists $gdb $method ]} {
-				lappend lines \
-				 "      ${method}(this, $params_str\)"
-			} else {
-				set method [make_default_state_method $name $state]
-				if {[diagram_exists $gdb $method ]} {
-					lappend lines \
-					 "      ${method}(this, $params_str\)"
+				set method [gen::make_default_state_method $name $state]
+				if {[gen::diagram_exists $gdb $method ]} {
+					set call "      ${method}(this, $params_str\)"
 				}				
 			}
-			
-			lappend lines \
-			 "    \}"				
-			
-			set first 0
+
+			if { $call != "" } {
+				if {$first} {
+					lappend lines \
+					 "    if \(_state_ == \"$state\"\) \{"
+				} else {
+					lappend lines \
+					 "    else if \(_state_ == \"$state\"\) \{"				
+				}
+				
+				lappend lines $call				
+				
+				lappend lines \
+				 "    \}"
+				 
+				 set first 0
+			}
 		}
         
         lappend lines \

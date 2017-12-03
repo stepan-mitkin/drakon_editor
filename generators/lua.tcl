@@ -64,6 +64,54 @@ proc block_close { output depth } {
     lappend result $line
 }
 
+proc build_handler { gdb name states message params_str output } {
+    #item 2165
+    set in "        "
+    set in2 "            "
+    #item 2152
+    upvar 1 $output lines
+    #item 2153
+    lappend lines \
+    "${in}local _state_ = self.state"
+    #item 2162
+    set keyword "if"
+    foreach state $states {
+        #item 2166
+        set method \
+        [gen::make_normal_state_method $name $state $message]
+        #item 2157
+        if {[gen::diagram_exists $gdb $method]} {
+            #item 2176
+            lappend lines \
+            "${in}$keyword _state_ == \"$state\" then"
+            #item 2173
+            lappend lines \
+            "${in2}${method}($params_str\)"
+            #item 2177
+            set keyword "elseif"
+        } else {
+            #item 2172
+            set method \
+            [gen::make_default_state_method $name $state]
+            #item 2169
+            if {[gen::diagram_exists $gdb $method]} {
+                #item 2176
+                lappend lines \
+                "${in}$keyword _state_ == \"$state\" then"
+                #item 2173
+                lappend lines \
+                "${in2}${method}($params_str\)"
+                #item 2177
+                set keyword "elseif"
+            } else {
+                
+            }
+        }
+    }
+    #item 2164
+    lappend lines "${in}end"
+}
+
 proc change_state { next_state machine_name } {
     #item 1832
     if {$next_state == ""} {
@@ -71,7 +119,7 @@ proc change_state { next_state machine_name } {
         return "self.state = nil"
     } else {
         #item 1835
-        return "self.state = ${machine_name}_state_${next_state}"
+        return "self.state = \"${next_state}\""
     }
 }
 
@@ -277,7 +325,7 @@ proc generate_kernel { db gdb filename is_clean } {
     variable handlers
     set handlers [ append_sm_names $gdb ]
     #item 1818
-    set machine_ctrs [ make_machine_ctrs $machines ]
+    set machine_ctrs [ make_machine_ctrs $gdb $machines ]
     #item 1916
     set machine_decl [ make_machine_declares $machines ]
     #item 2135
@@ -621,18 +669,9 @@ proc make_callbacks { } {
     return $callbacks
 }
 
-proc make_machine_ctr { name states param_names messages } {
+proc make_machine_ctr { gdb name states param_names messages } {
     #item 1890
     set lines {}
-    foreach state $states {
-        foreach message $messages {
-            #item 1895
-            lappend lines \
-             "${name}_state_${state}.$message = ${name}_${state}_${message}"
-        }
-        #item 1896
-        lappend lines "${name}_state_${state}.state_name = \"$state\""
-    }
     #item 1899
     set params [ lrange $param_names 1 end ]
     set params [ linsert $params 0 "self" ]
@@ -641,29 +680,31 @@ proc make_machine_ctr { name states param_names messages } {
     lappend lines "function make_${name}\(\)"
     #item 1902
     lappend lines \
-     "  local obj = {}"
+     "    local obj = {}"
     lappend lines \
-     "  obj.type_name = \"$name\""
+     "    obj.type_name = \"$name\""
     #item 1903
     set first [ lindex $states 0 ]
-    lappend lines "  obj.state = ${name}_state_${first}"
+    lappend lines "    obj.state = \"${first}\""
     foreach message $messages {
         #item 1904
         lappend lines \
-         "  obj.$message = function\($params_str\)"
+         "    obj.$message = function\($params_str\)"
+        #item 2137
+        build_handler $gdb $name $states $message \
+         $params_str lines
+        #item 2136
         lappend lines \
-         "    self.state.$message\($params_str\)"
-        lappend lines \
-         "  end"
+         "    end"
     }
     #item 1898
-    lappend lines "  return obj"
+    lappend lines "    return obj"
     lappend lines "end"
     #item 1886
     return [ join $lines "\n" ]
 }
 
-proc make_machine_ctrs { machines } {
+proc make_machine_ctrs { gdb machines } {
     #item 1869
     set result ""
     foreach machine $machines {
@@ -674,7 +715,7 @@ proc make_machine_ctrs { machines } {
         set name [ dict get $machine "name" ]
         #item 1887
         set ctr \
-        [make_machine_ctr $name $states $param_names $messages]
+        [make_machine_ctr $gdb $name $states $param_names $messages]
         #item 1863
         append result $ctr
     }
@@ -856,8 +897,6 @@ proc print_to_file { fhandle functions header footer machine_decl machine_ctrs }
     put_credits $fhandle
     #item 1559
     puts $fhandle $header
-    #item 1917
-    puts $fhandle $machine_decl
     foreach function $functions {
         #item 1570
         print_function $fhandle $function

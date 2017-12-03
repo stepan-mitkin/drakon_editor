@@ -470,7 +470,9 @@ proc is_lambda { line } {
 		return 0
 	}
 	set second [string trim [ lindex $parts 1 ]]
-	set part0 [ lindex $second 0]
+	set second_parts [ split $second " " ]
+
+	set part0 [ lindex $second_parts 0]
 	if {$part0 == "function"} {
 		return 1
 	}
@@ -2629,5 +2631,25 @@ proc print_variables { variables diagram_id signature var_keyword } {
 	return ""
 }
 
+proc diagram_exists { gdb name } {
+	set id [ $gdb onecolumn {
+		select diagram_id
+		from diagrams
+		where name = :name }]
+	
+	if {$id == ""} {
+		return 0
+	} else {
+		return 1
+	}
 }
 
+proc make_normal_state_method { name state message } {
+	return "${name}_${state}_${message}"
+}
+
+proc make_default_state_method { name state } {
+	return "${name}_${state}_default"
+}
+
+}
