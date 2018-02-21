@@ -290,7 +290,7 @@ proc make_machine_ctrs { gdb machines } {
 
         set ctr [make_machine_ctr $gdb $name $states $param_names $messages]
 
-        append result $ctr    
+        append result "\n$ctr\n"
     }
     return $result
 }

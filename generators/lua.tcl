@@ -717,7 +717,7 @@ proc make_machine_ctrs { gdb machines } {
         set ctr \
         [make_machine_ctr $gdb $name $states $param_names $messages]
         #item 1863
-        append result $ctr
+        append result "\n$ctr\n"
     }
     #item 1843
     return $result
