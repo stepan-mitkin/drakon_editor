@@ -655,9 +655,17 @@ proc find_references { } {
 	set selection [ mtree::get_selection ]
 	set node_id [ lindex $selection 0 ]
 	set name [ mwc::get_node_text $node_id ]
+	
+	set parts [ split $name "." ]
+	if { [llength $parts] == 2 } {
+		set needle "@[ lindex $parts 1 ]"
+	} else {
+		set needle $name
+	}
+	
 	show_search
 
-	set s_needle $name
+	set s_needle $needle
 	set s_case 1
 	set s_whole_word 1
 	set s_current_only all

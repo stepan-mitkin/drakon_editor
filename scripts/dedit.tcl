@@ -2933,7 +2933,7 @@ proc get_context_commands { cx cy } {
 						}
 						lappend commands [ list command [ mc2 "Edit text..." ] normal mwc::change_text $hit_item ]
 					}
-					set referenced [ find_referenced_diagrams $hit_item ]
+					set referenced [ find_referenced_diagrams $hit_item $diagram_id ]
 					foreach dia $referenced {
 						lassign $dia ref_id ref_name
 						if { $ref_id != $diagram_id } {
@@ -3308,12 +3308,54 @@ proc goto {} {
 }
 
 
-proc find_referenced_diagrams { item_id } {
+proc find_referenced_diagrams { item_id current_diagram_id} {
 	variable db
+	set diagram_name [$db onecolumn {
+			select name
+			from diagrams
+			where diagram_id = :current_diagram_id
+	}]
+	
 	set text [ $db onecolumn {
 		select text
 		from items
-		where item_id = :item_id } ]
+		where item_id = :item_id } ]	
+	
+	set parts [ split $diagram_name "."]
+	if { [llength $parts] == 2 } {
+		lassign $parts task name
+		set part1 [find_referenced_diagrams_normal $text]
+		set part2 [find_referenced_diagrams_utopist $text $task ]
+		return [concat $part1 $part2]
+	} else {
+		return [find_referenced_diagrams_normal $item_id]
+	}
+}
+
+proc find_referenced_diagrams_utopist { text ctask } {
+	variable db
+	set result {}
+	$db eval {
+		select diagram_id, name
+		from diagrams
+		order by name
+	} {
+		set parts [ split $name "."]
+		if { [llength $parts] == 2} {
+			lassign $parts otask oname
+			if {$ctask == $otask} {		
+				if { [ string first $oname $text ] != -1 } {
+					lappend result [ list $diagram_id $name ]
+				}
+			}
+		}
+	}
+	return [lrange $result 0 7 ]
+}
+
+
+proc find_referenced_diagrams_normal { text } {
+	variable db
 	set result {}
 	$db eval {
 		select diagram_id, name
@@ -3324,8 +3366,9 @@ proc find_referenced_diagrams { item_id } {
 			lappend result [ list $diagram_id $name ]
 		}
 	}
-	return [lrange $result 0 5 ]
+	return [lrange $result 0 7 ]
 }
+
 
 proc property_keys { } {
 	return { language canvas_font canvas_font_size pdf_font pdf_font_size }
