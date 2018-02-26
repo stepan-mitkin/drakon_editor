@@ -3328,7 +3328,7 @@ proc find_referenced_diagrams { item_id current_diagram_id} {
 		set part2 [find_referenced_diagrams_utopist $text $task ]
 		return [concat $part1 $part2]
 	} else {
-		return [find_referenced_diagrams_normal $item_id]
+		return [find_referenced_diagrams_normal $text]
 	}
 }
 
