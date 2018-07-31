@@ -331,28 +331,30 @@ proc make_machine_ctr { gdb name states param_names messages } {
     lappend lines "function ${name}\(\) \{"
 
     lappend lines \
-     "  this.type_name = \"$name\";"
+     "  var _self = this;"
+    lappend lines \
+     "  _self.type_name = \"$name\";"
 
     set first [ lindex $states 0 ]
-    lappend lines "  this.state = \"${first}\";"
+    lappend lines "  _self.state = \"${first}\";"
     
     foreach message $messages {
         lappend lines \
-         "  this.$message = function\($params_str\) \{"
+         "  _self.$message = function\($params_str\) \{"
         
         lappend lines \
-         "    var _state_ = this.state"
+         "    var _state_ = _self.state"
         set first 1
         foreach state $states {
 
 			set call ""
 			set method [gen::make_normal_state_method $name $state $message ]
 			if {[gen::diagram_exists $gdb $method ]} {
-				set call "      ${method}(this, $params_str\)"
+				set call "      ${method}(_self, $params_str\)"
 			} else {
 				set method [gen::make_default_state_method $name $state]
 				if {[gen::diagram_exists $gdb $method ]} {
-					set call "      ${method}(this, $params_str\)"
+					set call "      ${method}(_self, $params_str\)"
 				}				
 			}
 
