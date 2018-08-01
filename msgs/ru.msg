@@ -270,6 +270,7 @@
 ::msgcat::mcset ru "Select" "Выбор"
 ::msgcat::mcset ru "Shelf" "Полка"
 ::msgcat::mcset ru "Silhouette" "Силуэт"
+::msgcat::mcset ru "State machine" "Конечный автомат"
 ::msgcat::mcset ru "Size" "Размер"
 ::msgcat::mcset ru "Some errors found." "Найдены ошибки."
 ::msgcat::mcset ru "Standalone comment" "Комментарий-выноска"

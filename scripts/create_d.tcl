@@ -42,10 +42,11 @@ proc create_d_init { win data } {
 	set middle [ ttk::frame $root.middle -padding "5 5 5 5" ]
 	set drakon_details [ ttk::frame $middle.drakon_details -relief sunken -padding "5 5 5 5" ]
 	ttk::radiobutton $drakon_details.sil -text [ mc2 "Silhouette" ] -value silhouette -variable mwd::type
+	ttk::radiobutton $drakon_details.sm -text [ mc2 "State machine" ] -value sm -variable mwd::type
 	ttk::radiobutton $drakon_details.pri -text [ mc2 "Primitive" ] -value primitive -variable mwd::type
 
-	set to_drakon [ list mwd::change_state normal $drakon_details.sil $drakon_details.pri ]
-	set to_data [ list mwd::change_state disabled $drakon_details.sil $drakon_details.pri ]
+	set to_drakon [ list mwd::change_state normal $drakon_details.sil $drakon_details.pri $drakon_details.sm ]
+	set to_data [ list mwd::change_state disabled $drakon_details.sil $drakon_details.pri $drakon_details.sm ]
 	
 	ttk::radiobutton $middle.drakon -text [ mc2 "DRAKON flowchart" ] -value drakon -variable mwd::dialect -command $to_drakon
 	ttk::radiobutton $middle.structure -text [ mc2 "Structure diagram" ] -value structure -variable mwd::dialect -command $to_data
@@ -66,6 +67,7 @@ proc create_d_init { win data } {
 	pack $middle.drakon_details -side top -anchor w
 
 	
+	pack $drakon_details.sm -side top -anchor w
 	pack $drakon_details.sil -side top -anchor w
 	pack $drakon_details.pri -side top -anchor w
 	
@@ -94,11 +96,7 @@ proc ok { } {
   variable type
   variable dialect
   
-  if { $type == "primitive" } {
-    set sil 0
-  } else {
-    set sil 1
-  }
+  set sil $type
 
   set trimmed [ string trim $name ]
   if { $trimmed == "" } {

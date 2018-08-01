@@ -1438,7 +1438,9 @@ proc build_new_diagram { id name sil parent_node node_id } {
 	lappend result [ list insert diagrams diagram_id $id name '$name' origin "'0 0'" zoom $zoom ]
 	lappend result [ list insert tree_nodes node_id $node_id parent $parent_node type 'item' diagram_id $id ]
 	
-	if { $sil } {
+	if { $sil == "sm" } {
+	  set result [ build_new_sm $id $name $result ]
+	} elseif { $sil == "silhouette" } {
 	  set result [ build_new_sil $id $name $result ]
 	} else {
 	  set item_id [ mod::next_key $db items item_id ]
@@ -1467,6 +1469,37 @@ proc build_new_data_diagram { id name sil parent_node node_id } {
 	return $result
 }
 
+proc build_new_sm { id name result } {
+	variable db
+
+	set item_id [ mod::next_key $db items item_id ]
+	lappend result [ list insert items item_id $item_id diagram_id $id type 'beginend' text '$name' selected 0 x 110 y 60 w 80 h 20 a 60 b 0 ]
+	incr item_id
+
+	set items {{139 beginend End {} {} 1 1110 310 50 20 60 0} {140 vertical {} {} {} 1 -20 150 0 510 0 0} \
+		 {141 vertical {} {} {} 1 380 190 0 470 0 0} {142 vertical {} {} {} 1 1110 190 0 110 0 0} {143 horizontal {} {} {} 1 -20 190 1130 0 0 0} \
+		 {144 arrow {} {} {} 1 -120 190 100 470 1070 1} {145 branch State1 {} {} 1 -20 240 60 30 60 0} {146 address State1 {} {} 1 -20 610 60 30 60 0} \
+		 {148 branch Exit {} {} 1 1110 240 50 30 60 0} {150 horizontal {} {} {} 1 -20 130 170 0 0 0} {151 action "state machine\n\nmsg" {} {} 1 170 130 70 40 0 0} \
+		 {152 select receive {} {} 1 -20 320 60 20 60 0} {153 horizontal {} {} {} 1 -20 360 190 0 0 0} {154 case signal1 {} {} 1 -20 400 60 20 60 0} \
+		 {155 case signal2 {} {} 1 170 400 50 20 60 0} {156 vertical {} {} {} 1 170 360 0 300 0 0} {157 address State1 {} {} 1 170 610 50 30 60 0} \
+		 {158 branch State2 {} {} 1 380 240 60 30 60 0} {159 address State2 {} {} 1 380 610 60 30 60 0} {160 select receive {} {} 1 380 320 60 20 60 0} \
+		 {161 horizontal {} {} {} 1 380 360 190 0 0 0} {162 case signal1 {} {} 1 380 400 60 20 60 0} {163 case signal2 {} {} 1 570 400 50 20 60 0} \
+		 {164 vertical {} {} {} 1 570 360 0 300 0 0} {165 address State2 {} {} 1 570 610 50 30 60 0} {166 vertical {} {} {} 1 760 190 0 470 0 0} \
+		 {167 branch State3 {} {} 1 760 240 60 30 60 0} {168 address State3 {} {} 1 760 610 60 30 60 0} {169 select receive {} {} 1 760 320 60 20 60 0} \
+		 {170 horizontal {} {} {} 1 760 360 190 0 0 0} {171 case signal1 {} {} 1 760 400 60 20 60 0} {172 case signal2 {} {} 1 950 400 50 20 60 0} \
+		 {173 vertical {} {} {} 1 950 360 0 300 0 0} {174 address State3 {} {} 1 950 610 50 30 60 0}} 
+
+
+	foreach item $items {
+		lassign $item _ type text _ _ _ x y w h a b
+		incr x 130
+		incr y -70
+		lappend result [ list insert items item_id $item_id diagram_id $id type '$type' text "'$text'" selected 0 x $x y $y w $w h $h a $a b $b ]
+		incr item_id
+	}
+	
+	return $result
+}
 
 proc build_new_sil { id name result } {
   variable db
