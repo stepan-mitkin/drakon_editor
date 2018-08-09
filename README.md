@@ -11,8 +11,8 @@
 
 
 4. If you change the code generator:
-    - Update unittest/regenerate_examples.sh
-    - Run unittest/regenerate_examples.sh
+    - Update `unittest/regenerate_examples.sh`
+    - Run `unittest/regenerate_examples.sh`
 
 
 5. If you want to change DRAKON Editor source code:
@@ -48,6 +48,7 @@ DRAKON Editor is a free open source tool for authoring DRAKON diagrams. It also 
 - Software developers can build real programs with DRAKON Editor. Source code can be generated in several programming languages, including Java, Processing.org, D, C#, C/C++ (with Qt support), Python, Tcl, Javascript, Lua, Erlang, AutoHotkey and Verilog.
 
 Homepage: http://drakon-editor.sourceforge.net/
+
 Documentation: http://drakon-editor.sourceforge.net/editor.html
 
 
@@ -59,11 +60,11 @@ DRAKON Editor needs Tcl 8.6 or higher to run:
 - Windows, Linux and Mac users can download Active Tcl here: http://www.activestate.com/activetcl/downloads
 - For OS X users: If you are having problems with sqlite while using DRAKON Edidor read this: https://github.com/stepan-mitkin/drakon_editor/issues/6#issuecomment-188855963
 - Or Linux users can install the following packages:
- - tcl8.6
- - tk8.6
- - tcllib
- - libsqlite3-tcl
- - libtk-img
+    - tcl8.6
+    - tk8.6
+    - tcllib
+    - libsqlite3-tcl
+    - libtk-img
 	
 On Ubuntu: 
 ```sh
