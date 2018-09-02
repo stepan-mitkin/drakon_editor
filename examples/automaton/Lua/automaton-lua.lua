@@ -24,10 +24,6 @@ function array_to_string(chars)
     return result
 end
 
-function baby_frog_CleanUp(self, msg)
-    
-end
-
 function baby_frog_Hungry_food(self, msg)
     -- item 424
     self.state = "Sleepy"
@@ -38,6 +34,10 @@ function baby_frog_Hungry_sleep(self, msg)
     -- item 433
     self.state = "Hungry"
     return "I am hungry"
+end
+
+function baby_frog_Shutdown(self)
+    
 end
 
 function baby_frog_Sleepy_food(self, msg)
@@ -210,7 +210,7 @@ function lex.init()
     end
 end
 
-function lexer_machine_CleanUp(self, data, c)
+function lexer_machine_Shutdown(self)
     
 end
 

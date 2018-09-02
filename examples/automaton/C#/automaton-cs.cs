@@ -7,7 +7,8 @@ namespace AutomatonTest {
 
 public interface IMachine
 {
-
+	object OnMessage(int messageType, char c);
+	void Shutdown();
 }	
 
 public enum TokenType
@@ -44,10 +45,8 @@ public class Lexer {
     public partial class LexerMachine
         : IMachine
     {
-        
         // Currently built token
         internal readonly StringBuilder Buffer = new StringBuilder();
-        
         // Current list of tokens.
         internal readonly List<Token> Tokens = new List<Token>();
 
@@ -305,7 +304,7 @@ public class Lexer {
             }
         }
 
-        public void CleanUp() {
+        public void Shutdown() {
             if (State == StateNames.Destroyed) {
                 return;
             }
@@ -314,7 +313,6 @@ public class Lexer {
         }
     }
     public partial class BabyFrog
-        : IMachine
     {
         
 
@@ -386,12 +384,66 @@ public class Lexer {
             return "z-z-z...";
         }
 
-        public void CleanUp() {
+        public void Shutdown() {
             if (State == StateNames.Destroyed) {
                 return;
             }
             State = StateNames.Destroyed;
             
+        }
+    }
+    public partial class Fragile
+    {
+        
+
+        public enum StateNames {
+            Destroyed,
+            Working
+        }
+
+        public StateNames State = StateNames.Working;
+
+        public const int helloMessage = 1;
+
+        public object OnMessage(int messageType, int msg) {
+            switch (messageType) {
+                case helloMessage:
+                    return hello(msg);
+                default:
+                    return null;
+            }
+        }
+
+        public object hello(int msg) {
+            switch (State) {
+                case StateNames.Working:
+                    return Working_hello(msg);
+                default:
+                    return null;
+            }
+        }
+
+        private object Working_hello(int msg) {
+            // item 552
+            Console.WriteLine("oh dear...");
+            // item 542
+            Shutdown();
+            return null;
+        }
+
+        private object Working_default(int msg) {
+            // item 551
+            State = StateNames.Working;
+            return null;
+        }
+
+        public void Shutdown() {
+            if (State == StateNames.Destroyed) {
+                return;
+            }
+            State = StateNames.Destroyed;
+            // item 553
+            Console.WriteLine("Fragile: Cleaning up");
         }
     }
 
@@ -510,6 +562,14 @@ public class Lexer {
         Console.WriteLine(frog.Food(0));
         Console.Write(frog.State.ToString() + "/Sleep: ");
         Console.WriteLine(frog.Sleep(0));
+        // item 554
+        var frag = new Fragile();
+        // item 555
+        frag.hello(0);
+        // item 557
+        Console.WriteLine("No shutdown below");
+        // item 556
+        frag.Shutdown();
     }
 
     private static void AddChar(LexerMachine lexer, char c) {

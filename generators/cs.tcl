@@ -160,12 +160,8 @@ proc change_state { next_state machine_name returns } {
     if {$next_state == ""} {
         #item 1745
         set link_to_final_found 1
-        #item 1743
-        set lines {}
-        lappend lines "State = StateNames.Destroyed;"
-        lappend lines $invoke_cleanup
         #item 1099
-        set change [ join $lines "\n" ]
+        set change $invoke_cleanup
     } else {
         #item 1098
         set change "State = StateNames.${next_state};"
@@ -259,25 +255,69 @@ proc classify_keywords { keywords name } {
 }
 
 proc extract_body { comments } {
+    #item 1849
+    set body {}
+    set inherits ""
     foreach comment $comments {
+        #item 1850
+        set state "idle"
         #item 1669
         set trimmed [ string trim $comment ]
         set lines [ split $trimmed "\n" ]
-        set first [ lindex $lines 0 ]
-        set first_t [ string trim $first ]
-        #item 1670
-        if {$first_t == "=== fields ==="} {
-            #item 1674
-            set rest [ lrange $lines 1 end ]
-            set new_text [ join $rest "\n        " ]
-            #item 1675
-            return $new_text
-        } else {
-            
+        foreach line $lines {
+            #item 1872
+            set line [ string trim $line ]
+            #item 1874
+            if {$line == ""} {
+                
+            } else {
+                #item 18510001
+                if {$state == "idle"} {
+                    #item 1670
+                    if {$line == "=== fields ==="} {
+                        #item 1858
+                        set state "fields"
+                    } else {
+                        #item 1862
+                        if {$line == "=== inherits ==="} {
+                            #item 1865
+                            set state "inherits"
+                        } else {
+                            
+                        }
+                    }
+                } else {
+                    #item 18510002
+                    if {$state == "fields"} {
+                        #item 1867
+                        if {$line == "=== inherits ==="} {
+                            #item 1868
+                            set state "inherits"
+                        } else {
+                            #item 1869
+                            lappend body $line
+                        }
+                    } else {
+                        #item 18510003
+                        if {$state == "inherits"} {
+                            
+                        } else {
+                            #item 18510004
+                            error "Unexpected switch value: $state"
+                        }
+                        #item 1863
+                        set inherits $line
+                        #item 1864
+                        set state "idle"
+                    }
+                }
+            }
         }
     }
+    #item 1873
+    set body_txt [ join $body "\n        " ]
     #item 1673
-    return ""
+    return [ list $body_txt $inherits ]
 }
 
 proc extract_class_name { section } {
@@ -343,7 +383,7 @@ proc extract_many_cs_machines { gdb callbacks } {
             #item 1767
             set link_to_final_found 0
             #item 1768
-            set invoke_cleanup "CleanUp();"
+            set invoke_cleanup "Shutdown();"
             #item 1759
             set info [ sma::build_machine $gdb $diagram_id $callbacks ]
             #item 1758
@@ -1071,7 +1111,7 @@ proc p.print_proc { weak_signature fhandle procedure class_name depth } {
     set body_depth [ expr { $depth + 1 } ]
     set lines [ gen::indent $body $body_depth ]
     #item 1800
-    if {$name == "CleanUp"} {
+    if {$name == "Shutdown"} {
         #item 1803
         set props(access) "public"
         set returns "void"
@@ -1104,7 +1144,7 @@ proc p.print_proc { weak_signature fhandle procedure class_name depth } {
     #item 1015
     append header "$name\("
     #item 1796
-    if {$name == "CleanUp"} {
+    if {$name == "Shutdown"} {
         #item 1799
         set params {}
     } else {
@@ -1132,7 +1172,7 @@ proc p.print_proc { weak_signature fhandle procedure class_name depth } {
         #item 96
         puts $fhandle "$indent$header \{"
         #item 1804
-        if {$name == "CleanUp"} {
+        if {$name == "Shutdown"} {
             #item 1807
             puts $fhandle "$indent    if \(State == StateNames.Destroyed\) \{"
             puts $fhandle "$indent        return;"
@@ -1250,8 +1290,10 @@ proc print_machine { fhandle machine } {
         set has_final [ dict get $machine "has_final" ]
         #item 1681
         set weak [ is_weak $machine ]
-        #item 1661
-        set body [ extract_body $comments ]
+        #item 1877
+        lassign \
+        [extract_body $comments] \
+        body inherits
         #item 1541
         puts $fhandle "    public partial class $name"
         #item 1701
@@ -1261,8 +1303,13 @@ proc print_machine { fhandle machine } {
         set pnames [ lrange $param_names 1 end ]
         #item 1843
         set arg_name_list [ join $pnames ", " ]
-        #item 1711
-        puts $fhandle "        : IMachine"
+        #item 1878
+        if {$inherits == ""} {
+            
+        } else {
+            #item 1711
+            puts $fhandle "        : $inherits"
+        }
         #item 1676
         puts $fhandle "    \{"
         puts $fhandle "        $body"

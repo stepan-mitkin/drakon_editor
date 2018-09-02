@@ -234,8 +234,9 @@ proc build_sub_diagram { gdb diagram_id state case parameters last_branch callba
     #item 884
     if {$state == ""} {
         #item 887
-        set name "CleanUp"
+        set name "Shutdown"
         set default 0
+        set parameters {}
     } else {
         #item 529
         if {$message == ""} {
