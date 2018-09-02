@@ -5,6 +5,12 @@ using System.Text;
 
 namespace AutomatonTest {
 
+// Look: these constants are used in the BabyFrog state machine
+public class Frog {
+	public const int Food = 20;
+	public const int Sleep = 10;
+}
+
 public interface IMachine
 {
 	object OnMessage(int messageType, char c);
@@ -42,6 +48,7 @@ public class Lexer {
 	
 	
 
+
     public partial class LexerMachine
         : IMachine
     {
@@ -58,7 +65,12 @@ public class Lexer {
             Operator
         }
 
-        public StateNames State = StateNames.Idle;
+        private StateNames _state = StateNames.Idle;
+
+        public StateNames State {
+            get { return _state; }
+            private set { _state = value; }
+        }
 
         public const int DigitMessage = 1;
         public const int LetterMessage = 2;
@@ -312,6 +324,7 @@ public class Lexer {
             
         }
     }
+
     public partial class BabyFrog
     {
         
@@ -322,10 +335,15 @@ public class Lexer {
             Sleepy
         }
 
-        public StateNames State = StateNames.Hungry;
+        private StateNames _state = StateNames.Hungry;
 
-        public const int FoodMessage = 1;
-        public const int SleepMessage = 2;
+        public StateNames State {
+            get { return _state; }
+            private set { _state = value; }
+        }
+
+        public const int FoodMessage = Frog.Food;
+        public const int SleepMessage = Frog.Sleep;
 
         public object OnMessage(int messageType, int msg) {
             switch (messageType) {
@@ -392,6 +410,7 @@ public class Lexer {
             
         }
     }
+
     public partial class Fragile
     {
         
@@ -401,7 +420,12 @@ public class Lexer {
             Working
         }
 
-        public StateNames State = StateNames.Working;
+        private StateNames _state = StateNames.Working;
+
+        public StateNames State {
+            get { return _state; }
+            private set { _state = value; }
+        }
 
         public const int helloMessage = 1;
 

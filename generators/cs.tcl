@@ -706,6 +706,72 @@ proc generate_body { gdb diagram_id start_item node_list items incoming } {
     $items $incoming $callbacks ]
 }
 
+proc get_message_constants { name messages } {
+    #item 1887
+    set state "none"
+    set constants {}
+    set names {}
+    set i 1
+    foreach message $messages {
+        #item 1891
+        set parts [ split $message "." ]
+        set last [ lindex $parts end ]
+        set count [ llength $parts ]
+        lappend names $last
+        #item 18920001
+        if {$state == "none"} {
+            #item 1899
+            if {$count == 1} {
+                #item 1912
+                lappend constants \
+                 [ list $message $i ]
+                #item 1902
+                set state "internal"
+            } else {
+                #item 1913
+                lappend constants \
+                 [ list $last $message ]
+                #item 1903
+                set state "external"
+            }
+        } else {
+            #item 18920002
+            if {$state == "internal"} {
+                #item 1908
+                if {$count == 1} {
+                    #item 1914
+                    lappend constants \
+                     [ list $message $i ]
+                } else {
+                    #item 1910
+                    error "Cannot combine external and internal message codes: $name"
+                }
+            } else {
+                #item 18920003
+                if {$state == "external"} {
+                    
+                } else {
+                    #item 18920004
+                    error "Unexpected switch value: $state"
+                }
+                #item 1906
+                if {$count == 1} {
+                    #item 1911
+                    error "Cannot combine external and internal message codes: $name"
+                } else {
+                    #item 1915
+                    lappend constants \
+                     [ list $last $message ]
+                }
+            }
+        }
+        #item 1904
+        incr i
+    }
+    #item 1890
+    return [list $names $constants]
+}
+
 proc handle_message { fhandle ind states message names handlers } {
     #item 1727
     puts $fhandle "$ind            switch \(State\) \{"
@@ -1295,6 +1361,7 @@ proc print_machine { fhandle machine } {
         [extract_body $comments] \
         body inherits
         #item 1541
+        puts $fhandle ""
         puts $fhandle "    public partial class $name"
         #item 1701
         set real_params [ lrange $parameters 1 end ]
@@ -1329,15 +1396,26 @@ proc print_machine { fhandle machine } {
         #item 1847
         puts $fhandle ""
         #item 1636
-        puts $fhandle "        public StateNames State = StateNames.$first;"
+        puts $fhandle "        private StateNames _state = StateNames.$first;"
+        puts $fhandle ""
+        puts $fhandle "        public StateNames State \{"
+        puts $fhandle "            get \{ return _state; \}"
+        puts $fhandle "            private set \{ _state = value; \}"
+        puts $fhandle "        \}"
         #item 1846
         puts $fhandle ""
+        #item 1881
+        lassign \
+        [get_message_constants $name $messages] \
+        messages mconstants
         #item 1840
         set i 1
-        foreach message $messages {
+        foreach message $mconstants {
+            #item 1916
+            lassign $message name value
             #item 1839
             puts $fhandle \
-              "        public const int ${message}Message = $i;"
+              "        public const int ${name}Message = $value;"
             #item 1841
             incr i
         }

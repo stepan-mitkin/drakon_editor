@@ -245,7 +245,7 @@ proc build_sub_diagram { gdb diagram_id state case parameters last_branch callba
             set default 1
         } else {
             #item 878
-            set message2 [ string map { - _ . _ } $message ]
+            set message2 [ last_part $message ]
             #item 524
             set name "${state}_${message2}"
             set default 0
@@ -798,6 +798,13 @@ proc is_visited { vertex_id } {
     variable g_visited
     #item 570
     return [ info exists g_visited($vertex_id) ]
+}
+
+proc last_part { text } {
+    #item 923
+    set parts [ split $text "." ]
+    #item 924
+    return [ lindex $parts end ]
 }
 
 proc make_diagram { gdb name params } {
