@@ -6,7 +6,7 @@ namespace eval gen_erl {
 variable tdb ""
 
 
-proc change_state { text state } {
+proc change_state { text state returns } {
 
 	if { $state == "" } {
 		set state "final_state"

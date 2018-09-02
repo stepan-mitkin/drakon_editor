@@ -165,15 +165,23 @@ proc extract_signature { text name } {
 	return [ list {} [ gen::create_signature procedure public $parameters "" ] ]
 }
 
-proc change_state { next_state machine_name } {
+proc change_state { next_state machine_name returns } {
     #item 1832
+    
     if {$next_state == ""} {
         #item 1836
-        return "self.state = null;"
+        set change "self.state = null;"
     } else {
         #item 1835
-        return "self.state = \"${next_state}\""
+        set change "self.state = \"${next_state}\";"
     }
+    
+    if {$returns == {}} {
+		return $change
+	} else {
+		set output [lindex $returns 1]
+		return "$change\n$output"
+	}
 }
 
 proc p.declare { type name value } {
@@ -343,18 +351,18 @@ proc make_machine_ctr { gdb name states param_names messages } {
          "  _self.$message = function\($params_str\) \{"
         
         lappend lines \
-         "    var _state_ = _self.state"
+         "    var _state_ = _self.state;"
         set first 1
         foreach state $states {
 
 			set call ""
 			set method [gen::make_normal_state_method $name $state $message ]
 			if {[gen::diagram_exists $gdb $method ]} {
-				set call "      ${method}(_self, $params_str\)"
+				set call "      return ${method}(_self, $params_str\);"
 			} else {
 				set method [gen::make_default_state_method $name $state]
 				if {[gen::diagram_exists $gdb $method ]} {
-					set call "      ${method}(_self, $params_str\)"
+					set call "      return ${method}(_self, $params_str\);"
 				}				
 			}
 
@@ -375,9 +383,10 @@ proc make_machine_ctr { gdb name states param_names messages } {
 				 set first 0
 			}
 		}
-        
         lappend lines \
-         "  \}"
+         "    return null;"
+        lappend lines \
+         "  \};"
     }
     
     lappend lines \
