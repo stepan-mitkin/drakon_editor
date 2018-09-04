@@ -383,7 +383,7 @@ proc extract_many_cs_machines { gdb callbacks } {
             #item 1767
             set link_to_final_found 0
             #item 1768
-            set invoke_cleanup "Shutdown();"
+            set invoke_cleanup "Shutdown\(\);"
             #item 1759
             set info [ sma::build_machine $gdb $diagram_id $callbacks ]
             #item 1758
@@ -1148,6 +1148,7 @@ proc make_callbacks { } {
     gen::put_callback callbacks for_declare		gen_cs::foreach_declare
     gen::put_callback callbacks shelf gen_cs::shelf
     gen::put_callback callbacks change_state gen_cs::change_state
+    gen::put_callback callbacks shutdown "Shutdown"
     gen::put_callback callbacks fsm_merge   0
     gen::put_callback callbacks native_foreach gen_cs::native_foreach
     #item 650

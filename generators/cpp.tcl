@@ -1900,6 +1900,7 @@ proc make_callbacks { language } {
     gen::put_callback callbacks goto		gen_c::goto
     gen::put_callback callbacks shelf		gen_c::shelf
     gen::put_callback callbacks change_state 	gen_cpp::change_state
+    gen::put_callback callbacks shutdown ""
     gen::put_callback callbacks fsm_merge   0
     gen::put_callback callbacks can_glue 1
     gen::put_callback callbacks exit_door "exit_door:;"

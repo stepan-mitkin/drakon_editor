@@ -132,6 +132,7 @@ proc make_callbacks { } {
 	gen::put_callback callbacks shelf		gen_js::shelf
 	
     gen::put_callback callbacks change_state 	gen_js::change_state
+    gen::put_callback callbacks shutdown 	""
     gen::put_callback callbacks fsm_merge   0
     
 	return $callbacks
@@ -164,6 +165,7 @@ proc extract_signature { text name } {
 
 	return [ list {} [ gen::create_signature procedure public $parameters "" ] ]
 }
+
 
 proc change_state { next_state machine_name returns } {
     #item 1832

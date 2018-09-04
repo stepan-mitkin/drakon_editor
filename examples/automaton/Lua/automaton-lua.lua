@@ -36,10 +36,6 @@ function baby_frog_Hungry_sleep(self, msg)
     return "I am hungry"
 end
 
-function baby_frog_Shutdown(self)
-    
-end
-
 function baby_frog_Sleepy_food(self, msg)
     -- item 435
     self.state = "Sleepy"
@@ -208,10 +204,6 @@ function lex.init()
         lex.under = string.byte("_")
         lex.space = string.byte(" ")
     end
-end
-
-function lexer_machine_Shutdown(self)
-    
 end
 
 function lexer_machine_identifier_digit(self, data, c)

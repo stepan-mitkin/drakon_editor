@@ -201,16 +201,24 @@ proc build_machine { gdb diagram_id callbacks } {
             }
             #item 882
             set last_header [ lindex $headers end ]
-            #item 883
-            build_sub_diagram \
-            	$gdb \
-            	$diagram_id \
-            	"" \
-            	$last_header \
-            	$parameters \
-            	$last_branch \
-            	$callbacks \
-            	0
+            #item 926
+            set shutdown [ gen::get_callback $callbacks \
+             "shutdown" ]
+            #item 927
+            if {$shutdown == ""} {
+                
+            } else {
+                #item 883
+                build_sub_diagram \
+                	$gdb \
+                	$diagram_id \
+                	"" \
+                	$last_header \
+                	$parameters \
+                	$last_branch \
+                	$callbacks \
+                	0
+            }
         } else {
             
         }
@@ -233,8 +241,10 @@ proc build_sub_diagram { gdb diagram_id state case parameters last_branch callba
     set message [ get_text $gdb $case ]
     #item 884
     if {$state == ""} {
+        #item 930
+        set name [ gen::get_callback $callbacks \
+         "shutdown" ]
         #item 887
-        set name "Shutdown"
         set default 0
         set parameters {}
     } else {

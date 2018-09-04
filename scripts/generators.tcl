@@ -2560,6 +2560,7 @@ proc p.keywords { } {
 		shelf
 		if_cond
 		change_state
+		shutdown
 		fsm_merge
 		select
 		case_value

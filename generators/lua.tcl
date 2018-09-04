@@ -675,6 +675,7 @@ proc make_callbacks { } {
     gen::put_callback callbacks shelf gen_lua::shelf
     #item 1826
     gen::put_callback callbacks change_state 	gen_lua::change_state
+    gen::put_callback callbacks shutdown ""
     gen::put_callback callbacks fsm_merge   0
     gen::put_callback callbacks native_foreach gen_lua::native_foreach
     #item 1193

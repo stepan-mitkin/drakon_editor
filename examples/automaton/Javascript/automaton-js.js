@@ -28,10 +28,6 @@ function BabyFrog_Hungry_sleep(self, msg) {
     return "I am hungry"
 }
 
-function BabyFrog_Shutdown(self) {
-    
-}
-
 function BabyFrog_Sleepy_food(self, msg) {
     // item 406
     self.state = "Sleepy";
@@ -42,10 +38,6 @@ function BabyFrog_Sleepy_sleep(self, msg) {
     // item 412
     self.state = "Hungry";
     return "z-z-z..."
-}
-
-function Lexer_Shutdown(self) {
-    
 }
 
 function Lexer_identifier_digit(self, data, c) {
