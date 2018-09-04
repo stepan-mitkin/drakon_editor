@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 rm automaton-cs.cs
+rm frong.cs
 rm automaton-cs.exe
 ../../../drakon_gen.tcl -in automaton-cs.drn
-mcs automaton-cs.cs -out:automaton-cs.exe
+../../../drakon_gen.tcl -in frog.drn
+mcs automaton-cs.cs frog.cs -out:automaton-cs.exe
 mono automaton-cs.exe

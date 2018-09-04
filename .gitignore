@@ -1,4 +1,6 @@
-
+bin
+obj
+.vs
 tmp/db2
 
 tmp/db3
@@ -14,3 +16,4 @@ tmp/no_version
 *~
 
 node_modules
+

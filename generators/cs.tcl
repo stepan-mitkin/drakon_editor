@@ -649,15 +649,39 @@ proc generate { db gdb filename } {
         set nogoto 1
         set all_functions [ gen::generate_functions \
          $db $gdb $callbacks $nogoto ]
-        #item 734
-        if {$class == ""} {
-            #item 735
-            error \
-            "Please add the ===class=== section to the file description."
+        #item 338
+        if {[ graph::errors_occured ]} {
+            
         } else {
-            #item 338
-            if {[ graph::errors_occured ]} {
-                
+            #item 1917
+            if {$class == ""} {
+                #item 1920
+                set class_name ""
+                #item 1254
+                separate_methods $gdb $all_functions functions methods
+                #item 1587
+                set machines [ add_handlers $gdb $raw_machines \
+                 $all_functions ]
+                #item 339
+                set hfile [ replace_extension $filename "cs" ]
+                set fhandle [ open_output_file $hfile ]
+                catch {
+                	p.print_to_file $fhandle $functions \
+                		$methods \
+                		$header $class $class_name $footer \
+                		$machines
+                } error_message
+                set details $::errorInfo
+                catch { close $fhandle }
+                #item 340
+                if {$error_message == ""} {
+                    
+                } else {
+                    #item 1253
+                    puts $details
+                    #item 341
+                    error $error_message
+                }
             } else {
                 #item 927
                 set class_name [ extract_class_name $class ]
@@ -1282,8 +1306,13 @@ proc p.print_to_file { fhandle functions methods header class class_name footer 
     print_procs 0 $fhandle $protected "" 1
     print_procs 0 $fhandle $private "" 1
     print_procs 0 $fhandle $none "" 1
-    #item 76
-    puts $fhandle "\}"
+    #item 1921
+    if {$class_name == ""} {
+        
+    } else {
+        #item 76
+        puts $fhandle "\}"
+    }
     #item 1068
     puts $fhandle $footer
 }
@@ -1368,6 +1397,7 @@ proc print_machine { fhandle machine } {
         set params [ join $real_params ", " ]
         #item 1844
         set pnames [ lrange $param_names 1 end ]
+        set pnames_str [ join $pnames ", " ]
         #item 1843
         set arg_name_list [ join $pnames ", " ]
         #item 1878
@@ -1400,7 +1430,7 @@ proc print_machine { fhandle machine } {
         puts $fhandle ""
         puts $fhandle "        public StateNames State \{"
         puts $fhandle "            get \{ return _state; \}"
-        puts $fhandle "            private set \{ _state = value; \}"
+        puts $fhandle "            internal set \{ _state = value; \}"
         puts $fhandle "        \}"
         #item 1846
         puts $fhandle ""
@@ -1429,7 +1459,7 @@ proc print_machine { fhandle machine } {
             #item 1740
             puts $fhandle "                case ${message}Message:"
             #item 1842
-            puts $fhandle "                    return ${message}\($pnames\);"
+            puts $fhandle "                    return ${message}\($pnames_str\);"
         }
         #item 1739
         puts $fhandle "                default:"
