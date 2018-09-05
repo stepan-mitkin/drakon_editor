@@ -267,6 +267,7 @@ proc extract_body { comments } {
         foreach line $lines {
             #item 1872
             set line [ string trim $line ]
+            set section [ string map {" " {}} $line ]
             #item 1874
             if {$line == ""} {
                 
@@ -274,12 +275,12 @@ proc extract_body { comments } {
                 #item 18510001
                 if {$state == "idle"} {
                     #item 1670
-                    if {$line == "=== fields ==="} {
+                    if {($section == "===fields===") || ($section == "===body===")} {
                         #item 1858
                         set state "fields"
                     } else {
                         #item 1862
-                        if {$line == "=== inherits ==="} {
+                        if {$section == "===inherits==="} {
                             #item 1865
                             set state "inherits"
                         } else {
@@ -290,7 +291,7 @@ proc extract_body { comments } {
                     #item 18510002
                     if {$state == "fields"} {
                         #item 1867
-                        if {$line == "=== inherits ==="} {
+                        if {$section == "===inherits==="} {
                             #item 1868
                             set state "inherits"
                         } else {
