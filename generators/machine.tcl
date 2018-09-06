@@ -92,6 +92,33 @@ proc add_change_state { gdb new_diagram vertex_id last end callbacks prev_new re
     }
 }
 
+proc add_handlers { gdb machines functions } {
+    #item 969
+    set result {}
+    foreach machine $machines {
+        #item 968
+        set name [ dict get $machine "name" ]
+        #item 972
+        set handler_ids [ $gdb eval {
+        	select diagram_id
+        	from diagrams
+        	where original = :name
+        } ]
+        #item 977
+        set handlers {}
+        foreach id $handler_ids {
+            #item 973
+            lappend handlers [ find_function $functions $id ]
+        }
+        #item 974
+        lappend machine "handlers" $handlers
+        #item 971
+        lappend result $machine
+    }
+    #item 970
+    return $result
+}
+
 proc all_start_with_receive { gdb diagram_id } {
     #item 270
     set headers [ get_headers $gdb $diagram_id ]
@@ -520,6 +547,22 @@ proc find_end { gdb diagram_id } {
     error "End not found."
 }
 
+proc find_function { functions id } {
+    foreach function $functions {
+        #item 958
+        lassign $function diagram_id name
+        #item 955
+        if {$diagram_id == $id} {
+            #item 959
+            return $function
+        } else {
+            
+        }
+    }
+    #item 960
+    error "procedure $id not found"
+}
+
 proc find_message_types { gdb headers } {
     #item 465
     set all_types {}
@@ -763,11 +806,36 @@ proc is_from_machine { gdb diagram_id } {
     }
 }
 
+proc is_in_handlers { machine name } {
+    #item 991
+    set handlers [ dict get $machine "handlers" ]
+    foreach handler $handlers {
+        #item 999
+        set mname [ lindex $handler 1 ]
+        #item 994
+        if {$mname == $name} {
+            #item 997
+            return 1
+        } else {
+            
+        }
+    }
+    #item 998
+    return 0
+}
+
 proc is_last_used { } {
     #item 651
     variable g_last_used
     #item 652
     return $g_last_used
+}
+
+proc is_machine_proc { gdb function } {
+    #item 983
+    set diagram_id [ lindex $function 0 ]
+    #item 984
+    return [ is_from_machine $gdb $diagram_id ]
 }
 
 proc is_receive { gdb vertex_id } {
