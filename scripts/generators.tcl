@@ -75,7 +75,8 @@ proc generate { } {
 	set db [ mwc::get_db ]
 
 	mw::show_errors
-	
+
+	newfor::clear	
 	graph::verify_all $db
 
 	if { ![ graph::errors_occured ] } {
@@ -120,7 +121,7 @@ proc generate_no_gui { dst_filename } {
 	set current_file_generation_info::language $language
 	set current_file_generation_info::generator $generator
 	
-	
+	newfor::clear
 	graph::verify_all $db
 
 	if { ![ graph::errors_occured ] } {

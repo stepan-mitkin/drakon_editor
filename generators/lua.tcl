@@ -317,7 +317,9 @@ proc generate_dlua { db gdb filename } {
 proc generate_kernel { db gdb filename is_clean } {
     #item 2125
     variable variables
+    variable handlers
     set variables {}
+    set handlers {}
     #item 1767
     set diagrams [ $gdb eval {
     	select diagram_id
@@ -334,7 +336,6 @@ proc generate_kernel { db gdb filename is_clean } {
     set machines [ sma::extract_many_machines \
      $gdb $callbacks ]
     #item 1814
-    variable handlers
     set handlers [ append_sm_names $gdb ]
     #item 1818
     set machine_ctrs [ make_machine_ctrs $gdb $machines ]
