@@ -75,8 +75,7 @@ proc generate { } {
 	set db [ mwc::get_db ]
 
 	mw::show_errors
-
-	newfor::clear	
+	
 	graph::verify_all $db
 
 	if { ![ graph::errors_occured ] } {
@@ -121,7 +120,7 @@ proc generate_no_gui { dst_filename } {
 	set current_file_generation_info::language $language
 	set current_file_generation_info::generator $generator
 	
-	newfor::clear
+	
 	graph::verify_all $db
 
 	if { ![ graph::errors_occured ] } {
@@ -2322,10 +2321,12 @@ proc print_node_core { texts node callback depth break_var } {
 				set else_node [ lindex $current 2 ]
 				set then [ print_node_core $texts $then_node $callback $next_depth $break_var ]
 				set result [ concat $result $then ]
-			
-				lappend result "$indent[ $else_start ]"
-				set else [ print_node_core $texts $else_node $callback $next_depth $break_var ]
-				set result [ concat $result $else ]
+				 if {$else_node != "seq" } {
+			   		lappend result "$indent[ $else_start ]"
+					set else [ print_node_core $texts $else_node $callback $next_depth $break_var ]
+					set result [ concat $result $else ]
+				}
+				
 				$block_close result $depth
 			}
 			set was_return 0
@@ -2561,7 +2562,6 @@ proc p.keywords { } {
 		shelf
 		if_cond
 		change_state
-		shutdown
 		fsm_merge
 		select
 		case_value
