@@ -302,7 +302,7 @@ proc build_sub_diagram { gdb diagram_id state case parameters last_branch callba
     #item 698
     set new_diagram [ make_diagram $gdb $name $param_text ]
     enrich_diagram $gdb $new_diagram \
-     $state $message $ordinal $default $original
+     $state $message $ordinal $default $original $diagram_id
     #item 660
     set end_vertex [ gen::p.insert_vertex \
      $gdb $new_diagram $end_item "beginend" "End" "" 0 ]
@@ -475,7 +475,7 @@ proc diagram_name { gdb diagram_id } {
     return $name
 }
 
-proc enrich_diagram { gdb diagram_id state message ordinal is_default original } {
+proc enrich_diagram { gdb diagram_id state message ordinal is_default original original_id } {
     #item 851
     $gdb eval {
     	update diagrams
@@ -483,7 +483,8 @@ proc enrich_diagram { gdb diagram_id state message ordinal is_default original }
     	message_type = :message,
     	ordinal = :ordinal,
     	is_default = :is_default,
-    	original = :original
+    	original = :original,
+    	original_id = :original_id
     	where diagram_id = :diagram_id
     }
 }

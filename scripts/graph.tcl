@@ -47,7 +47,8 @@ proc p.create_db { } {
 			message_type text,
 			ordinal integer,
 			is_default integer,
-			original text
+			original text,
+			original_id integer
 		);
 		
 		create table items

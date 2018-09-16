@@ -678,26 +678,47 @@ proc rewrite_clean { gdb diagram_id field_ass } {
 }
 
 proc extract_variables { gdb diagram_id var_keyword } {	
-	set vars  [get_variables_from_diagram $gdb $diagram_id $var_keyword]
-	return $vars
+	set res  [get_variables_from_diagram $gdb $diagram_id $var_keyword]
+	return $res
+}
+
+proc get_original { gdb diagram_id } {
+	set original_id [ $gdb onecolumn { select original_id from diagrams where diagram_id = :diagram_id } ]
+
+	return $original_id
 }
 
 proc get_variables_from_diagram { gdb diagram_id var_keyword } {
-	set actions [ $gdb eval {
-		select item_id
-		from items
-		where diagram_id = :diagram_id
-		and (type = 'action' or type = 'loopstart')
-	} ]
+	
+	set original_id [ get_original $gdb $diagram_id ]
+	if { $original_id == "" } {
+		set did $diagram_id
+		set actions [ $gdb eval {
+			select item_id
+			from items
+			where diagram_id = :did
+			and (type = 'action' or type = 'loopstart')
+		} ]		
+	} else {
+		set did $original_id
+		set actions [ $gdb eval {
+			select vertices.item_id
+			from vertices
+			inner join items on vertices.item_id = items.item_id
+			where vertices.diagram_id = :diagram_id
+			and (items.type = 'action' or items.type = 'loopstart')
+		} ]
+	}
 
 	set variables {}
 	foreach item_id $actions {
-		set text [get_item_text $gdb $diagram_id $item_id]
+		set text [get_item_text $gdb $did $item_id]
 		set vars [ get_variables_from_item $text $var_keyword ]
 		set variables [ concat $variables $vars ]
 	}
 	
-	return [lsort -unique $variables ]
+	set vars_final [lsort -unique $variables ]
+	return $vars_final
 }
 
 proc fix_graph_for_diagram { gdb callbacks append_semicolon diagram_id } {
