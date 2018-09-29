@@ -17,7 +17,7 @@ proc about_init { window data } {
 	ttk::frame $window.root -padding "5 5 5 5"
 	frame $window.root.header -padx 5 -pady 5 -relief sunken -background white
 	label $window.root.header.logo -image about_image -bd 0
-	set version [ mc2 "DRAKON Editor v. \[ application_start_version \].\[ application_version \] \[version_tag\]\nAuthors: Stepan Mitkin, Alexander Ilyin, Maas-Maarten Zeeman, Vasil Dyadov, Vasili Bachiashvili" ]
+	set version [ mc2 "DRAKON Editor v. \[ application_start_version \].\[ application_version \] \[version_tag\]\nAuthors: Stepan Mitkin, Alexander Ilyin, Maas-Maarten Zeeman, Vasil Dyadov, Vasili Bachiashvili, Alexey Gavrilov" ]
 	label $window.root.header.text -text $version -background white
 	text $window.root.details -height 9 -font main_font -wrap word
 	ttk::button $window.root.close -text [ mc2 "Close" ] -command ui::about.close

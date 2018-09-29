@@ -115,8 +115,6 @@ function is_long_op(first, second)
         if (string.byte(long_op, 1) == first) and (string.byte(long_op, 2) == second) then
             -- item 257
             return true
-        else
-            
         end
     end
     -- item 258

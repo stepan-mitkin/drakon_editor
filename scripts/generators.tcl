@@ -2343,10 +2343,13 @@ proc print_node_core { texts node callback depth break_var } {
 				set else_node [ lindex $current 2 ]
 				set then [ print_node_core $texts $then_node $callback $next_depth $break_var ]
 				set result [ concat $result $then ]
-			
-				lappend result "$indent[ $else_start ]"
-				set else [ print_node_core $texts $else_node $callback $next_depth $break_var ]
-				set result [ concat $result $else ]
+				
+				if {$else_node != "seq" } {
+					lappend result "$indent[ $else_start ]"
+					set else [ print_node_core $texts $else_node $callback $next_depth $break_var ]
+					set result [ concat $result $else ]
+				}
+				
 				$block_close result $depth
 			}
 			set was_return 0

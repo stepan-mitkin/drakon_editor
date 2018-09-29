@@ -224,8 +224,6 @@ function foreach_early_exit(value)
             found = x
             normal_419 = 0
             break
-        else
-            
         end
     end
     if normal_419 == 1 then
@@ -239,8 +237,6 @@ function foreach_early_exit(value)
         if m == value then
             -- item 434
             return x + found
-        else
-            
         end
     end
     -- item 433
@@ -432,8 +428,6 @@ function quicksort(comparer, collection, first, last)
                     -- item 233
                     swap(collection, i, storeIndex)
                     storeIndex = storeIndex + 1
-                else
-                    
                 end
                 -- item 2240003
                 i = i + 1
