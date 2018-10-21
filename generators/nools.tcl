@@ -31,6 +31,8 @@ proc highlight { tokens } {
 proc generate { db gdb filename } {
 	global errorInfo
 	
+	modify $gdb
+	
 	set rules0 [ gen::extract_rules $gdb ]
 	
 	set rules [ transform_rules $rules0 ]
@@ -309,6 +311,58 @@ proc print_rule { fhandle name2 params conditions actions vars } {
 	puts $fhandle "    \}"	
 	puts $fhandle "\}"
 	puts $fhandle ""
+}
+
+proc get_action_vertices { gdb } {
+	set vertexes [$gdb eval {
+		select vertex_id
+		from vertices
+		where type = 'action'
+		and up != ''
+		and down != ''
+	}]
+	
+	return $vertexes	
+}
+
+proc get_vlines { gdb vertex_id } {
+	set text [$gdb onecolumn {
+		select text
+		from vertices
+		where vertex_id = :vertex_id
+	}]
+	
+	return [ split $text "\n" ]
+}
+
+proc replace_modify { gdb vertex_id var rest } {
+	set start "modify\($var, function\(\) \{"
+	set end "        \}\);"
+	set body [join $rest "\n            "]
+	set text "$start\n            $body\n$end"
+	$gdb eval {
+		update vertices
+		set text = :text
+		where vertex_id = :vertex_id
+	}
+}
+
+proc modify { gdb } {
+	set vertexes [ get_action_vertices $gdb ]
+	foreach vertex_id $vertexes {
+		set lines [ get_vlines $gdb $vertex_id ]
+		if { [llength $lines] > 1 } {
+			set first [lindex $lines 0]
+			set rest [lrange $lines 1 end]
+			set first_parts [split $first " "]
+			if {[llength $first_parts] == 2} {
+				lassign $first left right
+				if {$left == "modify"} {
+					replace_modify $gdb $vertex_id $right $rest
+				}
+			}
+		}
+	}
 }
 
 }
