@@ -1017,6 +1017,17 @@ proc subtract { from what } {
 	return $output
 }
 
+proc split_by_whitespace { text } {
+	set result {}
+	set parts [ split $text ]
+	foreach part $parts {
+		if { $part != "" } {
+			lappend result $part
+		}
+	}
+	return $result
+}	
+
 proc clear_tree { tree parent } {
 	set children [ $tree children $parent ]
 	foreach child $children {

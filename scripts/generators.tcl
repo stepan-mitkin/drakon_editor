@@ -521,41 +521,74 @@ proc get_clean_type { text } {
 }
 
 proc has_operator_chars { text } {
-	set map {, . \[ . \] . \( . \) . \" . \' . \{ . \} .}
+	set map {\[ . \] . \( . \) . \" . \' . \{ . \} .}
 	set mapped [ string map $map $text ]
 	set pattern "*\\.*"
 	return [string match $pattern $mapped ]
 }
 
-proc get_variable_name { line var_keyword } {
-	
-	set parts [ split $line "=" ]
-	if { [ llength $parts ] < 2 } {
-		return ""
-	}
-	
-	set first [ lindex $parts 0 ]
-	set first [ string trim $first ]
+proc get_variables_from_line { line var_keyword } {
 
-	if { [has_operator_chars $first ] } {
-		return ""
-	}	
-	
-	
-	if {[llength $first ] > 1} {
-		return ""
+	set parts [ split $line "=" ]
+
+	if { [ llength $parts ] == 1 } {
+		return [ extract_declarations_only $line $var_keyword ]
+	} else {
+		set first [ lindex $parts 0 ]
+		set first [ string trim $first ]		
+		if { ![has_operator_chars $first ] } {
+			return [ extract_declarations_or_use $first $var_keyword ]
+		}		
 	}
 	
-	return $first	
+	return { {} {} }
 }
 
-proc get_variables_from_item { text var_keyword } {
-	set result {}
-	set lines [ get_trimmed_lines $text ]
-	foreach line $lines {
-		set var_name [ get_variable_name $line $var_keyword ]
-		if { $var_name != "" } {
-			lappend result $var_name
+proc extract_declarations_only { first var_keyword } {
+	set result [ extract_declarations_or_use $first $var_keyword ]
+	lassign $result dec used
+	if { $dec == "" } {
+		return { {} {} }
+	}
+	
+	return $result
+}
+		
+	
+proc extract_declarations_or_use { first var_keyword } {
+	set names {}
+	set has_declaration 0
+	
+	set parts [ split $first "," ]
+	foreach part $parts {
+		set subs [ split_by_whitespace $part ]
+		if { [ llength $subs ] == 1} {
+			lappend names [ lindex $subs 0 ]
+		} else {
+			lassign $subs left right
+			if {$left == $var_keyword } {
+				lappend names $right
+				set has_declaration 1
+			}
+		}
+	}
+	
+	if { $has_declaration } {
+		return [ list $names {} ]
+	} else {
+		return [ list {} $names ]
+	}
+}
+
+proc strip_declaration { text var_keyword } {
+	set parts [ split $text ]
+	set result ""
+	foreach part $parts {
+		if { $part == $var_keyword } {
+			return ""
+		}
+		if { $part != "" } {
+			set result $part
 		}
 	}
 	return $result
@@ -678,7 +711,7 @@ proc rewrite_clean { gdb diagram_id field_ass } {
 }
 
 proc extract_variables { gdb diagram_id var_keyword } {	
-	set res  [get_variables_from_diagram $gdb $diagram_id $var_keyword]
+	set res [get_variables_from_diagram $gdb $diagram_id $var_keyword]
 	return $res
 }
 
@@ -688,8 +721,7 @@ proc get_original { gdb diagram_id } {
 	return $original_id
 }
 
-proc get_variables_from_diagram { gdb diagram_id var_keyword } {
-	
+proc get_actions { gdb diagram_id } {
 	set original_id [ get_original $gdb $diagram_id ]
 	if { $original_id == "" } {
 		set did $diagram_id
@@ -709,16 +741,39 @@ proc get_variables_from_diagram { gdb diagram_id var_keyword } {
 			and (items.type = 'action' or items.type = 'loopstart')
 		} ]
 	}
+	return [list $actions $did]
+}
+	
+proc get_action_lines { gdb diagram_id } {
+	lassign [ get_actions $gdb $diagram_id ] actions did
 
-	set variables {}
+	set result {}
 	foreach item_id $actions {
 		set text [get_item_text $gdb $did $item_id]
-		set vars [ get_variables_from_item $text $var_keyword ]
-		set variables [ concat $variables $vars ]
+		set lines [ split $text "\n" ]
+		foreach line $lines {
+			set line [ string trim $line ]
+			if { $line != "" } {
+				lappend result $line
+			}
+		}
 	}
 	
-	set vars_final [lsort -unique $variables ]
-	return $vars_final
+	return $result
+}	
+
+proc get_variables_from_diagram { gdb diagram_id var_keyword } {
+	set declared {}
+	set used {}
+	set lines [ get_action_lines $gdb $diagram_id ]
+	foreach line $lines {
+		lassign [ get_variables_from_line $line $var_keyword ] dec use
+		set declared [ concat $declared $dec ]
+		set used [ concat $used $use ]
+	}
+	set used [ lsort -unique $used ]
+	set used2 [ subtract $used $declared ]
+	return $used2
 }
 
 proc fix_graph_for_diagram { gdb callbacks append_semicolon diagram_id } {

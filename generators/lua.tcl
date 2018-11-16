@@ -103,8 +103,6 @@ proc build_handler { gdb name states message params_str output } {
                 "${in2}return ${method}($params_str\)"
                 #item 2177
                 set keyword "elseif"
-            } else {
-                
             }
         }
     }
@@ -203,8 +201,6 @@ proc extract_signature { text name } {
             if {$is_handler} {
                 #item 1862
                 lappend parameters "self"
-            } else {
-                
             }
             #item 34
             set count [ llength $lines ]
@@ -352,8 +348,6 @@ proc generate_kernel { db gdb filename is_clean } {
             #item 2124
             extract_variables $gdb $diagram_id
             gen::rewrite_clean $gdb $diagram_id $keys
-        } else {
-            
         }
         #item 1809
         gen::fix_graph_for_diagram $gdb $callbacks 0 $diagram_id
@@ -481,8 +475,6 @@ proc highlight { tokens } {
                                 if {$text == "\n"} {
                                     #item 2006
                                     set state "idle"
-                                } else {
-                                    
                                 }
                             }
                         }
@@ -534,8 +526,6 @@ proc highlight { tokens } {
                                 if {$text == "\n"} {
                                     #item 2022
                                     set state "idle"
-                                } else {
-                                    
                                 }
                             }
                         }
@@ -549,8 +539,6 @@ proc highlight { tokens } {
         #item 2085
         lappend result \
          $colors::syntax_operator
-    } else {
-        
     }
     #item 1934
     return $result
@@ -873,8 +861,6 @@ proc print_function { fhandle function } {
         if {$access == "local"} {
             #item 1580
             append line "local "
-        } else {
-            
         }
         #item 1581
         append line "function "
@@ -1032,8 +1018,6 @@ proc split_vars { $item_id var_list } {
     if {$result == {}} {
         #item 1662
         error "Bad variable list in $item_id"
-    } else {
-        
     }
     #item 1654
     return $result
