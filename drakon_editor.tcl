@@ -58,6 +58,7 @@ namespace import ::msgcat::mc
 
 # Russian hard-coded.
 ::msgcat::mclocale ru
+::msgcat::mclocale zh
 
 ## And eventually load the actual message catalog
 ::msgcat::mcload [ file join [ file dirname [ info script ] ] msgs ]

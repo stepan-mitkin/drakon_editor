@@ -146,7 +146,7 @@ proc intro.destroy { } {
 
 
 variable language_combo "English"
-variable language_list { "English" "Russian" }
+variable language_list { "English" "Russian" "Chinese"}
 variable argc_var 0
 variable argv_var ""
 
