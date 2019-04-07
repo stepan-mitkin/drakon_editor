@@ -20,6 +20,11 @@
     - If there is no `.drn` file, modify existing source code file.
 
 
+6. If you want to translate DRAKON Editor:
+    - Add your translate in `msgs/msgs.csv`, don't touch `en` column.
+    - Run `msgs/genmsg.py`, then start program to test your translate.
+
+
 ## DRAKON
 
 DRAKON is is an algorithmic visual programming language developed within the Buran space project.
