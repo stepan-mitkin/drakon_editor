@@ -131,7 +131,7 @@ proc p.print_proc { weak_signature fhandle procedure class_name depth } {
         append header [join $props(dispatch) " "]
     }
 
-    append header "$name {"
+    append header "$name \{"
 
     # if {$name == "Shutdown"} {
 
