@@ -271,7 +271,7 @@ proc p.print_proc { weak_signature fhandle procedure class_name depth } {
 
     append header "\)"
 
-	if {info exists checkalways} {
+	if {[info exists checkalways]} {
 		append header " $checkalways "
 	}
 	
@@ -347,36 +347,6 @@ proc p.print_to_file { fhandle functions header class footer } {
 	puts $fhandle $footer
 }
 
-proc generate { db gdb filename } {
-	global errorInfo
-	set callbacks [ make_callbacks ]
-
-	gen::fix_graph $gdb $callbacks 0
-	unpack [ gen::scan_file_description $db { header footer } ] header footer
-
-	set use_nogoto 1
-	set functions [ gen::generate_functions $db $gdb $callbacks $use_nogoto ]
-
-	tab::generate_tables $gdb $callbacks 0
-
-	if { [ graph::errors_occured ] } { return }
-
-
-
-	set hfile [ replace_extension $filename "tcl" ]
-	set f [ open_output_file $hfile ]
-	catch {
-		p.print_to_file $f $functions $header $footer
-	} error_message
-	set savedInfo $errorInfo
-	
-	catch { close $f }
-	if { $error_message != "" } {
-		puts $errorInfo
-		error $error_message savedInfo
-	}
-}
-
 proc make_callbacks { } {
 	set callbacks {}
 	
@@ -413,6 +383,39 @@ proc make_callbacks { } {
 
 	return $callbacks
 }
+
+proc generate { db gdb filename } {
+	global errorInfo
+	set callbacks [ make_callbacks ]
+
+	gen::fix_graph $gdb $callbacks 0
+    lassign [ gen::scan_file_description $db \
+     { header class footer } ] \
+     header class footer
+
+	set use_nogoto 1
+	set functions [ gen::generate_functions $db $gdb $callbacks $use_nogoto ]
+
+	tab::generate_tables $gdb $callbacks 0
+
+	if { [ graph::errors_occured ] } { return }
+
+
+
+	set hfile [ replace_extension $filename "tcl" ]
+	set f [ open_output_file $hfile ]
+	catch {
+		p.print_to_file $f $functions $header $class $footer
+	} error_message
+	set savedInfo $errorInfo
+	
+	catch { close $f }
+	if { $error_message != "" } {
+		puts $errorInfo
+		error $error_message savedInfo
+	}
+}
+
 
 }
 
