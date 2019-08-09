@@ -4,18 +4,67 @@ package require nx
 
 #!/usr/bin/env tclsh
 
+
+#Begin of class
 nx::Class create nx_demo {
 
 
-
-    alt_select_test {)-returns void  {
+    :public method alt_select_test {} {
         #item 289
-        alternative_select -100 -1
-        alternative_select 100 1
-        alternative_select 0 0
+        :alternative_select -100 -1
+        :alternative_select 100 1
+        :alternative_select 0 0
     }
 
-    alternative_select {value expected)-returns void  {
+    :public method foreach_demo {} {
+        #item 178
+        puts "iteration demo"
+        #item 169
+        set sequence [:fibonacci 15]
+        #item 170
+        :print_list_arrow $sequence
+        :print_list_for $sequence
+        :print_list_foreach $sequence
+        #item 183
+        puts ""
+        #item 379
+        :test_early 20 60
+        #item 381
+        :test_early 35 70
+        #item 382
+        :test_early 4 0
+    }
+
+    :public method quick_sort_demo {} {
+        #item 277
+        puts "quick sort demo"
+        #item 246
+        set unsorted { the sooner we start this the better }
+        set sorted { aa bb cc dd ee ff }
+        set reverse { ff ee dd cc bb aa }
+        set empty {}
+        set flat { flat flat flat flat }
+        #item 247
+        set unsorted2 [:quick_sort $unsorted :string_comparer]
+        set sorted2 [:quick_sort $sorted :string_comparer]
+        set reverse2 [:quick_sort $reverse :string_comparer]
+        set empty2 [:quick_sort $empty :string_comparer]
+        set flat2 [:quick_sort $flat :string_comparer]
+        #item 248
+        puts $unsorted2
+        puts $sorted2
+        puts $reverse2
+        puts $empty2
+        puts $flat2
+        #item 249
+        :strings_are_sorted $unsorted2
+        :strings_are_sorted $sorted2
+        :strings_are_sorted $reverse2
+        :strings_are_sorted $empty2
+        :strings_are_sorted $flat2
+    }
+
+    :method alternative_select {value expected} {
         #item 2950001
         if {$value < 0} {
             #item 303
@@ -67,7 +116,7 @@ nx::Class create nx_demo {
         }
     }
 
-    fibonacci {n)-returns void  {
+    :method fibonacci {n} {
         #item 1530001
         if {$n == 0} {
             #item 157
@@ -108,26 +157,7 @@ nx::Class create nx_demo {
         return $result
     }
 
-    foreach_demo {)-returns void  {
-        #item 178
-        puts "iteration demo"
-        #item 169
-        set sequence [fibonacci 15]
-        #item 170
-        print_list_arrow $sequence
-        print_list_for $sequence
-        print_list_foreach $sequence
-        #item 183
-        puts ""
-        #item 379
-        test_early 20 60
-        #item 381
-        test_early 35 70
-        #item 382
-        test_early 4 0
-    }
-
-    foreach_early_exit {value)-returns void  {
+    :method foreach_early_exit {value} {
         
         set normal_351 1
         foreach x {10 20 30} {
@@ -156,19 +186,7 @@ nx::Class create nx_demo {
         return 0
     }
 
-    main {)-returns void  {
-        #item 278
-        puts "DRAKON-Tcl demo"
-        puts "==============="
-        #item 338
-        alt_select_test
-        #item 174
-        foreach_demo
-        #item 175
-        quick_sort_demo
-    }
-
-    print_list_arrow {collection)-returns void  {
+    :method print_list_arrow {collection} {
         #item 134
         puts "using if and arrow:"
         #item 120
@@ -183,7 +201,7 @@ nx::Class create nx_demo {
             }
             #item 119
             set item [lindex $collection $i]
-            write $item
+            :write $item
             #item 123
             incr i
         }
@@ -191,7 +209,7 @@ nx::Class create nx_demo {
         puts ""
     }
 
-    print_list_for {collection)-returns void  {
+    :method print_list_for {collection} {
         #item 176
         puts "using for:"
         #item 130
@@ -207,7 +225,7 @@ nx::Class create nx_demo {
             }
             #item 133
             set item [lindex $collection $i]
-            write $item
+            :write $item
             #item 1310003
             incr i
         }
@@ -215,18 +233,18 @@ nx::Class create nx_demo {
         puts ""
     }
 
-    print_list_foreach {collection)-returns void  {
+    :method print_list_foreach {collection} {
         #item 137
         puts "using foreach:"
         foreach item $collection {
             #item 112
-            write $item
+            :write $item
         }
         #item 136
         puts ""
     }
 
-    quick_sort {collection comparer)-returns void  {
+    :method quick_sort {collection comparer} {
         #item 198
         set length [llength $collection]
         #item 1990001
@@ -281,8 +299,8 @@ nx::Class create nx_demo {
                     incr i
                 }
                 #item 233
-                set left_sorted [quick_sort $left $comparer]
-                set right_sorted [quick_sort $right $comparer]
+                set left_sorted [:quick_sort $left $comparer]
+                set right_sorted [:quick_sort $right $comparer]
                 #item 234
                 lappend left_sorted $median
                 set result [concat $left_sorted $right_sorted]
@@ -292,41 +310,12 @@ nx::Class create nx_demo {
         return $result
     }
 
-    quick_sort_demo {)-returns void  {
-        #item 277
-        puts "quick sort demo"
-        #item 246
-        set unsorted { the sooner we start this the better }
-        set sorted { aa bb cc dd ee ff }
-        set reverse { ff ee dd cc bb aa }
-        set empty {}
-        set flat { flat flat flat flat }
-        #item 247
-        set unsorted2 [quick_sort $unsorted string_comparer]
-        set sorted2 [quick_sort $sorted string_comparer]
-        set reverse2 [quick_sort $reverse string_comparer]
-        set empty2 [quick_sort $empty string_comparer]
-        set flat2 [quick_sort $flat string_comparer]
-        #item 248
-        puts $unsorted2
-        puts $sorted2
-        puts $reverse2
-        puts $empty2
-        puts $flat2
-        #item 249
-        strings_are_sorted $unsorted2
-        strings_are_sorted $sorted2
-        strings_are_sorted $reverse2
-        strings_are_sorted $empty2
-        strings_are_sorted $flat2
-    }
-
-    string_comparer {left right)-returns void  {
+    :method string_comparer {left right} {
         #item 240
         return [string compare $left $right]
     }
 
-    strings_are_sorted {array)-returns void  {
+    :method strings_are_sorted {array} {
         set length [llength $array]
         
         set _next_item_ 2550001
@@ -403,10 +392,10 @@ nx::Class create nx_demo {
         }
     }
 
-    test_early {value expected)-returns void  {
+    :method test_early {value expected} {
         #item 374
         set actual \
-        [foreach_early_exit $value]
+        [:foreach_early_exit $value]
         #item 375
         if {$actual == $expected} {
             
@@ -416,9 +405,18 @@ nx::Class create nx_demo {
         }
     }
 
-    write {item)-returns void  {
+    :method write {item} {
         #item 142
         puts -nonewline "$item "
     }
+}
+# End of class
 
-main
+puts "DRAKON-nx demo"
+puts "=============="
+
+set test [nx_demo new]
+
+$test alt_select_test
+$test foreach_demo
+$test quick_sort_demo

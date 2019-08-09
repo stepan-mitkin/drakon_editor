@@ -183,7 +183,6 @@ proc extract_signature { text name } {
 
 	if {$returns == ""} {
 
-		set returns "void"
 	} else {
 		
 	}
@@ -226,6 +225,7 @@ proc p.print_proc { weak_signature fhandle procedure class_name depth } {
     set header ""
 
     if {$props(access) == "none"} {
+        append header ":method "
         
     } else {
 
@@ -269,7 +269,7 @@ proc p.print_proc { weak_signature fhandle procedure class_name depth } {
 	
     append header [ join $params " " ]
 
-    append header "\)"
+    append header "\}"
 
 	if {[info exists checkalways]} {
 		append header " $checkalways "
@@ -277,9 +277,9 @@ proc p.print_proc { weak_signature fhandle procedure class_name depth } {
 	
     if {$type == "ctr"} {
         
-    } else {
+    } elseif {$returns != ""}  {
 
-        append header "-returns $returns "
+        append header " -returns $returns "
     }
 
     puts $fhandle ""
@@ -324,6 +324,7 @@ proc p.print_to_file { fhandle functions header class footer } {
 		puts $fhandle $header
 	}
 
+    puts $fhandle "#Begin of class"
 	puts $fhandle $class
 
 	init_current_file $fhandle
@@ -341,6 +342,7 @@ proc p.print_to_file { fhandle functions header class footer } {
 
     if {$class != ""} {
         puts $fhandle "\}"
+        puts $fhandle "# End of class"
     }
 
 	puts $fhandle ""
