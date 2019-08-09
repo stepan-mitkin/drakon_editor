@@ -324,7 +324,7 @@ proc p.print_to_file { fhandle functions header class footer } {
 		puts $fhandle $header
 	}
 
-    puts $fhandle "#Begin of class"
+    # puts $fhandle "#Begin of class"
 	puts $fhandle $class
 
 	init_current_file $fhandle
@@ -340,10 +340,10 @@ proc p.print_to_file { fhandle functions header class footer } {
 	print_procs 0 $fhandle $private "" 1
 	print_procs 0 $fhandle $none "" 1
 
-    if {$class != ""} {
-        puts $fhandle "\}"
-        puts $fhandle "# End of class"
-    }
+    # if {$class != ""} {
+    #     puts $fhandle "\}"
+    #     puts $fhandle "# End of class"
+    # }
 
 	puts $fhandle ""
 	puts $fhandle $footer
