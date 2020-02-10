@@ -18,311 +18,229 @@ var Lex = {
 
 function BabyFrog_Hungry_food(self, msg) {
     var message
-    // item 421
     message = "yam-yam"
-    // item 395
     self.state = "Sleepy";
     return message
 }
 
 function BabyFrog_Hungry_sleep(self, msg) {
-    // item 404
     self.state = "Hungry";
     return "I am hungry"
 }
 
 function BabyFrog_Sleepy_food(self, msg) {
-    // item 406
     self.state = "Sleepy";
     return "na..."
 }
 
 function BabyFrog_Sleepy_sleep(self, msg) {
-    // item 412
     self.state = "Hungry";
     return "z-z-z..."
 }
 
 function Lexer_identifier_digit(self, data, c) {
-    // item 60
     add_char(data, c)
-    // item 63
     self.state = "identifier";
 }
 
 function Lexer_identifier_letter(self, data, c) {
-    // item 59
     add_char(data, c)
-    // item 62
     self.state = "identifier";
 }
 
 function Lexer_identifier_operator(self, data, c) {
-    // item 276
     create_identifier(data)
-    // item 61
     add_char(data, c)
-    // item 64
     self.state = "operator";
 }
 
 function Lexer_identifier_whitespace(self, data, c) {
-    // item 65
     create_identifier(data)
-    // item 31
     self.state = "idle";
 }
 
 function Lexer_idle_digit(self, data, c) {
-    // item 45
     add_char(data, c)
-    // item 48
     self.state = "number";
 }
 
 function Lexer_idle_letter(self, data, c) {
-    // item 44
     add_char(data, c)
-    // item 47
     self.state = "identifier";
 }
 
 function Lexer_idle_operator(self, data, c) {
-    // item 46
     add_char(data, c)
-    // item 49
     self.state = "operator";
 }
 
 function Lexer_idle_whitespace(self, data, c) {
-    // item 23
     self.state = "idle";
 }
 
 function Lexer_number_digit(self, data, c) {
-    // item 77
     add_char(data, c)
-    // item 80
     self.state = "number";
 }
 
 function Lexer_number_dummy(self, data, c) {
-    // item 81
     self.state = "operator";
 }
 
 function Lexer_number_letter(self, data, c) {
-    // item 76
     add_char(data, c)
-    // item 79
     self.state = "number";
 }
 
 function Lexer_number_operator(self, data, c) {
-    // item 83
     create_number(data)
-    // item 78
     add_char(data, c)
-    // item 81
     self.state = "operator";
 }
 
 function Lexer_number_whitespace(self, data, c) {
-    // item 82
     create_number(data)
-    // item 34
     self.state = "idle";
 }
 
 function Lexer_operator_digit(self, data, c) {
-    // item 101
     create_operator(data)
-    // item 94
     add_char(data, c)
-    // item 97
     self.state = "number";
 }
 
 function Lexer_operator_letter(self, data, c) {
-    // item 100
     create_operator(data)
-    // item 93
     add_char(data, c)
-    // item 96
     self.state = "identifier";
 }
 
 function Lexer_operator_operator(self, data, c) {
-    // item 103
     if (try_make_long_op(data, c)) {
-        // item 106
         self.state = "idle";
     } else {
-        // item 107
         create_operator(data)
-        // item 95
         add_char(data, c)
-        // item 98
         self.state = "operator";
     }
 }
 
 function Lexer_operator_whitespace(self, data, c) {
-    // item 99
     create_operator(data)
-    // item 26
     self.state = "idle";
 }
 
 function add_char(data, c) {
-    // item 348
     data.current.push(c)
 }
 
 function array_to_string(chars) {
     var result
-    // item 366
     result = ""
-    // item 3640001
     var _ind364 = 0;
     var _col364 = chars;
     var _len364 = _col364.length;
     while (true) {
-        // item 3640002
         if (_ind364 < _len364) {
             
         } else {
             break;
         }
-        // item 3640004
         var char = _col364[_ind364];
-        // item 367
         result = result + String.fromCharCode(char)
-        // item 3640003
         _ind364++;
     }
-    // item 368
     return result
 }
 
 function create_identifier(data) {
-    // item 126
     create_token(data, TT_IDENTIFIER)
 }
 
 function create_number(data) {
-    // item 237
     create_token(data, TT_NUMBER)
 }
 
 function create_operator(data) {
-    // item 239
     create_token(data, TT_OPERATOR)
 }
 
 function create_token(data, type) {
     var text, token
-    // item 132
     if (data.current.length === 0) {
         
     } else {
-        // item 349
         text = data.current
         data.current = []
-        // item 350
         token = token_create(type, text)
         data.tokens.push(token)
     }
 }
 
 function first_char(text) {
-    // item 379
     return text.charCodeAt(0)
 }
 
 function is_digit(c) {
-    // item 301
     if ((c >= Lex.ZERO) && (c <= Lex.NINE)) {
-        // item 309
         return true
     } else {
-        // item 310
         return false
     }
 }
 
 function is_letter(c) {
-    // item 286
     if (((c >= Lex.A) && (c <= Lex.Z)) || ((c >= Lex.CA) && (c <= Lex.CZ))) {
-        // item 294
         return true
     } else {
-        // item 295
         return false
     }
 }
 
 function is_long_op(first, second) {
-    // item 3520001
     var _ind352 = 0;
     var _col352 = Lex.LONG_OPS;
     var _len352 = _col352.length;
     while (true) {
-        // item 3520002
         if (_ind352 < _len352) {
             
         } else {
-            // item 258
             return false
         }
-        // item 3520004
         var long_op = _col352[_ind352];
-        // item 251
         if ((long_op.charCodeAt(0) === first) && (long_op.charCodeAt(1) === second)) {
-            // item 257
             return true
         }
-        // item 3520003
         _ind352++;
     }
 }
 
 function is_operator(c) {
-    // item 194
     if (Lex.OP_CHARS[c]) {
-        // item 197
         return true
     } else {
-        // item 193
         return false
     }
 }
 
 function lex_init() {
     var i
-    // item 266
     if (Lex.initialized) {
         
     } else {
-        // item 265
         Lex.OP_CHARS = []
         Lex.LONG_OPS = ["==", "!=", "<=", ">=" ]
         Lex.initialized = true
-        // item 2780001
         i = 0;
         while (true) {
-            // item 2780002
             if (i < 256) {
                 
             } else {
                 break;
             }
-            // item 280
             Lex.OP_CHARS[i] = false
-            // item 2780003
             i++;
         }
-        // item 269
         Lex.OP_CHARS[first_char("!")] = true
         Lex.OP_CHARS[first_char("=")] = true
         Lex.OP_CHARS[first_char("<")] = true
@@ -348,7 +266,6 @@ function lex_init() {
         Lex.OP_CHARS[first_char("&")] = true
         Lex.OP_CHARS[first_char("'")] = true
         Lex.OP_CHARS[first_char("\"")] = true
-        // item 351
         Lex.ZERO = first_char("0")
         Lex.NINE = first_char("9")
         Lex.A = first_char("a")
@@ -362,39 +279,28 @@ function lex_init() {
 
 function main() {
     var frog, text, tokens
-    // item 346
     lex_init()
-    // item 161
     text = "foo.Bar(34 / 4-(18+m * 3)) ==800"
     tokens = tokenize(text)
-    // item 207
     printHeader("Text to parse")
     printLine(text)
     printHeader("Tokens")
-    // item 381
     addHTML("<table id='table1'></table>")
     addTableLine("table1", "th", "Token type", "Token text")
-    // item 3570001
     var _ind357 = 0;
     var _col357 = tokens;
     var _len357 = _col357.length;
     while (true) {
-        // item 3570002
         if (_ind357 < _len357) {
             
         } else {
             break;
         }
-        // item 3570004
         var token = _col357[_ind357];
-        // item 206
         token_print(token)
-        // item 3570003
         _ind357++;
     }
-    // item 419
     frog = new BabyFrog()
-    // item 420
     printLine("The baby frog says:")
     printLine(frog.state + "/sleep")
     printLine(frog.sleep())
@@ -408,17 +314,14 @@ function main() {
 
 function token_create(type, chars) {
     var token
-    // item 353
     token = {
         type : type,
         text : array_to_string(chars)
     }
-    // item 354
     return token
 }
 
 function token_print(token) {
-    // item 386
     addTableLine(
         "table1",
         "td",
@@ -429,68 +332,48 @@ function token_print(token) {
 
 function tokenize(text) {
     var c, data, i, lexer
-    // item 315
     data = {
         current : [],
         tokens : []
     }
-    // item 167
     lexer = new Lexer()
-    // item 1680001
     i = 0;
     while (true) {
-        // item 1680002
         if (i < text.length) {
             
         } else {
             break;
         }
-        // item 319
         c = text.charCodeAt(i)
-        // item 172
         if ((c === Lex.UNDER) || (is_letter(c))) {
-            // item 181
             lexer.letter(data, c)
         } else {
-            // item 178
             if (is_digit(c)) {
-                // item 312
                 lexer.digit(data, c)
             } else {
-                // item 183
                 if (is_operator(c)) {
-                    // item 313
                     lexer.operator(data, c)
                 } else {
-                    // item 356
                     lexer.whitespace(data, Lex.SPACE)
                 }
             }
         }
-        // item 1680003
         i++;
     }
-    // item 358
     lexer.whitespace(data, Lex.SPACE)
-    // item 170
     return data.tokens
 }
 
 function try_make_long_op(data, c) {
     var previous, text, token
-    // item 154
     previous = data.current[0]
-    // item 155
     if (is_long_op(previous, c)) {
-        // item 158
         data.current = []
         text = [ previous, c ]
         token = token_create(TT_OPERATOR, text)
         data.tokens.push(token)
-        // item 159
         return true
     } else {
-        // item 160
         return false
     }
 }

@@ -1032,17 +1032,19 @@ proc p.merge_vertices { gdb vertex_id next commentator line_end } {
 	set this_text [ p.vertex_text $gdb $vertex_id ]
 	set that_text [ p.vertex_text $gdb $next ]
 	set that_item [ p.vertex_item $gdb $next ]
-	set marker [ $commentator "item $that_item" ]
+	set marker [ $commentator "item $that_item" ]	
 	set this [ string trim $this_text ]
 	set that [ string trim $that_text ]
 	if { $this == "" && $that == "" } {
 		set new_text ""
 	} elseif { $this == "" && $that != "" } {
-		set new_text "$marker\n$that_text"
+		#set new_text "$marker\n$that_text"
+		set new_text "$that_text"
 	} elseif { $this != "" && $that == "" } {
 		set new_text $this_text
 	} else {
-		set new_text "$this_text$line_end\n$marker\n$that_text"
+		#set new_text "$this_text$line_end\n$marker\n$that_text"
+		set new_text "$this_text$line_end\n$that_text"
 	}
 	$gdb eval {
 		update vertices
@@ -1778,7 +1780,8 @@ proc p.scan_vertices { result_list gdb vertices commentor } {
 			} elseif { [ one_entry_exit $gdb $dst ] &&
 						[ many_exists $gdb $vertex_id ]} {
 				set merged_item [ p.vertex_item $gdb $dst ]
-				set code [ list [ $commentor "item $merged_item" ] ]
+				#set code [ list [ $commentor "item $merged_item" ] ]
+				set code {}
 				set next_text [ p.vertex_text $gdb $dst ]
 				foreach line [ split $next_text "\n" ] {
 					lappend code $line
@@ -2322,6 +2325,15 @@ proc print_node { texts node callback depth } {
 	return [ print_node_core $texts $node $callback $depth "" ]
 }
 
+proc get_if_close { callback } {
+	set if_block_end [ get_optional_callback $callback if_block_end ]
+	if {$if_block_end != ""} {
+		return $if_block_end
+	}
+
+	return [ get_callback $callback block_close ]
+}
+
 proc print_node_core { texts node callback depth break_var } {
 	set line_end [ get_optional_callback $callback line_end ]
 	set commentator [ get_callback $callback comment ]
@@ -2331,6 +2343,7 @@ proc print_node_core { texts node callback depth break_var } {
 	#set continue_str [ $continue_cb ]
 	
 	set block_close [ get_callback $callback block_close ]
+	set if_close [get_if_close $callback ]
 	set while_start [ get_callback $callback while_start ]
 	set else_start [ get_callback $callback else_start ]
 	set pass [ get_callback $callback pass ]
@@ -2358,7 +2371,7 @@ proc print_node_core { texts node callback depth break_var } {
 				if { [ llength $parts ] != 0 } {
 					append_line_end result $i $line_end			
 					set comment [ $commentator "item $current" ]
-					lappend result $indent$comment
+					#lappend result $indent$comment
 				}
 
 				foreach part $parts {
@@ -2389,7 +2402,7 @@ proc print_node_core { texts node callback depth break_var } {
 			if { $start_item_info == "" } {
 				set cond_text [ get_text_lines $texts $cond_item ]
 				set comment [ $commentator "item $cond_item" ]
-				lappend result $indent$comment
+				#lappend result $indent$comment
 
 				set cond [ condition_line $callback $cond_text ]
 				lappend result $indent$cond
@@ -2405,7 +2418,7 @@ proc print_node_core { texts node callback depth break_var } {
 					set result [ concat $result $else ]
 				}
 				
-				$block_close result $depth
+				$if_close result $depth
 			}
 			set was_return 0
 		} elseif { [ lindex $current 0 ] == "loop" } {
@@ -2652,6 +2665,7 @@ proc p.keywords { } {
 		native_foreach
 		can_glue
 		exit_door
+		if_block_end
 	}
 }
 
