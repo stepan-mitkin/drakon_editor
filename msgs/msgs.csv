@@ -1,0 +1,350 @@
+﻿en,ru,zh
+English,Russian,Chinese
+'End' icon should have the text '\$end',Икона 'Конец' должна содержать текст '\$end',结束图标的文字应为'\$end'
+\$count matches found.,Найдено \$count вхождений.,找到\$count个
+\$count replacements done.,Сделано \$count замен.,\$count 个替换完成
+\$dia_name: Edit diagram description,\$dia_name: Редактировать описание диаграммы,\$dia_name:编辑图描述
+\$fun: missing argument \$name,\$fun: требуется аргумент \$name,\$fun: 缺少参数\$name
+\$message \(Diagram names were not changed.\),\$message \(Имена диаграмм остались без изменения.\),\$message \(图未更改\)
+\$name: diagram description,\$name: описание диаграммы,\$name: 图描述
+\$name: diagram name,\$name: название диаграммы,\$name: 图名称
+\$text is not a unique case branch.,\$text не является уникальной иконой выбора.,\$text 不是一个独立的选择支
+1 match found.,Найдено 1 вхождение.,找到1个
+1 match replaced.,Сделана 1 замена.,1个替换完成
+A 'case' icon expected.,Ожидается икона 'выбор'.,需要选择支图标
+A going up line expected here.,"Здесь ожидается линия, идущая наверх.",需要向上连线
+A left-leading line expected here.,"Здесь ожидается линия, ведущая налево.",需要左侧连线
+A right t-joint expected after the 'select' icon.,После иконы 'выбор' ожидается правая T-связь.,'选择'后需要右侧的T形连接
+A silouette must have exactly one arrow at the right side.,У силуэта должна быть одна стрелка справа.,剪影需要一个右侧箭头
+A silouette must have more than one branch.,В силуэте должно быть более одной ветки.,剪影需要多于一个分支
+About DRAKON Editor,О программе DRAKON Editor,关于DRAKON Editor
+About...,О программе...,关于...
+Action,Действие,动作
+Add/remove cycle mark,Добавить/удалить метку цикла,添加/删除循环标记
+Adjust icon sizes for diagram,Выровнять размеры элементов на диаграмме,调整图中图标大小
+Adjust icon sizes,Выровнять размер элементов,调整图标大小
+All icons must be connected together.,Все иконы должны быть соединены.,所有图标必须互相联通
+An infinite loop detected.,Обнаружен бесконечный цикл.,检测到无限循环
+Apply,Применить,应用
+Arrow coincides with a line.,Стрелка совпадает с линией.,线与箭头重合
+Arrow expected at the top of the diagram.,Наверху диаграммы ожидается стрелка.,箭头应在图顶
+Arrow expected here.,Здесь ожидается стрелка.,需要箭头
+Arrow expected.,Ожидается стрелка.,需要箭头
+Arrow points to a wrong place.,Стрелка указывает в неправильное место.,箭头指向错误
+Arrow,Стрелка,箭头
+Attribute,Атрибут,属性
+Back,Назад,返回
+Background,Фон,背景
+Bad direction: \$direction,Ошибка направления: \$direction,方向错误: \$direction
+Begin/End,Заголовок,开始/结束
+Branch footer,Адрес,分支结束
+Branch header,Имя ветки,分支开始
+Branch name \$text is not found.,Не найдена ветвь с именем \$text.,分支\$text未找到
+Branch name \$text is not unique.,Имя ветви \$text не является уникальным.,分支\$text不唯一
+Broken horizontal line.,Разорванная горизонталь.,水平线错误
+Broken vertical line.,Разорванная вертикаль.,垂直线错误
+Cancel,Отмена,取消
+Canvas font,Шрифт холста,画布字体
+Case sensitive,Учитывать регистр,大小写敏感
+Change diagram description,Редактировать описание диаграммы,编辑图描述
+Change file description,Редактировать описание файла,编辑文件描述
+Change file properties,Редактировать свойства файла,编辑文件属性
+Change icon secondary text: item \$item_id,Изменить дополнительный текст элемента: элемент \$item_id,编辑图标次要文本: 项 \$item_id
+Change icon text: item \$item_id,Изменить текст элемента: элемент \$item_id,编辑图标文本: 项 \$item_id
+Change item,Изменить элемент,编辑项
+Change secondary text,Изменить дополнительный текст,编辑次要文本
+Change shape,Изменить форму,编辑形状
+Change text,Изменить текст,编辑文本
+Choose a canvas font,Выберите шрифт для холста,选择画布字体
+Choose a PDF font,Выберите шрифт для PDF,选择PDF字体
+Choose and open a diagram file that already exists on the disk.,Выбрать и открыть файл диаграммы с диска.,选择一个图文件打开
+Clear history,Очистить историю,清除历史记录
+Close,Закрыть,关闭
+Collapse,Свернуть,折叠
+Color:,Цвет:,颜色:
+Colors,Цвета,颜色
+Command-Enter to save and close,Command-Enter - сохранить и закрыть,Command-Enter - 保存并关闭
+Comment primary,Основной комментарий,主说明
+Comment secondary,Дополнительный комментарий,副说明
+Control-Enter to save and close,Control-Enter - сохранить и закрыть,Ctrl-Enter - 保存并关闭
+Copy,Копировать,复制
+Could not create database \$filename,Не удалось создать базу данных \$filename,不能创建数据库\$filename
+Could not create or replace file \$filename,Не удалось создать или заменить файл \$filename,不能创建或替换文件\$filename
+Could not init database \$filename,Не удалось настроить базу данных \$filename,不能初始化数据库\$filename
+Could not open database \$filename,Не удалось открыть базу данных \$filename,不能打开数据库\$filename
+Create a new diagram file.,Создать новый файл диаграммы.,新建图文件
+Create diagram,Создать диаграмму,新建图
+Create folder,Создать папку,新建文件夹
+Create new...,Создать новый...,新建...
+Current diagram,Текущая диаграмма,当前图
+Cut,Вырезать,剪切
+Database name \$db is already used,Имя базы данных \$db уже используется,数据库\$db已使用
+Delete diagram,Удалить диаграмму,删除图
+Delete,Удалить,删除
+Description:,Описание:,描述:
+Description...,Описание...,描述...
+Diagram '\$name' not found.,Диаграмма '\$name' не найдена.,未找到图\$name
+Diagram description...,Описание диаграммы...,图描述...
+Diagram name cannot contain single quotes,Имя диаграммы не может содержать одинарные кавычки,图名不能包含单引号
+Diagram name should not be empty,Имя диаграммы не должно быть пустым,图名不能为空
+Diagram name should not have trailing and leading spaces,Имя диаграммы не должно начинаться или кончаться пробелами,图名首尾不能有空格
+Diagram with name '\$name' already exists.,Диаграмма с именем '\$name' уже есть.,图\$name已存在
+diagram_id is empty,diagram_id пуст,diagram_id为空
+Directed link down,Направленная связь вниз,下箭头
+Directed link to the left,Направленная связь влево,左箭头
+Directed link to the right,Направленная связь вправо,右箭头
+Directed link up,Направленная связь вверх,上箭头
+Disconnected icon.,Несвязанная икона.,未连接的图标
+Done: \$name.,Выполнено: \$name.,完成: \$name.
+Double click to edit,Двойной щелчок начинает редактирование,双击编辑
+"DRAKON Editor does not have a \\\""Save\\\"" button. All your changes get saved right after you have done them.\nThat is why DRAKON Editor always needs a file to work with.","В DRAKON Editor нет кнопки \\\""Сохранить\\\"". Все ваши правки сохраняются на диск немедленно.\nВот почему для работы в DRAKON Editor требуется выбрать файл.",DRAKON编辑器没有保存键，你的所有改动都会立即保存。\n因此DRAKON编辑器始终需要一个文件以运行
+"DRAKON Editor v. \[ application_start_version \].\[ application_version \] \[version_tag\]\nAuthors: Stepan Mitkin, Alexander Ilyin, Maas-Maarten Zeeman, Vasil Dyadov, Vasili Bachiashvili, Alexey Gavrilov","DRAKON Editor v. \[ application_start_version \].\[ application_version \] \[version_tag\]\nАвторы: Степан Митькин, Александр Ильин, Maas-Maarten Zeeman, Васил Дядов, Василий Бачиашвили, Алексей Гаврилов","DRAKON Editor v. \[ application_start_version \].\[ application_version \] \[version_tag\]\作者: Stepan Mitkin, Alexander Ilyin, Maas-Maarten Zeeman, Vasil Dyadov, Vasili Bachiashvili, Alexey Gavrilov"
+"DRAKON helps people understand programs.\n\nThis software is PUBLIC DOMAIN, with the exception of pdf4tcl and the Liberation fonts that have their own licenses.\n\nhttp://drakon-editor.sourceforge.net\ndrakon.editor@gmail.com\nTo see example diagrams in DRAKON language, go to the \\\""examples\\\"" folder.","ДРАКОН помогает людям понимать программы.\n\nДанный продукт является ОБЩЕСТВЕННЫМ ДОСТОЯНИЕМ, за исключением pdf4tcl и шрифтов Liberation, у которых собственные лицензии.\n\nhttp://drakon-editor.sourceforge.net\ndrakon.editor@gmail.com\nПримеры диаграмм на языке ДРАКОН находится в каталоге \\\""examples\\\"".","DRAKON帮助人们理解程序。\n\n此软件属于公有领域，除了 pdf4tcl和Liberation字体有它们自己的许可证。\n\nhttp://drakon-editor.sourceforge.net\ndrakon.editor@gmail.com\n在 \\\""examples\\\"" 文件夹下，你可以找到一些示例图。"
+DRAKON,ДРАКОН,DRAKON
+Edit file description,Редактировать описание файла,编辑文件描述
+Edit text...,Редактировать текст...,编辑文本...
+Edit upper text...,Редактировать верхний текст...,编辑上方文本...
+Edit...,Редактировать...,编辑...
+Edit,Редактировать,编辑
+Element:,Элемент:,元素:
+Encoding,Кодировка,编码
+Enter a correct canvas font size,Введите корректный размер шрифта для холста,输入画布字体大小
+Enter a correct PDF font size,Введите корректный размер шрифта для PDF,输入PDF字体大小
+Entire file,Весь файл,全文件
+Entity with fields,Сущность с полями,带域实体
+Entity,Сущность,实体
+Error creating file: \$filename,Ошибка при создании файла: \$filename,创建文件错误: \$filename
+Error near this line.,Ошибка возле этой линии.,此行附近出现错误
+Error opening file: \$filename,Ошибка при открытии файла: \$filename,打开文件错误: \$filename
+Error opening file: \$name,Ошибка при открытии файла: \$name,打开文件错误: \$name
+Exit,Выход,退出
+Expected a line with a 'case' icon.,Ожидается линия с иконой 'выбор'.,需要带选择支的连线
+Export complete.,Экспорт выполнен.,导出完成
+Export to PDF...,Экспорт в PDF...,导出PDF...
+Export to PDF,Экспорт в PDF,导出PDF
+Export to PNG...,Экспорт в PNG...,导出PNG...
+Export,Экспорт,导出
+File \$filename does not exist,Файл \$filename не существует,文件 \$filename 不存在
+File description...,Описание файла...,文件描述...
+File description,Описание файла,文件描述
+File properties...,Свойства файла...,文件属性...
+File properties,Свойства файла,文件属性
+File,Файл,文件
+Find all references,Найти все ссылки на диаграмму,查找所有引用
+Find All,Найти всё,查找所有
+Find:,Найти:,查找:
+Find,Найти,查找
+First case icon cannot be empty.,Первая икона выбора не может быть пустой.,第一个选择支图标不能为空
+Fit one page,Уместить на страницу,适应纸张大小
+Flip horizontally,Отразить по горизонтали,水平翻转
+Folder not found: \$node_id,Папка не найдена: \$node_id,文件夹未找到: \$node_id
+Folder,Папка,文件夹
+Forward,Вперёд,向前
+Generate code,Генерировать код,生成代码
+Global settings...,Глобальные настройки...,全局设置...
+Global settings,Глобальные настройки,全局设置
+Go to '\$ref_name',Перейти к '\$ref_name',转到 '\$ref_name'
+Go to branch...,Перейти к ветке...,转到分支...
+Go to branch,Перейти к ветке,转到分支
+Branch '\$name' not found.,Ветка '\$name' не найдена.,找不到分支 '\$name'
+Go to diagram...,Перейти к диаграмме...,转到图...
+Go to diagram,Перейти к диаграмме,转到图
+Go to item...,Перейти к элементу...,转到项...
+Go to item,Перейти к элементу,转到项
+"handle not found. item_id = \$item_id, handle_name = \$handle_name","Ссылка не найдена. item_id = \$item_id, handle_name = \$handle_name",
+Help,Справка,帮助
+Hide,Скрыть,隐藏
+Holding SHIFT while dragging items on the canvas\nactivates SMART editing mode.,"Чтобы активировать \\\""умный\\\"" режим,\nудерживайте Shift при передвижении элементов по холсту.","拖动画布时按住Shift进入\\\""智能\\\""编辑模式"
+Home,В начало,居中
+Horizontal line,Горизонтальная линия,水平线
+Icon '\$type' not expected here.,Икона типа '\$type' здесь не ожидается.,不需要'\$type'图标
+Elements of type '\$type' are not supported by the verifier yet.,Элементы типа '\$type' не поддерживаются при проверке диаграмм в данной версии.,\$type 元素未被尚检查器支持
+Icon background,Фон иконы,图标背景
+If icon,Икона условия,判断图标
+If,Вопрос,判断
+Incompatible database \$filename,Несовместимая база данных \$filename,不兼容的数据库\$filename
+inconsistent graph: vertex \$vertex_id,inconsistent graph: vertex \$vertex_id,
+Inheritance link down,Наследование вниз,空心下箭头
+Inheritance link to the left,Наследование влево,空心左箭头
+Inheritance link to the right,Наследование вправо,空心右箭头
+Inheritance link up,Наследование вверх,空心上箭头
+Inline comment,Комментарий,行内注释
+Input,Ввод,输入
+Insert '\$name' icon,Добавить элемент '\$name',插入图标'\$name'
+Insert more,Добавить ещё,插入更多
+Insert,Добавить,插入
+Insertion,Вставка,子过程
+Item \$trimmed not found,Элемент \$trimmed не найден,未找到项\$trimmed
+Item id should be a whole number.,Идентификатор элемента должен быть целым числом,项id应该是纯数字
+Key '\$key' not found in map: \$map,Ключ '\$key' не найден в карте: \$map,
+"Label for \\\""No\\\"" exit:","Текст для ветки \\\""Нет\\\"":","\\\""Yes\\\""的文字:"
+"Label for \\\""Yes\\\"" exit:","Текст для ветки \\\""Да\\\"":","\\\""No\\\""的文字:"
+Landscape,Альбомная,水平
+Language:,Язык:,语言:
+Last branch not found,Последняя ветвь не найдена,找不到最后分支
+Left arrow not expected.,Левая стрелка не ожидается.,不需要左箭头
+Left is empty.,Слева пусто.,左为空
+Line crossings are not allowed.,Пересечения линий запрещены.,不允许线交叉
+Line not connected to any icon.,Линия не присоединена к иконе.,线未连接至图标
+Line not expected here.,Линия здесь не ожидается.,不需要连线
+Line should not be under arrow.,Линия не должна быть под стрелкой.,线不应在箭头下
+Line,Линия,线
+Link not found: \$src \$old_ordinal,Связь не найдена: \$src \$old_ordinal,连接未找到: \$src \$old_ordinal
+"Link not unique: \$from, \$ordinal -> old: \$dst new: \$to.","Связь уже существует: \$from, \$ordinal -> старая: \$dst новая: \$to.","连接不唯一: \$from, \$ordinal -> 老: \$dst 新: \$to."
+Loop icon,Икона цикла,循环图标
+Loop,Цикл,循环
+Margin is negative.,Отрицательный размер полей.,边距为负
+Margin is not a number,Размер полей должен быть числом,边距不是数字
+"Margin, mm","Поля, мм","边距, mm"
+Margins are too wide.,Слишком широкие поля.,边距太宽
+Missing one or more address icons.,Нехватает как минимум одной иконы с адресом.,
+Move and change items,Передвинуть и изменить элементы,移动并改变项
+Move items,Передвинуть элементы,移动项
+New diagram inside this folder...,Создать диаграмму внутри этой папки...,在此新建图...
+New diagram...,Создать диаграмму...,新建图...
+New diagram,Создать диаграмму,新建图
+New folder inside this folder...,Создать папку внутри этой папки...,在此新建文件夹...
+New folder...,Создать папку...,新建文件夹...
+New...,Создать,新建
+Next,Следующее,下一个
+No space between icons.,Нет зазора между иконами.,图标间没有空白
+No text entered.,Нужно ввести какой-нибудь текст.,未输入文字
+No text in the address header.,Нет текста в заголовке адреса.,
+No text in the branch header.,Нет текста в заголовке ветви.,
+Nothing found.,Ничего не найдено.,未找到
+Nothing replaced.,Ничего не было заменено.,未替换
+Nothing to replace.,Нечего заменять.,无可替换
+Ok,OK,确认
+"One-to-many \(\\\""many\\\"" at the bottom\)","Один-ко-многим \(\\\""много\\\"" внизу)","一到多\(\\\""多\\\""在下)"
+"One-to-many \(\\\""many\\\"" at the top\)","Один-ко-многим \(\\\""много\\\"" вверху)","一到多\(\\\""多\\\""在上)"
+"One-to-many \(\\\""many\\\"" on the left\)","Один-ко-многим \(\\\""много\\\"" слева)","一到多\(\\\""多\\\""在左)"
+"One-to-many \(\\\""many\\\"" on the right\)","Один-ко-многим \(\\\""много\\\"" справа)","一到多\(\\\""多\\\""在右)"
+Only action icon can serve as a parameters icon.,Только иконы действий могут использоваться в качестве икон с параметрами.,仅动作图标可以作为参数图标
+Open existing...,Открыть существующий...,打开...
+Open recent...,Открыть недавний...,打开最近...
+Open recent,Открыть недавний,打开最近
+Open...,Открыть,打开
+Orientation,Ориентация,方向
+Output file name not chosen.,Не выбрано имя выходного файла.,未选择输出文件名
+Output file:,Выходной файл:,输出文件:
+Output,Вывод,输出
+p.link: from is empty,p.link: не задана переменная from,p.link: from 为空
+p.make_crossing: Main road should be horizontal.,p.make_crossing: Главный маршрут должен быть горизонтален.,p.make_crossing: 主线应当是水平的
+Paper size,Размер бумаги,纸张尺寸
+Parallel,Параллельный шампур,双线
+Paste inside this folder,Вставить внутри этой папки,粘贴到此
+Paste items,Вставить элементы,粘贴项
+Paste nodes,Вставить узлы,粘贴节点
+Paste,Вставить,粘贴
+Pause,Пауза,暂停
+PDF font,Шрифт PDF,PDF字体
+Please enter an item id.,Введите идентификатор элемента.,输入项id
+"Please, do not move or open any window or diagram while exporting to PNG.","Пожалуйста, не двигайте или открывайте окна или схемы пока идет процесс импорта в PNG.",不要在导出PNG时移动或打开任何窗口！
+Point to '\$branch',Указывать на '\$branch',指向 '\$branch'
+Portrait,Портретная,垂直
+Previous,Предыдущее,上一个
+Primitive,Примитив,原始
+Process,Параллельный процесс,进程
+Quit,Выход,退出
+Recently open files,Недавние файлы,最近打开文件
+Redo: \$name,Повторить \$name,重做 \$name
+Redo: \$name,Повторить: \$name,重做: \$name
+Redo,Повтор,重做
+Redo,Повторить,重做
+Redone: \$name.,Повторено: \$name.,重做完成: \$name.
+Rename diagram,Переименовать диаграмму,重命名图
+Rename folder,Переименовать папку,重命名文件夹
+Rename...,Переименовать...,重命名...
+Replace all,Заменить всё,替换所有
+Replace All,Заменить всё,替换所有
+Replace:,Заменить:,替换:
+Replace,Заменить,替换
+rowinfo for DELETE should contain <table> <key-field> <key-name>,rowinfo для DELETE должен содержать <table> <key-field> <key-name>,"对于 DELETE, rowinfo 应当包括 <table> <key-field> <key-name>"
+rowinfo too short for INSERT,rowinfo слишком мало для INSERT,rowinfo 对 INSERT 过短
+rowinfo too short for UPDATE,rowinfo слишком мало для UPDATE,rowinfo 对 UPDATE 过短
+Save as...,Сохранить как...,另存为...
+Scale is not a number,Масштаб должен быть числом,尺寸必须是数字
+Scale should be between 5 and 500.,Масштаб должен быть от 5 до 500.,尺寸必须在5 - 500之间
+"Scale, %","Масштаб, %","尺寸, %"
+Search string is empty.,Искомая строка пустая.,搜索字符串为空
+See all,Показать всё,适应窗口
+Select all,Выделить всё,全选
+Select,Выбор,选择
+Shelf,Полка,框
+Silhouette,Силуэт,剪影图
+State machine,Конечный автомат,状态机
+Size,Размер,尺寸
+Some errors found.,Найдены ошибки.,发现错误
+Standalone comment,Комментарий-выноска,独立注释
+Swap \[yes\] and \[no\],Поменять местами \[yes\] и \[no\],交换\[yes\]和\[no\]
+Switch icon,Икона выбора,选择支图标
+"Text for \\\""End\\\"" icon:","Текст для иконы \\\""Конец\\\"":","\\\""结束\\\""的文字:"
+Text,Текст,文本
+The diagram must have exactly one end.,У диаграммы должен быть один конец.,图必须有一个结束点
+The diagram must have one or more starts.,У диаграммы должно быть хотя бы одно начало.,图必须有至少一个起点
+The diagram window is too small.\nExpand it.,"Окно диаграммы слишком мало.\nПожалуйста, увеличьте размер окна.",窗口太小
+The empty case icon should be the last one.,Пустая икона выбора должна быть последней.,空选择支应是最后一个
+The line should go up at the right.,Линия должна идти справа наверх.,线应从右侧发出
+The line should not go down at the right.,Линия не должна идти справа вниз.,线不应从下到上
+The line should turn left at the top.,Линия наверху должна поворачивать налево.,线顶端应该左转
+Theme:,Цветовая схема:,主题:
+This branch is unreachable.,Эта ветвь не используется.,此分支不可到达
+This diagram is empty.,Данная диаграмма пуста.,此图为空
+This icon has several lines on its side.,К этой иконе прилегают несколько линий на одной стороне.,图标一侧有多个连线
+This icon should be placed on a vertical line.,Эта икона должна быть расположена на вертикальной линии.,此图标应在垂直线上
+Tidy up all diagrams,Выровнять все диаграммы,整理所有图
+Tidy up,Выровнять диаграмму,整理
+Timer,Таймер,计时器
+Too many 'begin' icons.,Слишком много икон 'начало'.,太多开始标记
+Two icons at the same position.,Две иконы на одном месте.,两个图标重合
+Undo: \$name,Отменить: \$name,撤销: \$name
+Undo,Отменить,撤销
+Undone: \$name.,Отменено: \$name.,未完成: \$name.
+Unexpected direction: \$direction,Ошибка направления: \$direction,意外的朝向: \$direction
+Unexpected elements,Неожиданные элементы,意外的元素
+Unexpected intersection result: \$code,Неожиданный результат пересечения: \$code,意外的交叉结果: \$code
+Unexpected lines around the parameters icon.,Неожиданные линии вокруг иконы с параметрами.,参数图标周围意外的线
+Unexpected orientation: \$orientation,Ошибка ориентации: \$orientation,意外的方向: \$orientation
+Unknown database name \$db,Неизвестное имя базы данных \$db,未知数据库名 \$db
+Unsupported object_type: \$object_type,Неподдерживаемый тип объекта: \$object_type,不支持的对象类型: \$object_type
+Use default font,Использовать шрифт по умолчанию,使用默认字体
+Verify All,Проверить всё,检查所有
+Verify,Проверить,检查
+Vertex \$vertex_id not found,Не найдена вершина с идентификатором \$vertex_id,找不到Vertex \$vertex_id
+Vertical line,Вертикальная линия,垂直线
+View,Вид,视图
+Whole word only,Слово целиком,全词匹配
+wrong command \$edit,ошибочная команда \$edit,错误的命令 \$edit
+Wrong object type: \$object_type,Неправильный тип объекта: \$object_type,错误的对象类型: \$object_type
+Wrong schema in database \$filename,Неправильная схема базы данных \$filename,数据库\$filename包含错误的表
+Wrong turn.,Неправильный поворот.,
+Your drawing looks good.,Прекрасная диаграмма!,正常
+Zoom 100%,Масштаб 100%,原始大小
+Zoom in,Увеличить масштаб,放大
+Zoom out,Уменьшить масштаб,缩小
+Apply zoom to all diagrams,Применить масштаб ко всем диаграммам,缩放所有图
+Entity-Relationship diagram,Диаграмма сущность-связь,实体关系图
+Case,Вариант,选择支
+Yes,Да,是
+No,Нет,否
+End,Конец,结束
+,,
+,,
+Call hierarchy,Иерархия вызовов,调用层次
+Call hierarchy...,Иерархия вызовов...,调用层次...
+Regenerate,Построить заново,重新生成
+Inversed,Обратить,反转
+Copy diagram names,Копировать имена диаграмм,复制图名
+,,
+,,
+Change colors...,Изменить цвета...,改变颜色...
+Change colors,Изменить цвета,改变颜色
+Clear colors,Очистить цвета,清除颜色
+Font and border,Текст и рамка,字体和边界
+Don't panic,Спокойно!,不要慌
+,,
+Structure diagram,Диаграмма структуры,结构图
+DRAKON flowchart,ДРАКОН-схема,DRAKON流程图
+Links,Ссылки,链接
+,,
+Please restart the application,"Пожалуйста, перезапустите приложение",请重启本应用

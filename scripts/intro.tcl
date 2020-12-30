@@ -146,7 +146,7 @@ proc intro.destroy { } {
 
 
 variable language_combo "English"
-variable language_list { "English" "Russian" }
+source "$script_path/msgs/lang_list.tcl"
 variable argc_var 0
 variable argv_var ""
 

@@ -39,10 +39,7 @@ variable scheme_list {
 	"Colored night"
 }
 
-variable language_list {
-	"English"
-	"Russian"
-}
+source "$script_path/msgs/lang_list.tcl"
 
 variable strict {
 	background 	"#C3E7EF"
@@ -265,14 +262,23 @@ proc on_language { } {
 	variable end_entry
 	variable language_combo
 	
-	if {$language_combo == "English"} {
-		set yes_entry "Yes"
-		set no_entry "No"
-		set end_entry "End"
-	} else {
-		set yes_entry "Да"
-		set no_entry "Нет"
-		set end_entry "Конец"		
+	# TODO: Auto translate this
+	switch $language_combo {
+		"English" {
+			set yes_entry "Yes"
+			set no_entry "No"
+			set end_entry "End"
+		}
+		"Chinese" {
+			set yes_entry "是"
+			set no_entry "否"
+			set end_entry "结束"
+		}
+		default {
+			set yes_entry "Да"
+			set no_entry "Нет"
+			set end_entry "Конец"
+		}
 	}
 }
 
