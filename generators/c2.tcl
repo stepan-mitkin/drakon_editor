@@ -361,7 +361,7 @@ proc shelf { primary secondary } {
 # We resort to the loop generator that always works, but is quite slow.
 proc generate_body { gdb diagram_id start_item node_list items incoming } {
     set callbacks [ make_callbacks ]
-    return [ cbody2::generate_body $gdb $diagram_id $start_item $node_list \
+    return [ cbody::generate_body $gdb $diagram_id $start_item $node_list \
     $items $incoming $callbacks ]
 }
 
