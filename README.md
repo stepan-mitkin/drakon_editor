@@ -1,3 +1,18 @@
+## How to run Drakon Editor on Windows without ActiveState Tcl
+
+1. Download Tcl from magicsplat
+https://sourceforge.net/projects/magicsplat/files/magicsplat-tcl/
+
+2. Install Tcl. Choose the right version for your operating system. For example, tcl-8.6.16-installer-1.16.0-x64.msi for Windows 11.
+
+3. Download and unzip this repository.
+
+4. Start the **drakon_editor.tcl** using the **wish.exe** file installed with magicsplat-tcl
+For example:
+```
+C:\Users\user1\AppData\Local\Apps\Tcl86\bin\wish.exe c:\soft\drakon_editor-master\drakon_editor.tcl
+```
+
 ## How to work on DRAKON Editor source code.
 
 1. Before submitting patch, make sure that unit tests run without error by running `unittest/unittest.tcl`. 
