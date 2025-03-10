@@ -170,9 +170,13 @@ proc generate { db gdb filename } {
             $ctrs $dtrs $methods $slots \
             $c_header $c_footer $class_name \
             $language $sm_body $g_body
+
         } error_message
 
         close_files [ list $hfile $cfile ]
+   
+	    clearFileFromEmptyLines $c_filename 
+        clearFileFromEmptyLines $h_filename
 
         if {$error_message == ""} {
             
@@ -186,7 +190,19 @@ proc generate { db gdb filename } {
 	
 }
 
-
+proc clearFileFromEmptyLines { filename } {
+        set cfile [open $filename]
+        set input [read $cfile]
+	    set lines [split $input "\n"]
+        close $cfile
+	    set cfile [open $filename "w"]
+	    foreach line $lines {
+	    if { [ string trim $line] != "" } {
+		    puts $cfile $line
+	    }
+	    }
+	    close $cfile
+}
 
 # Builds a collection of code snippet generators specific to the D language.
 proc make_callbacks { } {
@@ -361,7 +377,7 @@ proc shelf { primary secondary } {
 # We resort to the loop generator that always works, but is quite slow.
 proc generate_body { gdb diagram_id start_item node_list items incoming } {
     set callbacks [ make_callbacks ]
-    return [ cbody2::generate_body $gdb $diagram_id $start_item $node_list \
+    return [ cbody::generate_body $gdb $diagram_id $start_item $node_list \
     $items $incoming $callbacks ]
 }
 
@@ -449,7 +465,12 @@ proc print_to_file { fhandle functions header footer } {
 		set declaration [ build_declaration $name $signature ]
 		puts $fhandle $declaration
 		set lines [ gen::indent $body 1 ]
-		puts $fhandle $lines
+        foreach line $lines {
+            set s2 [string trim $line]
+            if{ $s2 !="" } {
+    		    puts $fhandle $line
+            }
+        }
 		puts $fhandle "\}"
 	}
 	puts $fhandle ""
