@@ -1,5 +1,4 @@
-
-
+# Changed Sections: ldown, lmove, lup
 
 namespace eval mwc {
 
@@ -897,31 +896,52 @@ proc ldown { move_data ctrl shift } {
 	set drag_last [ list $cx $cy ]
 	set drag_item [ mv::hit $cx $cy ]
 	if { $drag_item == "" } {
-		if { !$ctrl } {
+	
+		### Modification: If we're not grabbing anything and ctrl NOT pressed, scroll, if pressed then select ###
+		
+		
+		
+		if { $ctrl } {
 			mv::deselect_all
+			state change selecting.start
+		
+		} elseif {$shift} {
+			state change selecting.start
+		
+		} else {
+			mv::deselect_all
+			state change scrolling.start
+		
 		}
-		state change selecting.start
+		### End ###
+		
 	} elseif { $shift } {
 		set drag_items [ mv::hit_many $cx $cy ]
 		state change alt_drag.start
 		alt::start $drag_items $cx $cy
+		
 	} else {
 		state change dragging.start
 		set selected [ mod::one $db selected items item_id $drag_item ]
+		
 		if { $selected == 1 } {
 			if { $ctrl } {
 				mv::deselect $drag_item 0
+				
 			} else {
 				set drag_handle [ mv::hit_handle $drag_item $cx $cy ]
+				
 				if { $drag_handle != "" } {
 					state change resizing.start
 					mv::prepare_line_handle $drag_item $drag_handle
 				}
 			}
+			
 		} else {
 			if { !$ctrl } {
 				mv::deselect_all
 			}
+			
 			mv::select $drag_item 0
 		}		 
 	} 
@@ -933,12 +953,20 @@ proc lmove { move_data } {
 	variable drag_item
 	variable drag_handle
 	
+
+	
 	set cx [ lindex $move_data 2 ]
 	set cy [ lindex $move_data 3 ]
 	set cx [ unzoom_value $cx ]
 	set cy [ unzoom_value $cy ]	
 	set dx [ lindex $move_data 4 ]
 	set dy [ lindex $move_data 5 ]
+	
+	### Modification ###
+	set window [ lindex $move_data 6 ]
+	set daltx [ lindex $move_data 4]
+	set dalty [ lindex $move_data 5]
+	### End ###
 	
 	set item_below [ mv::hit $cx $cy ]
 	
@@ -948,15 +976,25 @@ proc lmove { move_data } {
 	if { [ state is selecting ] || [ state is selecting.start ] } {
 		state change selecting
 		mv::selection $drag_last [ list $cx $cy ]
+		
+	### Modification ###
+	} elseif { [ state is scrolling ] || [ state is scrolling.start ] } {
+		state change scrolling
+		mw::scroll_canvas $window $daltx $dalty
+
+	### End ###
+	
 	} elseif { $dx != 0 || $dy != 0 } {
 		if { [ state is dragging ] || [ state is dragging.start ] } {
 			state change dragging
 			mv::drag $dx $dy
 			set cursor item
+			
 		} elseif { [ state is resizing ] || [ state is resizing.start ] } {
 			state change resizing
 			mv::resize $drag_item $drag_handle $dx $dy
 			set cursor handle
+			
 		} elseif { [ state is alt_drag ] || [ state is alt_drag.start ] } {
 			state change alt_drag
 			set cursor item
@@ -987,6 +1025,7 @@ proc lup { move_data } {
 	variable drag_item
 		
 	begin_transaction lup
+	
 	set diagram_id [ editor_state $db current_dia ]
 	
 	mv::selection_hide
@@ -1014,7 +1053,13 @@ proc lup { move_data } {
 		start_action  [ mc2 "Move and change items" ]
 		take_shapes_from_shadow [ mv::get_changed ]
 		mv::fill $diagram_id
+		
+	### Modification ###
+	} elseif { [ state is scrolling.start ] || [state is scrolling] } {
+		
+		take_selection_from_shadow $diagram_id
 	}
+	### End ###
 	
 	commit_transaction lup
 	state reset
@@ -1023,13 +1068,18 @@ proc lup { move_data } {
 proc rdown { cx cy } {
 	variable db
 	
-
+	###variable scroll_x
+	###variable scroll_y
+	
 	
 	set diagram_id [ editor_state $db current_dia ]
 	if { $diagram_id == "" } { return }
 	
 	set cx [ unzoom_value $cx ]
 	set cy [ unzoom_value $cy ]
+	
+	###set scroll_x $cx
+	###set scroll_y $cy
 
 	insp::remember $cx $cy
 
@@ -1042,7 +1092,6 @@ proc rdown { cx cy } {
 		
 		push_unselect_items $diagram_id
 		push_select_item $hit_item
-		
 		
 		commit_transaction rdown
 	}
@@ -1283,7 +1332,7 @@ proc state.get_arg { action arguments } {
 	set new_state [ lindex $arguments 0 ] 
 	
 	set allowed { idle selecting dragging resizing selecting.start dragging.start resizing.start
-		alt_drag alt_drag.start }
+		alt_drag alt_drag.start scrolling scrolling.start }
 	if { [ lsearch -exact $allowed $new_state ] == -1 } {
 		error "state $action: unknown state '$new_state'\nAvalable states: $allowed"
 	}
